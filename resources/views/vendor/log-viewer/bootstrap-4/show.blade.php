@@ -195,8 +195,8 @@
     <div id="delete-log-modal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <form id="delete-log-form" action="{{ route('log-viewer::logs.delete') }}" method="POST">
-                <input type="hidden" name="_method" value="DELETE">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                @method('DELETE')
+                @csrf
                 <input type="hidden" name="date" value="{{ $log->date }}">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -206,7 +206,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>@lang('Are you sure you want to delete this log file: :date ?', ['date' => $log->date])</p>
+                        <p>{{ __('Are you sure you want to delete this log file: :date ?', ['date' => $log->date]) }}</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-secondary mr-auto" data-dismiss="modal">Cancel</button>
