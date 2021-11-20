@@ -16,9 +16,9 @@ class SteamController
         if (! $openid->mode) {
             $openid->identity = 'http://steamcommunity.com/openid';
 
-            return response()->redirectTo($openid->authUrl());
+            return redirect()->to($openid->authUrl());
         } elseif ($openid->mode == 'cancel') {
-            response()->redirectTo('/');
+            redirect()->to('/');
         } else {
             if ($openid->validate()) {
                 $id = $openid->identity;
@@ -40,7 +40,7 @@ class SteamController
                         auth('sanctum')->login($user, true);
                     }
 
-                    return redirect('/');
+                    return redirect()->to('/');
                 } else {
                     if (User::where('steam', $response['players'][0]['steamid'])->first() != null) {
                         return __('general.profile.somebody_already_linked');

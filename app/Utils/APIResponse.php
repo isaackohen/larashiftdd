@@ -8,7 +8,7 @@ class APIResponse
 {
     public static function success(array $data = []): Response
     {
-        return response($data, 200);
+        return response($data);
     }
 
     public static function reject(int $code, string $message = 'Unknown error message'): Response

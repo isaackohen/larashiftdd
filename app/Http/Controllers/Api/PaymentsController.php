@@ -69,7 +69,7 @@ class PaymentsController
     {
         //Log::warning(json_encode($request->all()));
         if (! $request->has('order_description') || Invoice::where('hash', $request->get('order_description'))->count() === 0) {
-            return response('Ok', 200)
+            return response('Ok')
                 ->header('Content-Type', 'text/plain');
         }
 
@@ -91,7 +91,7 @@ class PaymentsController
             $currency = $invoice->currency;
             $user->update(['wallet_'.$currency => null]);
 
-            return response('Ok', 200)
+            return response('Ok')
             ->header('Content-Type', 'text/plain');
         }
 
@@ -104,12 +104,12 @@ class PaymentsController
             $currency = $invoice->currency;
             $user->update(['wallet_'.$currency => null]);
 
-            return response('Ok', 200)
+            return response('Ok')
                 ->header('Content-Type', 'text/plain');
         }
 
         if (! $request->payment_status == 'finished' || Invoice::where('hash', $request->get('order_description'))->where('status', 0)->count() === 0) {
-            return response('Ok', 200)
+            return response('Ok')
                 ->header('Content-Type', 'text/plain');
         }
 
@@ -144,7 +144,7 @@ class PaymentsController
             $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.env('APP_NAME').'&button_url='.env('APP_URL').'&channel='.$telegramChannel;
             $result = file_get_contents($url);
 
-            return response('Ok', 200)
+            return response('Ok')
             ->header('Content-Type', 'text/plain');
         }
     }
@@ -212,7 +212,7 @@ class PaymentsController
                 $result = file_get_contents($url);
             }
 
-            return response('Ok', 200)
+            return response('Ok')
                 ->header('Content-Type', 'text/plain');
         }
 
@@ -230,7 +230,7 @@ class PaymentsController
             $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.env('APP_NAME').'&button_url='.env('APP_URL').'&channel='.$telegramChannel;
             $result = file_get_contents($url);
 
-            return response('Ok', 200)
+            return response('Ok')
                 ->header('Content-Type', 'text/plain');
         }
     }

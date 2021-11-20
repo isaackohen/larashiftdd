@@ -36,7 +36,7 @@ class VkController
                         auth('sanctum')->login($user, true);
                     }
 
-                    return redirect('/');
+                    return redirect()->to('/');
                 } else {
                     $id = $info['response'][0]['id'];
                     if (User::where('vk', $id)->first() != null) {
@@ -48,9 +48,9 @@ class VkController
                 }
             }
 
-            return redirect('/');
+            return redirect()->to('/');
         } else {
-            return response()->redirectTo('https://oauth.vk.com/authorize?client_id='.$client_id.'&display=page&redirect_uri='.$redirect_uri.'/auth/vk&scope=photos&response_type=code&v=5.53');
+            return redirect()->to('https://oauth.vk.com/authorize?client_id='.$client_id.'&display=page&redirect_uri='.$redirect_uri.'/auth/vk&scope=photos&response_type=code&v=5.53');
         }
     }
 }

@@ -46,7 +46,7 @@ class FacebookController
                             auth('sanctum')->login($user, true);
                         }
 
-                        return redirect('/');
+                        return redirect()->to('/');
                     } else {
                         if (User::where('fb', $user_id)->first() != null) {
                             return __('general.profile.somebody_already_linked');
@@ -64,7 +64,7 @@ class FacebookController
                 return json_encode(['error' => 'access_token is not granted']);
             }
         } else {
-            return response()->redirectTo('https://www.facebook.com/v3.2/dialog/oauth?'.urldecode(http_build_query([
+            return redirect()->to('https://www.facebook.com/v3.2/dialog/oauth?'.urldecode(http_build_query([
                 'client_id' => $client_id,
                 'redirect_uri' => $redirect_uri.'/auth/fb',
                 'response_type' => 'code',

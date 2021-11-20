@@ -23,9 +23,9 @@ class AdminAuthenticate
                 return $next($request);
             }
 
-            return redirect('/');
+            return redirect()->to('/');
         }
 
-        return redirect('/');
+        return redirect()->to('/');
     }
 }
