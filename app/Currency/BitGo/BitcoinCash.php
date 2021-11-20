@@ -43,6 +43,6 @@ class BitcoinCash extends BitGoCurrency
 
     public function getCurrencyCode()
     {
-        return env('APP_DEBUG') ? CurrencyCode::BITCOIN_CASH_TESTNET : CurrencyCode::BITCOIN_CASH;
+        return config('app.debug') ? CurrencyCode::BITCOIN_CASH_TESTNET : CurrencyCode::BITCOIN_CASH;
     }
 }

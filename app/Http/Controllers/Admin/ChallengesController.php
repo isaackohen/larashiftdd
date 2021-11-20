@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Challenges;
 use App\Gameslist;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CreateChallengeRequest;
 use App\Utils\APIResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,18 +17,8 @@ class ChallengesController extends Controller
         return APIResponse::success(Challenges::get()->toArray());
     }
 
-    public function create(Request $request)
+    public function create(CreateChallengeRequest $request)
     {
-        request()->validate([
-            'game' => 'required',
-            'maxwinners' => 'required',
-            'expires' => 'required',
-            'minbet' => 'required',
-            'multiplier' => 'required',
-            'sum' => 'required',
-            'currency' => 'required',
-        ]);
-
         $selectGame = Gameslist::where('id', request('game'))->first();
 
         Challenges::create([
@@ -44,15 +35,15 @@ class ChallengesController extends Controller
             'sum' => floatval(request('sum')),
             'maxwinners' => request('maxwinners'),
             'expired' => 0,
-            'expires' => request('expires') === '%unlimited%' ? Carbon::minValue() : Carbon::createFromFormat('d-m-Y H:i', request()->get('expires')),
+            'expires' => request('expires') === '%unlimited%' ? Carbon::minValue() : Carbon::createFromFormat('d-m-Y H:i', $request->get('expires')),
         ]);
 
         return APIResponse::success();
     }
 
-    public function remove()
+    public function remove(Request $request)
     {
-        Challenges::where('_id', request()->get('id'))->delete();
+        Challenges::where('_id', $request->get('id'))->delete();
 
         return APIResponse::success();
     }

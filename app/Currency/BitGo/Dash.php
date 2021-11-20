@@ -43,6 +43,6 @@ class Dash extends BitGoCurrency
 
     public function getCurrencyCode()
     {
-        return env('APP_DEBUG') ? CurrencyCode::DASH_TESTNET : CurrencyCode::DASH;
+        return config('app.debug') ? CurrencyCode::DASH_TESTNET : CurrencyCode::DASH;
     }
 }

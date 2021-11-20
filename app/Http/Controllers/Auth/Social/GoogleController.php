@@ -40,7 +40,7 @@ class GoogleController
                         } else {
                             $user->update([
                                 'login_ip' => User::getIp(),
-                                'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
+                                'login_multiaccount_hash' => $request->hasCookie('s') ? $request->cookie('s') : null,
                                 'tfa_persistent_key' => null,
                                 'tfa_onetime_key' => null,
                             ]);
@@ -57,7 +57,7 @@ class GoogleController
                         return redirect('/user/'.auth('sanctum')->user()->_id.'#settings');
                     }
 
-                    return redirect('/');
+                    return redirect()->to('/');
                 } else {
                     return json_encode(['error' => 'user id is not granted']);
                 }
@@ -65,7 +65,7 @@ class GoogleController
                 return json_encode(['error' => 'access_token is not granted']);
             }
         } else {
-            return response()->redirectTo('https://accounts.google.com/o/oauth2/auth?'.urldecode(http_build_query([
+            return redirect()->to('https://accounts.google.com/o/oauth2/auth?'.urldecode(http_build_query([
                 'redirect_uri' => $redirect_uri.'/auth/google',
                 'response_type' => 'code',
                 'client_id' => $client_id,

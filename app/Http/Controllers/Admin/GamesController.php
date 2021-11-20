@@ -9,9 +9,9 @@ use App\Gameslist;
 use App\Http\Controllers\Controller;
 use App\Providers;
 use App\Utils\APIResponse;
-use Artisan;
-use Cache;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class GamesController extends Controller
@@ -204,7 +204,7 @@ class GamesController extends Controller
 
     public function updateProviders()
     {
-        $apikey = env('API_KEY');
+        $apikey = config('settings.api_key');
         $response = Http::get('https://api.dk.games/v2/listProviders?apikey='.$apikey);
         $arrayList = ['data' => $response->json()];
         Providers::truncate();
@@ -217,7 +217,7 @@ class GamesController extends Controller
 
     public function updateGames()
     {
-        $apikey = env('API_KEY');
+        $apikey = config('settings.api_key');
         $response = Http::get('https://api.dk.games/v2/listGames?apikey='.$apikey.'&framework=1&sorted=1');
         $arrayList = ['data' => $response->json()];
         Gameslist::truncate();
@@ -230,7 +230,7 @@ class GamesController extends Controller
 
     public function restoreGamesList()
     {
-        $url = env('APP_URL').'/js/defaultListGames.json';
+        $url = config('app.url').'/js/defaultListGames.json';
         $response = Http::get($url);
         $arrayList = ['data' => $response->json()];
         Gameslist::truncate();

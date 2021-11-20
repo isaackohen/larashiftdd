@@ -6,6 +6,11 @@ use App\Currency\Currency;
 use App\Game as GameResult;
 use App\Games\Kernel\Game;
 use App\Gameslist;
+use App\Http\Requests\Api\AvatarUserRequest;
+use App\Http\Requests\Api\ChangePasswordUserRequest;
+use App\Http\Requests\Api\ClientSeedChangeUserRequest;
+use App\Http\Requests\Api\NameChangeUserRequest;
+use App\Http\Requests\Api\SubscriptionUpdateUserRequest;
 use App\Investment;
 use App\Settings;
 use App\Statistics;
@@ -13,9 +18,9 @@ use App\Transaction;
 use App\User;
 use App\Utils\APIResponse;
 use App\VIPLevels;
-use Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
 
@@ -106,7 +111,7 @@ class UserController
     public function games($id)
     {
         $p = [];
-        foreach (GameResult::orderBy('id', 'desc')->where('demo', '!=', true)->where('user', $id)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take(15)->get() as $game) {
+        foreach (GameResult::orderByDesc('id')->where('demo', '!=', true)->where('user', $id)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take(15)->get() as $game) {
             if ($game->type === 'external') {
                 $getgamename = (Gameslist::where('id', $game->game)->first());
                 $image = 'Image/https://games.cdn4.dk/games'.$getgamename->image.'?q=95&mask=ellipse&auto=compress&sharp=10&w=20&h=20&fit=crop&usm=5&fm=png';
@@ -186,7 +191,7 @@ class UserController
     public function investmentHistory()
     {
         $out = [];
-        foreach (Investment::where('user', auth('sanctum')->user()->_id)->orderBy('status', 'asc')->latest()->get() as $investment) {
+        foreach (Investment::where('user', auth('sanctum')->user()->_id)->orderBy('status')->latest()->get() as $investment) {
             array_push($out, [
                 'amount' => $investment->amount,
                 'share' => $investment->status == 1 ? $investment->disinvest_share : $investment->getRealShare($investment->getProfit(), Investment::getGlobalBankroll(Currency::find($investment->currency))),
@@ -221,11 +226,8 @@ class UserController
         ]);
     }
 
-    public function subscriptionUpdate(Request $request)
+    public function subscriptionUpdate(SubscriptionUpdateUserRequest $request)
     {
-        $request->validate([
-            'endpoint' => 'required',
-        ]);
         auth('sanctum')->user()->updatePushSubscription(
             $request->endpoint,
             $request->publicKey,
@@ -313,12 +315,8 @@ class UserController
         return APIResponse::success(['id' => $user->_id]);
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordUserRequest $request)
     {
-        $request->validate([
-            'new' => ['required', 'string', 'min:8'],
-        ]);
-
         if (! auth('sanctum')->user()->validate2FA(false)) {
             return APIResponse::invalid2FASession();
         }
@@ -349,12 +347,8 @@ class UserController
         return APIResponse::success();
     }
 
-    public function clientSeedChange(Request $request)
+    public function clientSeedChange(ClientSeedChangeUserRequest $request)
     {
-        $request->validate([
-            'client_seed' => ['required', 'string', 'min:1'],
-        ]);
-
         auth('sanctum')->user()->update([
             'client_seed' => $request->client_seed,
         ]);
@@ -362,12 +356,8 @@ class UserController
         return APIResponse::success();
     }
 
-    public function nameChange(Request $request)
+    public function nameChange(NameChangeUserRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'unique:users', 'string', 'max:12', 'regex:/^\S*$/u'],
-        ]);
-
         if (! auth('sanctum')->user()->validate2FA(false)) {
             return APIResponse::invalid2FASession();
         }
@@ -456,12 +446,8 @@ class UserController
         return APIResponse::success();
     }
 
-    public function avatar(Request $request)
+    public function avatar(AvatarUserRequest $request)
     {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
-        ]);
-
         $path = auth('sanctum')->user()->_id.time();
         $request->image->move(public_path('img/avatars'), $path.'.'.$request->image->getClientOriginalExtension());
 

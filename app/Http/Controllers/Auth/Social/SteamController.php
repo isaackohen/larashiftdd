@@ -16,9 +16,9 @@ class SteamController
         if (! $openid->mode) {
             $openid->identity = 'http://steamcommunity.com/openid';
 
-            return response()->redirectTo($openid->authUrl());
+            return redirect()->to($openid->authUrl());
         } elseif ($openid->mode == 'cancel') {
-            response()->redirectTo('/');
+            redirect()->to('/');
         } else {
             if ($openid->validate()) {
                 $id = $openid->identity;
@@ -33,14 +33,14 @@ class SteamController
                     } else {
                         $user->update([
                             'login_ip' => User::getIp(),
-                            'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
+                            'login_multiaccount_hash' => $request->hasCookie('s') ? $request->cookie('s') : null,
                             'tfa_persistent_key' => null,
                             'tfa_onetime_key' => null,
                         ]);
                         auth('sanctum')->login($user, true);
                     }
 
-                    return redirect('/');
+                    return redirect()->to('/');
                 } else {
                     if (User::where('steam', $response['players'][0]['steamid'])->first() != null) {
                         return __('general.profile.somebody_already_linked');

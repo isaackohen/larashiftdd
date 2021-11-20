@@ -29,14 +29,14 @@ class VkController
                     } else {
                         $user->update([
                             'login_ip' => User::getIp(),
-                            'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
+                            'login_multiaccount_hash' => $request->hasCookie('s') ? $request->cookie('s') : null,
                             'tfa_persistent_key' => null,
                             'tfa_onetime_key' => null,
                         ]);
                         auth('sanctum')->login($user, true);
                     }
 
-                    return redirect('/');
+                    return redirect()->to('/');
                 } else {
                     $id = $info['response'][0]['id'];
                     if (User::where('vk', $id)->first() != null) {
@@ -48,9 +48,9 @@ class VkController
                 }
             }
 
-            return redirect('/');
+            return redirect()->to('/');
         } else {
-            return response()->redirectTo('https://oauth.vk.com/authorize?client_id='.$client_id.'&display=page&redirect_uri='.$redirect_uri.'/auth/vk&scope=photos&response_type=code&v=5.53');
+            return redirect()->to('https://oauth.vk.com/authorize?client_id='.$client_id.'&display=page&redirect_uri='.$redirect_uri.'/auth/vk&scope=photos&response_type=code&v=5.53');
         }
     }
 }

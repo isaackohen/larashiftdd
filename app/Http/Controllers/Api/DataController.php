@@ -12,10 +12,11 @@ use App\Providers;
 use App\Settings;
 use App\User;
 use App\Utils\APIResponse;
-use Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DataController
 {
@@ -73,7 +74,7 @@ class DataController
 
     public function notifications(Request $request)
     {
-        return APIResponse::success(array_merge(\App\GlobalNotification::get()->toArray(), env('APP_DEBUG') && ! str_contains(request()->url(), 'localhost') ? [[
+        return APIResponse::success(array_merge(\App\GlobalNotification::get()->toArray(), config('app.debug') && ! Str::contains($request->url(), 'localhost') ? [[
             '_id' => '-1',
             'icon' => 'fad fa-exclamation-triangle',
             'text' => 'Debug',

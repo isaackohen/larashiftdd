@@ -26,7 +26,7 @@ class MainController extends Controller
         $icon->setStyle($style);
         $icon->displayImage('png');
 
-        return response('')->header('Content-Type', 'image/png');
+        return response()->noContent(200)->header('Content-Type', 'image/png');
     }
 
     //Broadcasting auth
@@ -34,7 +34,7 @@ class MainController extends Controller
     public function broadcasting(Request $request)
     {
         $user = auth('sanctum')->guest() ? new GenericUser(['_id' => microtime()]) : auth('sanctum')->user();
-        request()->setUserResolver(function () use ($user) {
+        $request->setUserResolver(function () use ($user) {
             return $user;
         });
 

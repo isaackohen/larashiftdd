@@ -8,6 +8,7 @@ use App\Settings;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Quiz extends Command
 {
@@ -44,7 +45,7 @@ class Quiz extends Command
     {
         $getSuitableQuiz = function () use (&$getSuitableQuiz) {
             $json = json_decode(file_get_contents('https://opentdb.com/api.php?amount=1&type=multiple'))->results[0];
-            if (str_contains($json->question, 'which') || str_contains($json->question, 'following')) {
+            if (Str::contains($json->question, 'which') || Str::contains($json->question, 'following')) {
                 return $getSuitableQuiz();
             }
 

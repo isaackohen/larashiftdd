@@ -39,14 +39,14 @@ class FacebookController
                         } else {
                             $user->update([
                                 'login_ip' => User::getIp(),
-                                'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
+                                'login_multiaccount_hash' => $request->hasCookie('s') ? $request->cookie('s') : null,
                                 'tfa_persistent_key' => null,
                                 'tfa_onetime_key' => null,
                             ]);
                             auth('sanctum')->login($user, true);
                         }
 
-                        return redirect('/');
+                        return redirect()->to('/');
                     } else {
                         if (User::where('fb', $user_id)->first() != null) {
                             return __('general.profile.somebody_already_linked');
@@ -64,7 +64,7 @@ class FacebookController
                 return json_encode(['error' => 'access_token is not granted']);
             }
         } else {
-            return response()->redirectTo('https://www.facebook.com/v3.2/dialog/oauth?'.urldecode(http_build_query([
+            return redirect()->to('https://www.facebook.com/v3.2/dialog/oauth?'.urldecode(http_build_query([
                 'client_id' => $client_id,
                 'redirect_uri' => $redirect_uri.'/auth/fb',
                 'response_type' => 'code',

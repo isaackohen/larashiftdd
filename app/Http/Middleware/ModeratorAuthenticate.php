@@ -21,6 +21,6 @@ class ModeratorAuthenticate
             }
         }
 
-        return redirect('/');
+        return redirect()->to('/');
     }
 }

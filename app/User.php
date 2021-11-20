@@ -140,7 +140,7 @@ class User extends \Jenssegers\Mongodb\Auth\User
 
     public function notifications()
     {
-        return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
+        return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderByDesc('created_at');
     }
 
     public function balance(Currency $currency): UserBalance

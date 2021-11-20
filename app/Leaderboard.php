@@ -91,7 +91,7 @@ class Leaderboard extends Model
     public static function getLeaderboard($positions, string $type, Currency\Currency $currency, string $orderBy = 'wager'): array
     {
         $result = [];
-        foreach (self::where('type', $type)->where('currency', $currency->walletId())->where('time', self::toTime($type))->orderBy($orderBy, 'desc')->take($positions)->get() as $entry) {
+        foreach (self::where('type', $type)->where('currency', $currency->walletId())->where('time', self::toTime($type))->orderByDesc($orderBy)->take($positions)->get() as $entry) {
             array_push($result, [
                 'entry' => $entry->toArray(),
                 'user' => User::where('_id', $entry->user)->first()->toArray(),
@@ -107,7 +107,7 @@ class Leaderboard extends Model
         if (self::where('type', $type)->first() == null) {
             return [];
         }
-        foreach (self::where('type', $type)->where('currency', 'usd')->where('time', self::toTime($type))->orderBy($orderBy, 'desc')->take($positions)->get() as $entry) {
+        foreach (self::where('type', $type)->where('currency', 'usd')->where('time', self::toTime($type))->orderByDesc($orderBy)->take($positions)->get() as $entry) {
             array_push($result, [
                 'entry' => $entry->toArray(),
                 'user' => User::where('_id', $entry->user)->first()->toArray(),

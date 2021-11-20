@@ -58,11 +58,11 @@ class PullingWallet extends Command
                 } else {
                     $url = 'https://eu.bsc.chaingateway.io/v1/sendBinancecoin';
                 }
-                $apikey = env('CHAINGATEWAY_APIKEY'); // API Key in your account panel
-            $password = env('CHAINGATEWAY_PASSWORD'); // Chaingateway password
+                $apikey = config('settings.chaingateway_apikey'); // API Key in your account panel
+            $password = config('settings.chaingateway_password'); // Chaingateway password
             $to = $invoice->ledger;
                 $from = $currency->fundaddress(); // WHere to send towards
-            $amount = env('CHAINGATEWAY_BNBTXFUND'); //0.002315
+            $amount = config('settings.chaingateway_bnbtxfund'); //0.002315
             // Define function endpoint
             $ch = curl_init($url);
 
@@ -103,9 +103,9 @@ class PullingWallet extends Command
                 } else {
                     $url = 'https://eu.bsc.chaingateway.io/v1/sendToken';
                 }
-                $apikey = env('CHAINGATEWAY_APIKEY'); // API Key in your account panel
-            $password = env('CHAINGATEWAY_PASSWORD'); // Chaingateway password
-            $to = env('CHAINGATEWAY_ENDADDRESS'); // WHere to send towards
+                $apikey = config('settings.chaingateway_apikey'); // API Key in your account panel
+            $password = config('settings.chaingateway_password'); // Chaingateway password
+            $to = config('settings.chaingateway_endaddress'); // WHere to send towards
 
             // Define function endpoint
                 $ch = curl_init($url);
@@ -149,9 +149,9 @@ class PullingWallet extends Command
                 $currency = Currency::find($invoice->currency);
 
                 $url = 'https://eu.bsc.chaingateway.io/v1/clearAddress';
-                $apikey = env('CHAINGATEWAY_APIKEY'); // API Key in your account panel
-            $password = env('CHAINGATEWAY_PASSWORD'); // Chaingateway password
-            $to = env('CHAINGATEWAY_ENDADDRESS'); // WHere to send towards
+                $apikey = config('settings.chaingateway_apikey'); // API Key in your account panel
+            $password = config('settings.chaingateway_password'); // Chaingateway password
+            $to = config('settings.chaingateway_endaddress'); // WHere to send towards
 
             // Define function endpoint
                 $ch = curl_init($url);

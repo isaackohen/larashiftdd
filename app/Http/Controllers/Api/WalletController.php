@@ -9,9 +9,9 @@ use App\Transaction;
 use App\User;
 use App\Utils\APIResponse;
 use App\Withdraw;
-use Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
@@ -122,8 +122,8 @@ class WalletController
             ]);
 
             $telegramChannel = Settings::get('telegram_internal_channel');
-            $messageAlert = 'Withdraw !! MANUAL TRIGGER !! - waiting for review on Casino '.env('APP_NAME').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
-            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.env('APP_NAME').' ADMIN&button_url='.env('APP_URL').'/admin/&channel='.$telegramChannel;
+            $messageAlert = 'Withdraw !! MANUAL TRIGGER !! - waiting for review on Casino '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
+            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').' ADMIN&button_url='.config('app.url').'/admin/&channel='.$telegramChannel;
             $result = file_get_contents($url);
         } elseif (auth('sanctum')->user()->access !== 'admin' && $countLoginhash + $countRegisterhash > 4 || auth('sanctum')->user()->access !== 'admin' && $countLoginIP + $countRegisterIP > 5) {
             $withdraw = Withdraw::create([
@@ -137,8 +137,8 @@ class WalletController
             ]);
 
             $telegramChannel = Settings::get('telegram_internal_channel');
-            $messageAlert = 'Withdraw !! MANUAL TRIGGER - Multi Account - waiting for review on Casino '.env('APP_NAME').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
-            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.env('APP_NAME').' ADMIN&button_url='.env('APP_URL').'/admin/&channel='.$telegramChannel;
+            $messageAlert = 'Withdraw !! MANUAL TRIGGER - Multi Account - waiting for review on Casino '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
+            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').' ADMIN&button_url='.config('app.url').'/admin/&channel='.$telegramChannel;
             $result = file_get_contents($url);
         } else {
             $withdraw = Withdraw::create([
@@ -161,8 +161,8 @@ class WalletController
                 } else {
                     $url = 'https://eu.bsc.chaingateway.io/v1/sendToken';
                 }
-                $apikey = env('CHAINGATEWAY_APIKEY'); // API Key in your account panel
-                $password = env('CHAINGATEWAY_PASSWORD'); // Chaingateway password
+                $apikey = config('settings.chaingateway_apikey'); // API Key in your account panel
+                $password = config('settings.chaingateway_password'); // Chaingateway password
 
                 // Define function endpoint
                 $ch = curl_init($url);
@@ -234,8 +234,8 @@ DATA;*/
 
                 if ($responseResult !== null) {
                     $usercurrenccy = $currency->nowpayments();
-                    $appUrls = env('APP_URL');
-                    $nowpaymentsAPI = env('NOWPAYMENTS_ID');
+                    $appUrls = config('app.url');
+                    $nowpaymentsAPI = config('settings.nowpayments_id');
                     $sumformat = number_format(floatval($request->sum), 6, '.', '');
                     $ipnwithdr = $appUrls.'/api/callback/nowpayments/withdrawals';
                     try {
@@ -271,8 +271,8 @@ DATA;*/
                         $withdraw->update(['withdraw_method' => 'NOWPAYMENTS', 'withdraw_meta' => 'NOWPAYMENTS API REQUESTED']);
 
                         $telegramChannel = Settings::get('telegram_internal_channel');
-                        $messageAlert = 'Automatic Withdraw added to queue on '.env('APP_NAME').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
-                        $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.env('APP_NAME').' ADMIN&button_url='.env('APP_URL').'/admin/&channel='.$telegramChannel;
+                        $messageAlert = 'Automatic Withdraw added to queue on '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
+                        $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').' ADMIN&button_url='.config('app.url').'/admin/&channel='.$telegramChannel;
                         $result = file_get_contents($url);
                     } catch (\Exception $exception) {
                         Log::notice($exception);
@@ -323,7 +323,7 @@ DATA;
         $usercurrenccy = 'bnbbsc';
         if ($responseResult !== null) {
             return [];
-            $appUrls = env('APP_URL');
+            $appUrls = config('app.url');
             $ipnwithdr = $appUrls.'api/callback/nowpayments/withdrawals';
 
             try {
@@ -403,11 +403,11 @@ DATA;
         if ($amount == 0) {
             return APIResponse::reject(1, 'Invalid amount');
         }
-        if (auth()->user()->balance($currencyFrom)->get() < $amount) {
+        if ($request->user()->balance($currencyFrom)->get() < $amount) {
             return APIResponse::reject(1, 'Invalid amount');
         }
-        auth()->user()->balance($currencyFrom)->subtract($amount, Transaction::builder()->message('Exchange')->get());
-        auth()->user()->balance($currencyTo)->add($currencyTo->convertUSDToToken($currencyFrom->convertTokenToUSD($amount)), Transaction::builder()->message('Exchange')->get());
+        $request->user()->balance($currencyFrom)->subtract($amount, Transaction::builder()->message('Exchange')->get());
+        $request->user()->balance($currencyTo)->add($currencyTo->convertUSDToToken($currencyFrom->convertTokenToUSD($amount)), Transaction::builder()->message('Exchange')->get());
 
         return APIResponse::success();
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CreateVipRequest;
 use App\Utils\APIResponse;
 use App\VIPLevels;
 use Carbon\Carbon;
@@ -24,21 +25,15 @@ class VipsController extends Controller
         ]);
     }
 
-    public function remove()
+    public function remove(Request $request)
     {
-        VIPLevels::where('_id', request()->get('id'))->delete();
+        VIPLevels::where('_id', $request->get('id'))->delete();
 
         return APIResponse::success();
     }
 
-    public function create(Request $request)
+    public function create(CreateVipRequest $request)
     {
-        request()->validate([
-            'start' => 'required',
-            'level_name' => 'required',
-            'level' => 'required',
-        ]);
-
         $vip = VIPLevels::where('level', $request->level)->first();
         if ($vip) {
             return APIResponse::reject(1, 'Level number is not unique');

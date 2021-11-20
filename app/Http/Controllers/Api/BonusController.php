@@ -11,9 +11,9 @@ use App\Transaction;
 use App\TransactionStatistics;
 use App\Utils\APIResponse;
 use App\VIPLevels;
-use Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BonusController
 {
@@ -340,7 +340,7 @@ class BonusController
         return APIResponse::success([
             'bonus_wagered' => number_format(($statistics->data[$var] ?? 0), 2, '.', ''),
             'bonus_goal' => number_format((auth('sanctum')->user()->bonus_goal ?? 0), 2, '.', ''),
-            'bonus_balance' => auth()->user()->balance(Currency::find('local_bonus'))->get(),
+            'bonus_balance' => $request->user()->balance(Currency::find('local_bonus'))->get(),
         ]);
     }
 
@@ -370,11 +370,11 @@ class BonusController
         if ($amount == 0) {
             return APIResponse::reject(1, 'Invalid amount');
         }
-        if (auth()->user()->balance($currencyFrom)->get() < $amount) {
+        if ($request->user()->balance($currencyFrom)->get() < $amount) {
             return APIResponse::reject(1, 'Invalid amount');
         }
-        auth()->user()->balance($currencyFrom)->subtract($amount, Transaction::builder()->message('Exchange Bonus Substracted')->get());
-        auth()->user()->balance($currencyTo)->add($currencyTo->convertUSDToToken($currencyFrom->convertTokenToUSD($amount)), Transaction::builder()->message('Exchange Bonus Added')->get());
+        $request->user()->balance($currencyFrom)->subtract($amount, Transaction::builder()->message('Exchange Bonus Substracted')->get());
+        $request->user()->balance($currencyTo)->add($currencyTo->convertUSDToToken($currencyFrom->convertTokenToUSD($amount)), Transaction::builder()->message('Exchange Bonus Added')->get());
         TransactionStatistics::statsUpdate(auth('sanctum')->user()->_id, 'depositbonus', $amount);
 
         return APIResponse::success();

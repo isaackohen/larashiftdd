@@ -11,6 +11,7 @@ use App\Games\Kernel\Game;
 use App\Games\Kernel\Module\ModuleSeeder;
 use App\Games\Kernel\ProvablyFairResult;
 use App\Gameslist;
+use App\Http\Requests\Api\FinishGameRequest;
 use App\Settings;
 use App\User;
 use App\Utils\APIResponse;
@@ -140,12 +141,8 @@ class GameController
      * @param Request $request
      * @return array|array[]
      */
-    public function finish(Request $request)
+    public function finish(FinishGameRequest $request)
     {
-        $request->validate([
-            'id' => 'required',
-        ]);
-
         $game = GameResult::where('_id', $request->id)->first();
         if ($game == null) {
             return APIResponse::reject(1, 'Invalid game id');
@@ -239,7 +236,7 @@ class GameController
 
     public function pushBullData(Request $request)
     {
-        if (User::getIp() !== '127.0.0.1' && User::getIp() !== env('SERVER_IP')) {
+        if (User::getIp() !== '127.0.0.1' && User::getIp() !== config('settings.server_ip')) {
             return APIResponse::reject(1, 'Access to this API request is restricted for '.User::getIp());
         }
         Game::find('bullvsbear')->state()->pushData($request->data)->sendDataUpdateEvent();

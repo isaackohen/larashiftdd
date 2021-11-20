@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Games\Kernel\ProvablyFair;
 use App\Http\Controllers\Auth\Helper;
+use App\Http\Requests\Auth\LoginLoginRequest;
 use App\Mail\ResetPassword;
 use App\PasswordReset;
 use App\User;
@@ -14,14 +15,8 @@ use Illuminate\Support\Facades\Mail;
 
 class LoginController
 {
-    public function login(Request $request)
+    public function login(LoginLoginRequest $request)
     {
-        $request->validate([
-            'login' => ['required', 'string'],
-            'password' => ['required', 'string', 'min:5'],
-            'captcha' => ['required'],
-        ]);
-
         if (! Helper::validateCaptcha($request->captcha)) {
             return APIResponse::reject(2, 'Invalid captcha');
         }
@@ -36,7 +31,7 @@ class LoginController
 
         $user->update([
             'login_ip' => User::getIp(),
-            'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
+            'login_multiaccount_hash' => $request->hasCookie('s') ? $request->cookie('s') : null,
             'tfa_persistent_key' => null,
             'tfa_onetime_key' => null,
         ]);
@@ -55,7 +50,7 @@ class LoginController
 
         $user->update([
             'login_ip' => User::getIp(),
-            'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
+            'login_multiaccount_hash' => $request->hasCookie('s') ? $request->cookie('s') : null,
             'tfa_persistent_key' => null,
             'tfa_onetime_key' => null,
         ]);

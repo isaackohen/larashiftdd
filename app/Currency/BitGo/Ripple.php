@@ -43,6 +43,6 @@ class Ripple extends BitGoCurrency
 
     public function getCurrencyCode()
     {
-        return env('APP_DEBUG') ? CurrencyCode::RIPPLE_TESTNET : CurrencyCode::RIPPLE;
+        return config('app.debug') ? CurrencyCode::RIPPLE_TESTNET : CurrencyCode::RIPPLE;
     }
 }

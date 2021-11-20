@@ -48,7 +48,7 @@ class MindepositUpdate extends Command
     {
         foreach (Currency::all() as $currency) {
             if ($currency->nowpayments()) {
-                $apikey = env('NOWPAYMENTS_ID');
+                $apikey = config('settings.nowpayments_id');
                 try {
                     $curlcurrency = curl_init();
                     curl_setopt_array($curlcurrency, [

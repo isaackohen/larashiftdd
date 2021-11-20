@@ -127,7 +127,7 @@ class Tron extends Currency
     /** @throws \Exception */
     private function client()
     {
-        $api = env('APP_DEBUG') ? 'https://api.shasta.trongrid.io' : 'https://api.trongrid.io';
+        $api = config('app.debug') ? 'https://api.shasta.trongrid.io' : 'https://api.trongrid.io';
         $fullNode = new HttpProvider($api);
         $solidityNode = new HttpProvider($api);
         $eventServer = new HttpProvider($api);
