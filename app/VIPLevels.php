@@ -3,14 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Jenssegers\Mongodb\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Jenssegers\Mongodb\Eloquent\Model;
 
 class VIPLevels extends Model
 {
-
     protected $connection = 'mongodb';
+
     protected $collection = 'viplevels';
 
     /**
@@ -28,8 +28,6 @@ class VIPLevels extends Model
         'promocode_bonus',
         'faucet_bonus',
         'fs_bonus',
-        'challenges_bonus'
+        'challenges_bonus',
     ];
-
 }
-

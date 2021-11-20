@@ -1,40 +1,51 @@
-<?php namespace App\Currency\NowPayments;
+<?php
 
-class BUSD extends NowPaymentsSupport {
+namespace App\Currency\NowPayments;
 
-    function id(): string {
-        return "np_busd";
+class BUSD extends NowPaymentsSupport
+{
+    public function id(): string
+    {
+        return 'np_busd';
     }
 
-    public function walletId(): string {
-        return "busd";
-    }
-
-    function name(): string {
-        return "BUSD";
-    }
-
-    public function alias(): string {
+    public function walletId(): string
+    {
         return 'busd';
     }
-    public function conversionID(): string {
+
+    public function name(): string
+    {
+        return 'BUSD';
+    }
+
+    public function alias(): string
+    {
+        return 'busd';
+    }
+
+    public function conversionID(): string
+    {
         return 'binance-usd';
     }
 
-    public function displayName(): string {
-        return "BUSD";
+    public function displayName(): string
+    {
+        return 'BUSD';
     }
 
-    public function style(): string {
-        return "#bfbbbb";
+    public function style(): string
+    {
+        return '#bfbbbb';
     }
-	
-	public function icon(): string {
-        return "busd";
+
+    public function icon(): string
+    {
+        return 'busd';
     }
-	
-	public function nowpayments(): string {
+
+    public function nowpayments(): string
+    {
         return 'BUSDBSC';
     }
-
 }

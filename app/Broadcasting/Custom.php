@@ -24,7 +24,10 @@ class Custom
      */
     public function join(User $user, $id)
     {
-        if($id === 'Guest') return true;
-		return auth('sanctum')->guest() ? false : $user->_id === $id;
+        if ($id === 'Guest') {
+            return true;
+        }
+
+        return auth('sanctum')->guest() ? false : $user->_id === $id;
     }
 }

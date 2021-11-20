@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Broadcast;
-use App\Broadcasting\Everyone;
 use App\Broadcasting\Custom;
+use App\Broadcasting\Everyone;
+use Illuminate\Support\Facades\Broadcast;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +18,5 @@ use App\Broadcasting\Custom;
 /**
  * Common channel for live bets/chat/etc. Doesn't require authorization.
  */
- 
 Broadcast::channel('Everyone', Everyone::class);
 Broadcast::channel('App.User.{id}', Custom::class);

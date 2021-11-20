@@ -1,10 +1,13 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class PasswordReset extends Model {
-
+class PasswordReset extends Model
+{
     protected $connection = 'mongodb';
+
     protected $collection = 'password_resets';
 
     /**
@@ -13,7 +16,6 @@ class PasswordReset extends Model {
      * @var array
      */
     protected $fillable = [
-        'user', 'token'
+        'user', 'token',
     ];
-
 }

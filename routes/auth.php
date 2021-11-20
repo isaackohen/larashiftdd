@@ -8,8 +8,8 @@ use App\Http\Controllers\Auth\Social\FacebookController;
 use App\Http\Controllers\Auth\Social\GoogleController;
 use App\Http\Controllers\Auth\Social\SteamController;
 use App\Http\Controllers\Auth\Social\VkController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->post('/update', 'LoginController@update');
 Route::post('resetPassword', 'LoginController@resetPassword');

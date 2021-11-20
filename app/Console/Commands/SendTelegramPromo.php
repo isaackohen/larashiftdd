@@ -2,17 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Events\PublicUserNotification;
 use App\Settings;
+use Cache;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;
-use App\Events\PublicUserNotification;
-use \Cache;
-use Carbon\Carbon;
 
-
-
-class SendTelegramPromocode extends Command {
-
+class SendTelegramPromo extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -32,7 +30,8 @@ class SendTelegramPromocode extends Command {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -41,7 +40,8 @@ class SendTelegramPromocode extends Command {
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         $dollaramount = floatval(Settings::where('name', 'promo_dollar')->first()->value);
         $sum = number_format(($dollaramount / \App\Http\Controllers\Api\WalletController::rateDollarBnb()), 8, '.', '');
         $usages = intval(Settings::where('name', 'vip_promo_usages')->first()->value);
@@ -54,20 +54,15 @@ class SendTelegramPromocode extends Command {
             'currency' => 'bnb',
             'times_used' => 0,
             'expires' => \Carbon\Carbon::now()->addHours(1),
-            'vip' => false
+            'vip' => false,
         ]);
 
         event(new PublicUserNotification('Promocode', 'Promocode Drop on our Telegram! Make sure to join our Telegram.'));
         $alertmessage = 'Bounty Treasure! For '.$promocode->sum.' BTC: '.$promocode->code.' - '.$promocode->usages.' uses.';
 
-        $telegramChannel =  Settings::get('telegram_public_channel');
+        $telegramChannel = Settings::get('telegram_public_channel');
         $imageGame = 'https://bigz.imgix.net/i/tgthumb/dropz/treasurekeybounty-3.png';
-        $url = "http://alerts.sh/api/alert/telegramImage?image=".$imageGame."&message=".$alertmessage."&button_text=Visit Casino!&button_url=".env('APP_URL')."&channel=".$telegramChannel;
+        $url = 'http://alerts.sh/api/alert/telegramImage?image='.$imageGame.'&message='.$alertmessage.'&button_text=Visit Casino!&button_url='.env('APP_URL').'&channel='.$telegramChannel;
         $result = file_get_contents($url);
-
-
-
     }
-
 }
-

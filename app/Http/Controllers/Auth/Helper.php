@@ -1,17 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Games\Kernel\ProvablyFair;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\User;
 
 class Helper
 {
-	
-	public static function validateCaptcha($payload): bool {
-		return true;
+    public static function validateCaptcha($payload): bool
+    {
+        return true;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -19,19 +20,21 @@ class Helper
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
             'secret' => \App\Settings::get('recaptcha_secret_key'),
             'response' => $payload,
-            'remoteip' => User::getIp()
+            'remoteip' => User::getIp(),
         ]);
         $data = json_decode(curl_exec($ch), true);
         curl_close($ch);
+
         return $data['success'];
     }
-	
-	public static function createUser($email, $login, $password, $avatar = null, $additionalData = []) {
+
+    public static function createUser($email, $login, $password, $avatar = null, $additionalData = [])
+    {
         $avatar = 'https://avatars.dicebear.com/api/human/'.$login.'.svg?background=%23ffc815';
         $user = User::create(array_merge([
             'name' => $login,
             'password' => $password == null ? null : Hash::make($password),
-            'avatar' => $avatar ?? '/avatar/' . uniqid(),
+            'avatar' => $avatar ?? '/avatar/'.uniqid(),
             'email' => $email,
             'client_seed' => ProvablyFair::generateServerSeed(),
             'access' => 'user',
@@ -40,7 +43,7 @@ class Helper
             'login_ip' => User::getIp(),
             'freespins' => 0,
             'register_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
-            'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null
+            'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
         ], $additionalData));
 
         if (isset($_COOKIE['c'])) {
@@ -52,38 +55,47 @@ class Helper
         }
 
         auth()->login($user, true);
+
         return $user;
     }
-	
-	public static function curl($url, $params = null) {
+
+    public static function curl($url, $params = null)
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        if ($params != null) curl_setopt($ch, CURLOPT_POSTFIELDS, urldecode(http_build_query($params)));
+        if ($params != null) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, urldecode(http_build_query($params)));
+        }
         $output = curl_exec($ch);
         curl_close($ch);
+
         return $output;
     }
-	
-	public static function apiRequest($url, $access_token, $auth = 'Bearer', $post = false, $headers = []){
+
+    public static function apiRequest($url, $access_token, $auth = 'Bearer', $post = false, $headers = [])
+    {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        if ($post === 'PUT') curl_setopt($ch, CURLOPT_PUT, true);
-        else if ($post) curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+        if ($post === 'PUT') {
+            curl_setopt($ch, CURLOPT_PUT, true);
+        } elseif ($post) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+        }
 
         $headers[] = 'Accept: application/json';
 
-        $headers[] = 'Authorization: ' . $auth . ' ' . $access_token;
+        $headers[] = 'Authorization: '.$auth.' '.$access_token;
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $response = curl_exec($ch);
+
         return json_decode($response);
     }
-	
 }

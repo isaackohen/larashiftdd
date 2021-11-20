@@ -4,9 +4,10 @@ namespace App;
 
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class Promocode extends Model {
-
+class Promocode extends Model
+{
     protected $connection = 'mongodb';
+
     protected $collection = 'promocodes';
 
     /**
@@ -15,7 +16,7 @@ class Promocode extends Model {
      * @var array
      */
     protected $fillable = [
-        'code', 'used', 'currency', 'sum', 'usages', 'times_used', 'expires', 'vip'
+        'code', 'used', 'currency', 'sum', 'usages', 'times_used', 'expires', 'vip',
     ];
 
     /**
@@ -32,11 +33,11 @@ class Promocode extends Model {
      */
     protected $casts = [
         'used' => 'json',
-        'expires' => 'datetime'
+        'expires' => 'datetime',
     ];
 
-    public static function generate() {
-        return strtoupper(substr(str_shuffle(MD5(microtime())), 0, 8));
+    public static function generate()
+    {
+        return strtoupper(substr(str_shuffle(md5(microtime())), 0, 8));
     }
-
 }

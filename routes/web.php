@@ -9,21 +9,18 @@ use Illuminate\Support\Facades\Route;
  * @avatar hash
  * @vue capture
  */
- 
- 
+
 /*
 
-Route::get('/what-is-my-ip', function(){ 
+Route::get('/what-is-my-ip', function(){
     return request()->ip();
-}); 
+});
 
 // ^ Only for maintence by ip
 
 */
 
 Route::get('/avatar/{hash}', 'MainController@avatar');
-Route::get('/{vue_capture?}', 'MainController@main')->where("vue_capture", "[\\/\\w\\:.-]*");
+Route::get('/{vue_capture?}', 'MainController@main')->where('vue_capture', '[\\/\\w\\:.-]*');
 
 Route::post('/broadcasting/auth', 'MainController@broadcasting');
-
-?>
