@@ -140,8 +140,8 @@ class PaymentsController
             TransactionStatistics::statsUpdate($user->_id, 'deposit_total', $depositAmount);
 
             $telegramChannel = Settings::get('telegram_internal_channel');
-            $messageAlert = 'Deposit credited on Casino '.env('APP_NAME').' for '.$depositAmount.'$ from user '.$user->name.'.';
-            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.env('APP_NAME').'&button_url='.env('APP_URL').'&channel='.$telegramChannel;
+            $messageAlert = 'Deposit credited on Casino '.config('app.name').' for '.$depositAmount.'$ from user '.$user->name.'.';
+            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').'&button_url='.config('app.url').'&channel='.$telegramChannel;
             $result = file_get_contents($url);
 
             return response('Ok')
@@ -207,8 +207,8 @@ class PaymentsController
 
             if ($request->status === 'FAILED') {
                 $telegramChannel = Settings::get('telegram_internal_channel');
-                $messageAlert = 'Automatic Withdrawal has failed (probably wrong wallet address and/or not enough hot wallet funds) on '.env('APP_NAME').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
-                $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.env('APP_NAME').' ADMIN&button_url='.env('APP_URL').'/admin/&channel='.$telegramChannel;
+                $messageAlert = 'Automatic Withdrawal has failed (probably wrong wallet address and/or not enough hot wallet funds) on '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
+                $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').' ADMIN&button_url='.config('app.url').'/admin/&channel='.$telegramChannel;
                 $result = file_get_contents($url);
             }
 
@@ -226,8 +226,8 @@ class PaymentsController
             $test = event(new \App\Events\UserNotification($user, 'Withdraw Completed', 'Your withdraw has been sent to your wallet.'));
 
             $telegramChannel = Settings::get('telegram_internal_channel');
-            $messageAlert = 'Withdraw completed on '.env('APP_NAME').' for '.$withdraw->usd.'$ from user '.$user->name.'.';
-            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.env('APP_NAME').'&button_url='.env('APP_URL').'&channel='.$telegramChannel;
+            $messageAlert = 'Withdraw completed on '.config('app.name').' for '.$withdraw->usd.'$ from user '.$user->name.'.';
+            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').'&button_url='.config('app.url').'&channel='.$telegramChannel;
             $result = file_get_contents($url);
 
             return response('Ok')

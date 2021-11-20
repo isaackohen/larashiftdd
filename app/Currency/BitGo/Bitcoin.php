@@ -43,6 +43,6 @@ class Bitcoin extends BitGoCurrency
 
     public function getCurrencyCode()
     {
-        return env('APP_DEBUG') ? CurrencyCode::BITCOIN_TESTNET : CurrencyCode::BITCOIN;
+        return config('app.debug') ? CurrencyCode::BITCOIN_TESTNET : CurrencyCode::BITCOIN;
     }
 }

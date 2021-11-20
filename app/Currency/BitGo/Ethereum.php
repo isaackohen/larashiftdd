@@ -43,6 +43,6 @@ class Ethereum extends BitGoCurrency
 
     public function getCurrencyCode()
     {
-        return env('APP_DEBUG') ? CurrencyCode::ETHEREUM_TESTNET : CurrencyCode::ETHEREUM;
+        return config('app.debug') ? CurrencyCode::ETHEREUM_TESTNET : CurrencyCode::ETHEREUM;
     }
 }

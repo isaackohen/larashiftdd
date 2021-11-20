@@ -43,6 +43,6 @@ class Litecoin extends BitGoCurrency
 
     public function getCurrencyCode()
     {
-        return env('APP_DEBUG') ? CurrencyCode::LITECOIN_TESTNET : CurrencyCode::LITECOIN;
+        return config('app.debug') ? CurrencyCode::LITECOIN_TESTNET : CurrencyCode::LITECOIN;
     }
 }

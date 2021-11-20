@@ -62,7 +62,7 @@ class SendTelegramPromo extends Command
 
         $telegramChannel = Settings::get('telegram_public_channel');
         $imageGame = 'https://bigz.imgix.net/i/tgthumb/dropz/treasurekeybounty-3.png';
-        $url = 'http://alerts.sh/api/alert/telegramImage?image='.$imageGame.'&message='.$alertmessage.'&button_text=Visit Casino!&button_url='.env('APP_URL').'&channel='.$telegramChannel;
+        $url = 'http://alerts.sh/api/alert/telegramImage?image='.$imageGame.'&message='.$alertmessage.'&button_text=Visit Casino!&button_url='.config('app.url').'&channel='.$telegramChannel;
         $result = file_get_contents($url);
     }
 }

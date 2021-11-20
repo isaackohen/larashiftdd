@@ -43,6 +43,6 @@ class ZCash extends BitGoCurrency
 
     public function getCurrencyCode()
     {
-        return env('APP_DEBUG') ? CurrencyCode::ZCASH_TESTNET : CurrencyCode::ZCASH;
+        return config('app.debug') ? CurrencyCode::ZCASH_TESTNET : CurrencyCode::ZCASH;
     }
 }

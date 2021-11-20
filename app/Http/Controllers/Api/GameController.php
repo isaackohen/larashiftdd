@@ -237,7 +237,7 @@ class GameController
 
     public function pushBullData(Request $request)
     {
-        if (User::getIp() !== '127.0.0.1' && User::getIp() !== env('SERVER_IP')) {
+        if (User::getIp() !== '127.0.0.1' && User::getIp() !== config('settings.server_ip')) {
             return APIResponse::reject(1, 'Access to this API request is restricted for '.User::getIp());
         }
         Game::find('bullvsbear')->state()->pushData($request->data)->sendDataUpdateEvent();

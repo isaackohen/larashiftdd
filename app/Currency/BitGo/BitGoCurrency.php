@@ -125,7 +125,7 @@ abstract class BitGoCurrency extends Currency
 
     public function send(string $from, string $to, float $sum)
     {
-        $this->getClient()->sendTransaction($to, BitGoSDK::toSatoshi($sum), env('BITGO_PASSPHRASE'));
+        $this->getClient()->sendTransaction($to, BitGoSDK::toSatoshi($sum), config('settings.bitgo_passphrase'));
     }
 
     public function setupWallet()

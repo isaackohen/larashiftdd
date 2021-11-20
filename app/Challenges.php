@@ -117,7 +117,7 @@ class Challenges extends Model
 
             $telegramChannel = Settings::get('telegram_public_channel');
             $imageGame = 'https://games.cdn4.dk/games'.$selectGames->image.'';
-            $url = 'http://alerts.sh/api/alert/telegramImage?image='.$imageGame.'&message='.$alertmessage.'&button_text=Check available Challenges&button_url='.env('APP_URL').'/challenges/&channel='.$telegramChannel;
+            $url = 'http://alerts.sh/api/alert/telegramImage?image='.$imageGame.'&message='.$alertmessage.'&button_text=Check available Challenges&button_url='.config('app.url').'/challenges/&channel='.$telegramChannel;
             $result = file_get_contents($url);
 
             $user->balance(Currency::find($selectChallenge->currency))->add($amount, Transaction::builder()->message('Challenge Winner')->get());

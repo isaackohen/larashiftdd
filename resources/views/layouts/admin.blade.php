@@ -15,7 +15,7 @@
         <meta property="og:image:width" content="295" />
         <meta property="og:image:height" content="295" />
         !-->
-        @if(env('APP_DEBUG'))
+        @if(config('app.debug'))
             <meta http-equiv="Expires" content="Mon, 26 Jul 1997 05:00:00 GMT">
             <meta http-equiv="Pragma" content="no-cache">
         @endif
@@ -43,7 +43,7 @@
 
         <script src="{{ asset(mix('/js/admin/app.js')) }}"></script>
 
-        @if(env('APP_DEBUG'))
+        @if(config('app.debug'))
             <script src="http://localhost:8098"></script>
         @endif
     </body>

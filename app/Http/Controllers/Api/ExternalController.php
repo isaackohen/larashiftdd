@@ -49,9 +49,9 @@ class ExternalController
             $gameData = json_encode($request);
             $getBalance = $user->balance($currency)->get();
             $bet = number_format($currency->convertUSDToToken($betFloat), 8, '.', '');
-            if (env('DEMO_MODE')) {
+            if (config('settings.demo_mode')) {
                 $stat = Statistics::where('user', $user->_id)->first();
-                if ($stat->data['usd_wager'] > env('DEMO_MODE_MAX_BET')) {
+                if ($stat->data['usd_wager'] > config('settings.demo_mode_max_bet')) {
                     $user->balance($currency)->subtract(floatval($getBalance), Transaction::builder()->message('Demo balance expired')->get());
                     event(new \App\Events\TemporaryNotice($user, 'Demo expired', 'Max. bet reached on platform in demo mode - request to refresh your token'));
 
@@ -181,7 +181,7 @@ class ExternalController
         } else {
             $mode = 'demo';
         }
-        $apikey = env('API_KEY');
+        $apikey = config('settings.api_key');
         if ($freespins === true) {
             $url = 'https://api.dk.games/v2/createSession?apikey='.$apikey.'&userid='.$userId.'-'.$currencyId.'&game='.$request->id.'&mode=bonus&freespins='.$user->freespins.'&freespins_value=0.5';
             $user->update(['freespins' => 0]);

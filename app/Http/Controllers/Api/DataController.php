@@ -74,7 +74,7 @@ class DataController
 
     public function notifications(Request $request)
     {
-        return APIResponse::success(array_merge(\App\GlobalNotification::get()->toArray(), env('APP_DEBUG') && ! Str::contains($request->url(), 'localhost') ? [[
+        return APIResponse::success(array_merge(\App\GlobalNotification::get()->toArray(), config('app.debug') && ! Str::contains($request->url(), 'localhost') ? [[
             '_id' => '-1',
             'icon' => 'fad fa-exclamation-triangle',
             'text' => 'Debug',

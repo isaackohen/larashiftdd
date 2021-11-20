@@ -60,7 +60,7 @@ abstract class NowPaymentsSupport extends Currency
                 'status' => 0,
                 'hash' => Hash::make(12),
             ]);
-            $ipn = env('APP_URL').'/api/callback/nowpayments';
+            $ipn = config('app.url').'/api/callback/nowpayments';
             $curl = curl_init();
             curl_setopt_array($curl, [
                 CURLOPT_URL => 'https://api.nowpayments.io/v1/payment',
@@ -80,7 +80,7 @@ abstract class NowPaymentsSupport extends Currency
 				 "order_description": "'.$invoice->hash.'"
 			}',
                 CURLOPT_HTTPHEADER => [
-                    'x-api-key: '.env('NOWPAYMENTS_ID').'',
+                    'x-api-key: '.config('settings.nowpayments_id').'',
                     'Content-Type: application/json',
                 ],
             ]);

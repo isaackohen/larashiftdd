@@ -57,9 +57,9 @@ abstract class СhainGatewaySupport extends Currency
                 'status' => 0,
                 'hash' => Hash::make(12),
             ]);
-            $apikey = env('CHAINGATEWAY_APIKEY');
-            $password = env('CHAINGATEWAY_PASSWORD');
-            $ipn = env('APP_URL').'/api/callback/chaingateway';
+            $apikey = config('settings.chaingateway_apikey');
+            $password = config('settings.chaingateway_password');
+            $ipn = config('app.url').'/api/callback/chaingateway';
             $ch = curl_init('https://eu.bsc.chaingateway.io/v1/newAddress');
             $payload = json_encode(['password' => $password]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
