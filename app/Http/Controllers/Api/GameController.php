@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\FinishGameRequest;
 use App\Currency\Currency;
 use App\DisabledGamesReff;
 use App\Game as GameResult;
@@ -140,11 +141,8 @@ class GameController
      * @param Request $request
      * @return array|array[]
      */
-    public function finish(Request $request)
+    public function finish(FinishGameRequest $request)
     {
-        $request->validate([
-            'id' => 'required',
-        ]);
 
         $game = GameResult::where('_id', $request->id)->first();
         if ($game == null) {

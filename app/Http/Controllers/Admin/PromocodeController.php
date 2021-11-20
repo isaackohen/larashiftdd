@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\CreatePromocodeRequest;
 use App\Http\Controllers\Controller;
 use App\Promocode;
 use App\Utils\APIResponse;
@@ -15,15 +16,8 @@ class PromocodeController extends Controller
         return APIResponse::success(Promocode::get()->toArray());
     }
 
-    public function create(Request $request)
+    public function create(CreatePromocodeRequest $request)
     {
-        request()->validate([
-            'code' => 'required',
-            'usages' => 'required',
-            'expires' => 'required',
-            'sum' => 'required',
-            'currency' => 'required',
-        ]);
 
         Promocode::create([
             'code' => request('code') === '%random%' ? Promocode::generate() : request('code'),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\CreateVipRequest;
 use App\Http\Controllers\Controller;
 use App\Utils\APIResponse;
 use App\VIPLevels;
@@ -31,13 +32,8 @@ class VipsController extends Controller
         return APIResponse::success();
     }
 
-    public function create(Request $request)
+    public function create(CreateVipRequest $request)
     {
-        request()->validate([
-            'start' => 'required',
-            'level_name' => 'required',
-            'level' => 'required',
-        ]);
 
         $vip = VIPLevels::where('level', $request->level)->first();
         if ($vip) {

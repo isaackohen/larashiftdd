@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\CreateChallengeRequest;
 use App\Challenges;
 use App\Gameslist;
 use App\Http\Controllers\Controller;
@@ -16,17 +17,8 @@ class ChallengesController extends Controller
         return APIResponse::success(Challenges::get()->toArray());
     }
 
-    public function create(Request $request)
+    public function create(CreateChallengeRequest $request)
     {
-        request()->validate([
-            'game' => 'required',
-            'maxwinners' => 'required',
-            'expires' => 'required',
-            'minbet' => 'required',
-            'multiplier' => 'required',
-            'sum' => 'required',
-            'currency' => 'required',
-        ]);
 
         $selectGame = Gameslist::where('id', request('game'))->first();
 

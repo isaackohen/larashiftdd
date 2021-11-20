@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\AvatarUserRequest;
+use App\Http\Requests\Api\NameChangeUserRequest;
+use App\Http\Requests\Api\ClientSeedChangeUserRequest;
+use App\Http\Requests\Api\ChangePasswordUserRequest;
+use App\Http\Requests\Api\SubscriptionUpdateUserRequest;
 use App\Currency\Currency;
 use App\Game as GameResult;
 use App\Games\Kernel\Game;
@@ -221,11 +226,8 @@ class UserController
         ]);
     }
 
-    public function subscriptionUpdate(Request $request)
+    public function subscriptionUpdate(SubscriptionUpdateUserRequest $request)
     {
-        $request->validate([
-            'endpoint' => 'required',
-        ]);
         auth('sanctum')->user()->updatePushSubscription(
             $request->endpoint,
             $request->publicKey,
@@ -313,11 +315,8 @@ class UserController
         return APIResponse::success(['id' => $user->_id]);
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordUserRequest $request)
     {
-        $request->validate([
-            'new' => ['required', 'string', 'min:8'],
-        ]);
 
         if (! auth('sanctum')->user()->validate2FA(false)) {
             return APIResponse::invalid2FASession();
@@ -349,11 +348,8 @@ class UserController
         return APIResponse::success();
     }
 
-    public function clientSeedChange(Request $request)
+    public function clientSeedChange(ClientSeedChangeUserRequest $request)
     {
-        $request->validate([
-            'client_seed' => ['required', 'string', 'min:1'],
-        ]);
 
         auth('sanctum')->user()->update([
             'client_seed' => $request->client_seed,
@@ -362,11 +358,8 @@ class UserController
         return APIResponse::success();
     }
 
-    public function nameChange(Request $request)
+    public function nameChange(NameChangeUserRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'unique:users', 'string', 'max:12', 'regex:/^\S*$/u'],
-        ]);
 
         if (! auth('sanctum')->user()->validate2FA(false)) {
             return APIResponse::invalid2FASession();
@@ -456,11 +449,8 @@ class UserController
         return APIResponse::success();
     }
 
-    public function avatar(Request $request)
+    public function avatar(AvatarUserRequest $request)
     {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
-        ]);
 
         $path = auth('sanctum')->user()->_id.time();
         $request->image->move(public_path('img/avatars'), $path.'.'.$request->image->getClientOriginalExtension());
