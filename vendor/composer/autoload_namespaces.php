@@ -9,7 +9,6 @@ return array(
     'gburtini\\Distributions' => array($vendorDir . '/gburtini/distributions/src'),
     'Snowplow\\RefererParser' => array($vendorDir . '/snowplow/referer-parser/php/src'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
-    'Math_' => array($vendorDir . '/pear/math_biginteger'),
     'Evenement' => array($vendorDir . '/evenement/evenement/src'),
     'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
     'Clue\\Redis\\Protocol' => array($vendorDir . '/clue/redis-protocol/src'),

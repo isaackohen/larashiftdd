@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9481e56ab0541753f37c3426d54afbb5",
+    "content-hash": "124ba395b7b850c9a37b7a4da922312f",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -474,69 +474,6 @@
             "time": "2021-07-24T16:33:27+00:00"
         },
         {
-            "name": "coinpaymentsnet/coinpayments-php",
-            "version": "v1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/CoinPaymentsNet/coinpayments-php.git",
-                "reference": "e7e9f8820c2179f49605aa861d7c7bd485b3c88c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/CoinPaymentsNet/coinpayments-php/zipball/e7e9f8820c2179f49605aa861d7c7bd485b3c88c",
-                "reference": "e7e9f8820c2179f49605aa861d7c7bd485b3c88c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "/src"
-                ],
-                "exclude-from-classmap": [
-                    "/tests"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Cole",
-                    "email": "cole@coinpayments.net",
-                    "homepage": "https://www.coinpayments.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A PHP wrapper for the CoinPayments.net v1 API.",
-            "homepage": "https://www.coinpayments.net/apidoc-intro",
-            "keywords": [
-                "api",
-                "bitcoin",
-                "btc",
-                "coinpayments",
-                "crypto",
-                "cryptocurrency",
-                "currency",
-                "ethereum",
-                "litecoin",
-                "merchant",
-                "payment gateway",
-                "payment method",
-                "payment processor",
-                "paypal",
-                "php"
-            ],
-            "support": {
-                "issues": "https://github.com/CoinPaymentsNet/coinpayments-php/issues",
-                "source": "https://github.com/CoinPaymentsNet/coinpayments-php/tree/master"
-            },
-            "time": "2018-09-15T00:00:00+00:00"
-        },
-        {
             "name": "composer/ca-bundle",
             "version": "1.3.1",
             "source": {
@@ -686,101 +623,6 @@
                 "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.1"
             },
             "time": "2021-08-13T13:06:58+00:00"
-        },
-        {
-            "name": "digitaldonkey/ecverify",
-            "version": "1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/digitaldonkey/ecverify.git",
-                "reference": "fe873f7c1d9662bac9fb6d379d1212954b35dcce"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/digitaldonkey/ecverify/zipball/fe873f7c1d9662bac9fb6d379d1212954b35dcce",
-                "reference": "fe873f7c1d9662bac9fb6d379d1212954b35dcce",
-                "shasum": ""
-            },
-            "require": {
-                "kornrunner/keccak": "^1.0",
-                "php": ">=7",
-                "simplito/elliptic-php": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0 || ^5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Ethereum\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Thorsten Krug",
-                    "email": "thorsten.krug@consensys.net"
-                }
-            ],
-            "description": "A library integrating Ethereum with typed PHP.",
-            "support": {
-                "issues": "https://github.com/digitaldonkey/ecverify/issues",
-                "source": "https://github.com/digitaldonkey/ecverify/tree/master"
-            },
-            "time": "2018-05-18T17:55:12+00:00"
-        },
-        {
-            "name": "digitaldonkey/ethereum-php",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/digitaldonkey/ethereum-php.git",
-                "reference": "01035432730acce73c93cda2e46c08fc2b52e615"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/digitaldonkey/ethereum-php/zipball/01035432730acce73c93cda2e46c08fc2b52e615",
-                "reference": "01035432730acce73c93cda2e46c08fc2b52e615",
-                "shasum": ""
-            },
-            "require": {
-                "digitaldonkey/ecverify": "1.0",
-                "ext-json": "*",
-                "graze/guzzle-jsonrpc": "~3.0",
-                "kornrunner/keccak": "^1.0",
-                "pear/math_biginteger": "^1.0",
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "gossi/php-code-generator": "^0.5.0",
-                "phpunit/phpunit": "^4.0 || ^5.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Ethereum\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Thorsten Krug",
-                    "email": "thorsten.krug@consensys.net"
-                }
-            ],
-            "description": "A library integrating Ethereum with typed PHP.",
-            "support": {
-                "issues": "https://github.com/digitaldonkey/ethereum-php/issues",
-                "source": "https://github.com/digitaldonkey/ethereum-php/tree/master"
-            },
-            "time": "2021-06-15T17:50:32+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -1749,140 +1591,6 @@
             "time": "2021-04-26T11:24:25+00:00"
         },
         {
-            "name": "furqansiddiqui/erc20-php",
-            "version": "0.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/furqansiddiqui/erc20-php.git",
-                "reference": "b5fe2d801e2a581e9537510c724dd70da1d9fda8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/furqansiddiqui/erc20-php/zipball/b5fe2d801e2a581e9537510c724dd70da1d9fda8",
-                "reference": "b5fe2d801e2a581e9537510c724dd70da1d9fda8",
-                "shasum": ""
-            },
-            "require": {
-                "ext-bcmath": "*",
-                "furqansiddiqui/ethereum-rpc": "^0.1.5",
-                "php": ">=7.1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "ERC20\\": [
-                        "src"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Interact with any ERC20 standard Ethereum token",
-            "keywords": [
-                "erc20",
-                "eth",
-                "ethereum",
-                "ethereum-go",
-                "geth",
-                "token",
-                "tokens"
-            ],
-            "support": {
-                "issues": "https://github.com/furqansiddiqui/erc20-php/issues",
-                "source": "https://github.com/furqansiddiqui/erc20-php/tree/master"
-            },
-            "time": "2020-04-02T15:18:50+00:00"
-        },
-        {
-            "name": "furqansiddiqui/ethereum-rpc",
-            "version": "0.1.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/furqansiddiqui/ethereum-rpc.git",
-                "reference": "cff5574a4f094a73ebd44f7ccf4f435335391c5d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/furqansiddiqui/ethereum-rpc/zipball/cff5574a4f094a73ebd44f7ccf4f435335391c5d",
-                "reference": "cff5574a4f094a73ebd44f7ccf4f435335391c5d",
-                "shasum": ""
-            },
-            "require": {
-                "ext-bcmath": "*",
-                "ext-json": "*",
-                "furqansiddiqui/http-client": "^0.4.5",
-                "php": "^7.1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "EthereumRPC\\": [
-                        "src"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Ethereum (geth) RPC client",
-            "keywords": [
-                "eth",
-                "ethereum",
-                "ethereum-go",
-                "geth"
-            ],
-            "support": {
-                "issues": "https://github.com/furqansiddiqui/ethereum-rpc/issues",
-                "source": "https://github.com/furqansiddiqui/ethereum-rpc/tree/0.1.5"
-            },
-            "time": "2020-04-02T15:12:20+00:00"
-        },
-        {
-            "name": "furqansiddiqui/http-client",
-            "version": "0.4.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/furqansiddiqui/http-client.git",
-                "reference": "fa735734b52296c92b9056cc5d716f2cae577faf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/furqansiddiqui/http-client/zipball/fa735734b52296c92b9056cc5d716f2cae577faf",
-                "reference": "fa735734b52296c92b9056cc5d716f2cae577faf",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=7.1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "HttpClient\\": [
-                        "src"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Straightforward HTTP client",
-            "keywords": [
-                "http",
-                "http-client"
-            ],
-            "support": {
-                "issues": "https://github.com/furqansiddiqui/http-client/issues",
-                "source": "https://github.com/furqansiddiqui/http-client/tree/master"
-            },
-            "time": "2019-12-22T22:46:32+00:00"
-        },
-        {
             "name": "gburtini/distributions",
             "version": "0.0.2",
             "source": {
@@ -2213,69 +1921,6 @@
             "time": "2021-10-17T19:48:54+00:00"
         },
         {
-            "name": "graze/guzzle-jsonrpc",
-            "version": "3.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/graze/guzzle-jsonrpc.git",
-                "reference": "c4513b7659534792b906723158a8388f54275a61"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/graze/guzzle-jsonrpc/zipball/c4513b7659534792b906723158a8388f54275a61",
-                "reference": "c4513b7659534792b906723158a8388f54275a61",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0",
-                "guzzlehttp/promises": "^1.0",
-                "php": ">=5.5",
-                "psr/http-message": "^1.0"
-            },
-            "require-dev": {
-                "adlawson/timezone": "~1.0",
-                "fabpot/php-cs-fixer": "~0.5",
-                "mockery/mockery": "~0.9",
-                "phpunit/phpunit": "~4.3"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/functions_include.php"
-                ],
-                "psr-4": {
-                    "Graze\\GuzzleHttp\\JsonRpc\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Graze tech team",
-                    "homepage": "https://github.com/graze/guzzle-jsonrpc/graphs/contributors"
-                }
-            ],
-            "description": "JSON-RPC 2.0 client for Guzzle",
-            "homepage": "https://github.com/graze/guzzle-jsonrpc",
-            "keywords": [
-                "Guzzle",
-                "guzzlehttp",
-                "http",
-                "json",
-                "json-rpc",
-                "jsonrpc",
-                "ring",
-                "rpc"
-            ],
-            "support": {
-                "issues": "https://github.com/graze/guzzle-jsonrpc/issues",
-                "source": "https://github.com/graze/guzzle-jsonrpc/tree/master"
-            },
-            "time": "2016-02-16T15:18:21+00:00"
-        },
-        {
             "name": "guzzlehttp/guzzle",
             "version": "6.5.5",
             "source": {
@@ -2541,59 +2186,6 @@
             "time": "2021-10-05T13:56:00+00:00"
         },
         {
-            "name": "iexbase/tron-api",
-            "version": "v2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/iexbase/tron-api.git",
-                "reference": "332769bf23e1cd10f969f0ae564c26bf805eb8d3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/iexbase/tron-api/zipball/332769bf23e1cd10f969f0ae564c26bf805eb8d3",
-                "reference": "332769bf23e1cd10f969f0ae564c26bf805eb8d3",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.3",
-                "php": "^7.1",
-                "simplito/elliptic-php": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "IEXBase\\TronAPI\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Shamsudin Serderov",
-                    "email": "steein.shamsudin@gmail.com"
-                }
-            ],
-            "description": "A PHP API for interacting with Tron (Trx)",
-            "homepage": "https://github.com/iexbase/tron-api",
-            "keywords": [
-                "iexbase",
-                "tron-api",
-                "tron-lib",
-                "tron-php",
-                "tron-rest-api"
-            ],
-            "support": {
-                "issues": "https://github.com/iexbase/tron-api/issues",
-                "source": "https://github.com/iexbase/tron-api/tree/master"
-            },
-            "time": "2018-11-06T16:13:39+00:00"
-        },
-        {
             "name": "intervention/image",
             "version": "2.7.0",
             "source": {
@@ -2676,50 +2268,6 @@
                 }
             ],
             "time": "2021-10-03T14:17:12+00:00"
-        },
-        {
-            "name": "jakobo/hotp-php",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Jakobo/hotp-php.git",
-                "reference": "d24e0d021710718cb9104ffb5c6ffb447fce65ab"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Jakobo/hotp-php/zipball/d24e0d021710718cb9104ffb5c6ffb447fce65ab",
-                "reference": "d24e0d021710718cb9104ffb5c6ffb447fce65ab",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.3.3 || ^7.0"
-            },
-            "require-dev": {
-                "jakub-onderka/php-console-highlighter": "0.3.2",
-                "jakub-onderka/php-parallel-lint": "1.0.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "jakobo\\HOTP\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Jakob Heuser",
-                    "email": "jakob@felocity.org"
-                }
-            ],
-            "description": "HOTP simplifies One Time Password systems for PHP Authentication",
-            "support": {
-                "issues": "https://github.com/Jakobo/hotp-php/issues",
-                "source": "https://github.com/Jakobo/hotp-php/tree/v1.0.1"
-            },
-            "time": "2019-04-17T19:06:24+00:00"
         },
         {
             "name": "jaybizzle/crawler-detect",
@@ -4228,49 +3776,6 @@
             "time": "2020-11-02T17:00:53+00:00"
         },
         {
-            "name": "mbezhanov/ethereum-converter",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mbezhanov/ethereum-converter.git",
-                "reference": "e7ebc6821f1ac6503700d00477c42ade43586499"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mbezhanov/ethereum-converter/zipball/e7ebc6821f1ac6503700d00477c42ade43586499",
-                "reference": "e7ebc6821f1ac6503700d00477c42ade43586499",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Bezhanov\\Ethereum\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marin Bezhanov",
-                    "email": "marin.bezhanov@gmail.com"
-                }
-            ],
-            "description": "A simple library for performing conversion between various Ethereum units",
-            "support": {
-                "issues": "https://github.com/mbezhanov/ethereum-converter/issues",
-                "source": "https://github.com/mbezhanov/ethereum-converter/tree/v1.0.1"
-            },
-            "time": "2017-11-30T05:18:02+00:00"
-        },
-        {
             "name": "minishlink/web-push",
             "version": "v6.0.5",
             "source": {
@@ -5145,6 +4650,123 @@
             "time": "2021-04-09T13:42:10+00:00"
         },
         {
+            "name": "paragonie/constant_time_encoding",
+            "version": "v2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/constant_time_encoding.git",
+                "reference": "f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c",
+                "reference": "f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7|^8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6|^7|^8|^9",
+                "vimeo/psalm": "^1|^2|^3|^4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ParagonIE\\ConstantTime\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Steve 'Sc00bz' Thomas",
+                    "email": "steve@tobtu.com",
+                    "homepage": "https://www.tobtu.com",
+                    "role": "Original Developer"
+                }
+            ],
+            "description": "Constant-time Implementations of RFC 4648 Encoding (Base-64, Base-32, Base-16)",
+            "keywords": [
+                "base16",
+                "base32",
+                "base32_decode",
+                "base32_encode",
+                "base64",
+                "base64_decode",
+                "base64_encode",
+                "bin2hex",
+                "encoding",
+                "hex",
+                "hex2bin",
+                "rfc4648"
+            ],
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/constant_time_encoding/issues",
+                "source": "https://github.com/paragonie/constant_time_encoding"
+            },
+            "time": "2020-12-06T15:14:20+00:00"
+        },
+        {
+            "name": "paragonie/random_compat",
+            "version": "v9.99.100",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/996434e5492cb4c3edcb9168db6fbb1359ef965a",
+                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*",
+                "vimeo/psalm": "^1"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "polyfill",
+                "pseudorandom",
+                "random"
+            ],
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/random_compat/issues",
+                "source": "https://github.com/paragonie/random_compat"
+            },
+            "time": "2020-10-15T08:29:30+00:00"
+        },
+        {
             "name": "paypal/paypal-checkout-sdk",
             "version": "1.0.2",
             "source": {
@@ -5240,59 +4862,6 @@
             "time": "2021-09-14T21:35:26+00:00"
         },
         {
-            "name": "pear/math_biginteger",
-            "version": "v1.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pear/Math_BigInteger.git",
-                "reference": "33d4357543037a458fad3e8c837a01b93104e592"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/pear/Math_BigInteger/zipball/33d4357543037a458fad3e8c837a01b93104e592",
-                "reference": "33d4357543037a458fad3e8c837a01b93104e592",
-                "shasum": ""
-            },
-            "require": {
-                "ext-pcre": "*",
-                "php": ">=4.2.0"
-            },
-            "suggest": {
-                "ext-bcmath": "Allows using the BCMath extension internally for computation. Faster than native implementation.",
-                "ext-gmp": "Allows using the GNU Multiple Precision extension internally for computation. If you are doing a lot of computation this is the recommended extension."
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Math_": "./"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jim Wigginton",
-                    "email": "terrafrost@php.net"
-                }
-            ],
-            "description": "Pure-PHP arbitrary precission integer arithmetic library. If GMP or BCMath are available they are used.",
-            "homepage": "https://github.com/pear/Math_BigInteger",
-            "keywords": [
-                "arbitrary",
-                "bcmath",
-                "gmp",
-                "integer",
-                "precision"
-            ],
-            "support": {
-                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Math_BigInteger",
-                "source": "https://github.com/pear/Math_BigInteger"
-            },
-            "time": "2016-04-12T05:46:52+00:00"
-        },
-        {
             "name": "phpoption/phpoption",
             "version": "1.8.0",
             "source": {
@@ -5363,24 +4932,26 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.34",
+            "version": "3.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "98a6fe587f3481aea319eef7e656d02cfe1675ec"
+                "reference": "6e794226a35159eb06f355efe59a0075a16551dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/98a6fe587f3481aea319eef7e656d02cfe1675ec",
-                "reference": "98a6fe587f3481aea319eef7e656d02cfe1675ec",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/6e794226a35159eb06f355efe59a0075a16551dd",
+                "reference": "6e794226a35159eb06f355efe59a0075a16551dd",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "paragonie/constant_time_encoding": "^1|^2",
+                "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
+                "php": ">=5.6.1"
             },
             "require-dev": {
                 "phing/phing": "~2.7",
-                "phpunit/phpunit": "^4.8.35|^5.7|^6.0|^9.4",
+                "phpunit/phpunit": "^5.7|^6.0|^9.4",
                 "squizlabs/php_codesniffer": "~2.0"
             },
             "suggest": {
@@ -5395,7 +4966,7 @@
                     "phpseclib/bootstrap.php"
                 ],
                 "psr-4": {
-                    "phpseclib\\": "phpseclib/"
+                    "phpseclib3\\": "phpseclib/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -5452,7 +5023,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/2.0.34"
+                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.11"
             },
             "funding": [
                 {
@@ -5468,7 +5039,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-10-27T02:46:30+00:00"
+            "time": "2021-10-27T03:01:46+00:00"
         },
         {
             "name": "pragmarx/datatables",
@@ -5736,20 +5307,20 @@
         },
         {
             "name": "psr/cache",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/cache.git",
-                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8"
+                "reference": "213f9dbc5b9bfbc4f8db86d2838dc968752ce13b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/cache/zipball/d11b50ad223250cf17b86e38383413f5a6764bf8",
-                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8",
+                "url": "https://api.github.com/repos/php-fig/cache/zipball/213f9dbc5b9bfbc4f8db86d2838dc968752ce13b",
+                "reference": "213f9dbc5b9bfbc4f8db86d2838dc968752ce13b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=8.0.0"
             },
             "type": "library",
             "extra": {
@@ -5769,7 +5340,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interface for caching libraries",
@@ -5779,9 +5350,9 @@
                 "psr-6"
             ],
             "support": {
-                "source": "https://github.com/php-fig/cache/tree/master"
+                "source": "https://github.com/php-fig/cache/tree/2.0.0"
             },
-            "time": "2016-08-06T20:24:11+00:00"
+            "time": "2021-02-03T23:23:37+00:00"
         },
         {
             "name": "psr/container",
@@ -7180,53 +6751,6 @@
                 }
             ],
             "time": "2021-10-20T12:19:55+00:00"
-        },
-        {
-            "name": "sc0vu/web3.php",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sc0Vu/web3.php.git",
-                "reference": "d69ce96a646df1bd07e3f21879ce25c114d21634"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sc0Vu/web3.php/zipball/d69ce96a646df1bd07e3f21879ce25c114d21634",
-                "reference": "d69ce96a646df1bd07e3f21879ce25c114d21634",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mbstring": "*",
-                "guzzlehttp/guzzle": "~6.0",
-                "kornrunner/keccak": "~1.0",
-                "php": "^7.1",
-                "phpseclib/phpseclib": "~2.0.11"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~6.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Web3\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "sc0Vu",
-                    "email": "alk03073135@gmail.com"
-                }
-            ],
-            "description": "Ethereum web3 interface.",
-            "support": {
-                "source": "https://github.com/sc0Vu/web3.php/tree/master"
-            },
-            "time": "2019-10-03T14:41:19+00:00"
         },
         {
             "name": "simplito/bigint-wrapper-php",
@@ -11274,49 +10798,37 @@
         },
         {
             "name": "zendframework/zend-diactoros",
-            "version": "1.8.7",
+            "version": "1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-diactoros.git",
-                "reference": "a85e67b86e9b8520d07e6415fcbcb8391b44a75b"
+                "reference": "4d54fde709664562eb63356f0250d527824d05de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-diactoros/zipball/a85e67b86e9b8520d07e6415fcbcb8391b44a75b",
-                "reference": "a85e67b86e9b8520d07e6415fcbcb8391b44a75b",
+                "url": "https://api.github.com/repos/zendframework/zend-diactoros/zipball/4d54fde709664562eb63356f0250d527824d05de",
+                "reference": "4d54fde709664562eb63356f0250d527824d05de",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.6 || ^7.0",
-                "psr/http-message": "^1.0"
+                "php": ">=5.4",
+                "psr/http-message": "~1.0"
             },
             "provide": {
-                "psr/http-message-implementation": "1.0"
+                "psr/http-message-implementation": "~1.0.0"
             },
             "require-dev": {
-                "ext-dom": "*",
-                "ext-libxml": "*",
-                "php-http/psr7-integration-tests": "dev-master",
-                "phpunit/phpunit": "^5.7.16 || ^6.0.8 || ^7.2.7",
-                "zendframework/zend-coding-standard": "~1.0"
+                "phpunit/phpunit": "~4.6",
+                "squizlabs/php_codesniffer": "^2.3.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-release-1.8": "1.8.x-dev"
+                    "dev-master": "1.3-dev",
+                    "dev-develop": "1.4-dev"
                 }
             },
             "autoload": {
-                "files": [
-                    "src/functions/create_uploaded_file.php",
-                    "src/functions/marshal_headers_from_sapi.php",
-                    "src/functions/marshal_method_from_sapi.php",
-                    "src/functions/marshal_protocol_version_from_sapi.php",
-                    "src/functions/marshal_uri_from_sapi.php",
-                    "src/functions/normalize_server.php",
-                    "src/functions/normalize_uploaded_files.php",
-                    "src/functions/parse_cookie_header.php"
-                ],
                 "psr-4": {
                     "Zend\\Diactoros\\": "src/"
                 }
@@ -11337,7 +10849,7 @@
                 "source": "https://github.com/zendframework/zend-diactoros"
             },
             "abandoned": "laminas/laminas-diactoros",
-            "time": "2019-08-06T17:53:53+00:00"
+            "time": "2016-01-04T21:37:32+00:00"
         }
     ],
     "packages-dev": [
@@ -13938,14 +13450,11 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "digitaldonkey/ethereum-php": 20,
-        "sc0vu/web3.php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.4",
+        "php": "^8.0",
         "ext-curl": "*",
         "ext-gmp": "*",
         "ext-json": "*",
