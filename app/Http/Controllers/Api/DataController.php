@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Str;
 use App\Currency\Currency;
 use App\Game as GameResult;
 use App\Games\Kernel\Game;
@@ -73,7 +74,7 @@ class DataController
 
     public function notifications(Request $request)
     {
-        return APIResponse::success(array_merge(\App\GlobalNotification::get()->toArray(), env('APP_DEBUG') && ! str_contains(request()->url(), 'localhost') ? [[
+        return APIResponse::success(array_merge(\App\GlobalNotification::get()->toArray(), env('APP_DEBUG') && ! Str::contains(request()->url(), 'localhost') ? [[
             '_id' => '-1',
             'icon' => 'fad fa-exclamation-triangle',
             'text' => 'Debug',

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Support\Str;
 use App\Events\NewQuiz;
 use App\Events\PublicUserNotification;
 use App\Settings;
@@ -44,7 +45,7 @@ class Quiz extends Command
     {
         $getSuitableQuiz = function () use (&$getSuitableQuiz) {
             $json = json_decode(file_get_contents('https://opentdb.com/api.php?amount=1&type=multiple'))->results[0];
-            if (str_contains($json->question, 'which') || str_contains($json->question, 'following')) {
+            if (Str::contains($json->question, 'which') || Str::contains($json->question, 'following')) {
                 return $getSuitableQuiz();
             }
 
