@@ -106,7 +106,7 @@ class UserController
     public function games($id)
     {
         $p = [];
-        foreach (GameResult::orderBy('id', 'desc')->where('demo', '!=', true)->where('user', $id)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take(15)->get() as $game) {
+        foreach (GameResult::orderByDesc('id')->where('demo', '!=', true)->where('user', $id)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take(15)->get() as $game) {
             if ($game->type === 'external') {
                 $getgamename = (Gameslist::where('id', $game->game)->first());
                 $image = 'Image/https://games.cdn4.dk/games'.$getgamename->image.'?q=95&mask=ellipse&auto=compress&sharp=10&w=20&h=20&fit=crop&usm=5&fm=png';
@@ -186,7 +186,7 @@ class UserController
     public function investmentHistory()
     {
         $out = [];
-        foreach (Investment::where('user', auth('sanctum')->user()->_id)->orderBy('status', 'asc')->latest()->get() as $investment) {
+        foreach (Investment::where('user', auth('sanctum')->user()->_id)->orderBy('status')->latest()->get() as $investment) {
             array_push($out, [
                 'amount' => $investment->amount,
                 'share' => $investment->status == 1 ? $investment->disinvest_share : $investment->getRealShare($investment->getProfit(), Investment::getGlobalBankroll(Currency::find($investment->currency))),
