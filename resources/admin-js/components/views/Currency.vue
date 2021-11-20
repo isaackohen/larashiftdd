@@ -8,6 +8,39 @@
 			</div>
 		</div>
         <div class="container-fluid" v-if="data">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-xl-10 col-lg-9">
+                                <div class="mt-4 mt-lg-0">
+                                    <h5 class="mt-0 mb-1 fw-bold">Global Withdraw Settings</h5>
+                                    <p>The "count"-settings are automatically reset, you should not alter this unless you want to manually reset the limit.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div> <!-- end card body-->
+                </div> <!-- end card -->
+            </div>
+            <!-- end col-12 -->
+        </div>
+        
+        <div class="row">
+            <div class="col-xl-3 col-lg-6" v-for="extraSetting in extraSettings">
+                <div class="card">
+                    <div class="card-body">
+                        <h5><a href="javascript:void(0)" class="text-muted">{{ extraSetting.name }}</a></h5>
+                        <div class="text-muted">
+                            <div class="form-group mt-2">
+                                <input @input="changeExtra(extraSetting.name, $event.target.value)" :value="extraSetting.value" type="text" class="form-control" placeholder="Value">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -116,6 +149,8 @@
             ...mapGetters(['currencies'])
         },
         created() {
+            axios.post('/admin/currencyExtraSettings').then(({ data }) => this.extraSettings = data); 
+
             axios.post('/admin/currencySettings').then(({ data }) => {
                 let duplicates = [];
                 _.forEach(data.coins, (e) => {
@@ -134,12 +169,10 @@
             return {
                 data: {},
                 balance: {},
-
+                extraSettings: [],
                 address: '',
                 amount: 0.00000000,
-
                 availableCurrencies: [],
-
                 ethDepositAddr: ''
             }
         },
@@ -153,6 +186,9 @@
                     walletId: walletId,
                     type: type
                 }).then(() => this.$store.dispatch('updateData'));
+            },
+            changeExtra(key, value) {
+                axios.post('/admin/settings/edit', { key: key, value: value.length === 0 ? '0' : value });
             },
             send() {
                 axios.post('/admin/wallet/transfer', {

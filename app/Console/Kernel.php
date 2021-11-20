@@ -8,6 +8,7 @@ use App\Console\Commands\PullingWallet;
 use App\Console\Commands\Quiz;
 use App\Console\Commands\Rain;
 use App\Console\Commands\ResetWeeklyBonus;
+use App\Console\Commands\WithdrawLimit3Hourly;
 use App\Console\Commands\WalletReset;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
@@ -39,6 +40,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command(ProcessTRXPayments::class)->everyMinute();
         //$schedule->command(PullingWallet::class)->everyTwoMinutes();
         $schedule->command(MindepositUpdate::class)->everyThirtyMinutes();
+        $schedule->command(WithdrawLimit3Hourly::class)->everyThreeHours();
 
         $expression = Cache::get('schedule:expressions:rain');
         if (! $expression) {

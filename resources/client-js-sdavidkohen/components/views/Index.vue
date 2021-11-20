@@ -5,7 +5,7 @@
             <div class="glide" id="slider">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides" style="box-shadow: 0 7px 10px rgb(0 0 0 / 50%);">
-                        <li class="glide__slide" style="background-image: url('https://games.cdn4.dk/treasurekey/treasurekey_banner2.png?auto=format&q=80')">
+                        <li class="glide__slide" style="background-image: url('https://games.cdn4.dk/sdavidkohen/bgslider.jpg?auto=format&q=80')">
                             <div class="slideContent right">
                                 <div class="slideContentWrapper">
                                     <div class="description">
@@ -17,19 +17,7 @@
                                 </div>
                             </div>
                         </li>   
-                        <li class="glide__slide" style="background-image: url('https://games.cdn4.dk/treasurekey/treasurekey_banner3.png?auto=format&q=80')">
-                            <div class="slideContent right">
-                                <div class="slideContentWrapper">
-                                    <div class="description">
-                                        Enjoy the best game selection & compete in challenges!
-                                    </div>
-                                    <div class="button" @click="isGuest ? openAuthModal('auth') :  $router.push(`/challenges`)">
-                                        {{ $t('general.play') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                </ul>
+                    </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
                     <button class="glide__arrow glide__arrow--left" data-glide-dir="<"></button>
@@ -45,7 +33,7 @@
 
       <template v-if="!gamesLoading">
 
-            <div class="container-fluid" style="max-width: 1375px;">
+            <div class="container-fluid" style="max-width: 1335px !important;">
                <div class="search">
 					<div class="input-group mb-3">
 					  <input type="text" class="form-control" v-model="keyword" autocomplete="off" :placeholder="'Search in ' + count + ' games..'">
@@ -98,19 +86,19 @@
                </div>
             </div>
          
-             <div class="container-fluid" style="max-width: 1420px; margin: 0px auto;">
+             <div class="container-fluid" style="max-width: 1420px !important; margin: 0px auto;">
                 <template v-if="!pageLoading">
                     <div class="warning" v-if="Object.keys(categoryGames).length === 0" v-html="$t('general.sidebar.no_search')"></div>
                  </template>
                <template v-for="(cat, key) in categoryGames">
                   <div class="games">
                      <div v-for="game in cat" :key="game.id" :class="`game_poster_${game.type} game-${game.id} game_type-${game.type} hvr-float-shadow`">
-                        <div :class="`game_poster_${game.type}-image game_tp-image`" v-if="game.ext" :style="`background: url('https://games.cdn4.dk/games${game.icon}?auto=format&fit=crop&sharp=10&w=205&h=137&q=70') no-repeat !important; background-position-x: center !important;`"  @click="game.ext ? $router.push(`/casino/${game.id}`) : $router.push(`/game/${game.id}`)">
+                        <div :class="`game_poster_${game.type}-image game_tp-image`" v-if="game.ext" :style="`background: url('https://games.cdn4.dk/games${game.icon}?auto=format&fit=crop&sharp=10&w=205&h=137&q=85') no-repeat !important; background-position-x: center !important;`"  @click="game.ext ? $router.push(`/casino/${game.id}`) : $router.push(`/game/${game.id}`)">
                            <div :class="`game_poster_${game.type}-provider`" v-if="game.ext" @click="game.ext ? $router.push(`/casino/${game.id}`) : $router.push(`/game/${game.id}`)">
                               {{ game.p }}
                            </div>
                         </div>
-                        <div :class="`game_poster_${game.type}-image game_tp-image`" v-if="!game.ext" @click="game.ext ? $router.push(`/casino/${game.id}`) : $router.push(`/game/${game.id}`)" :style="`background: url('https://cdn.davidkohen.com/provablyfair/${game.id}.png?q=95&sharp=5&w=205&h=145&fit=crop&usm=5&fm=png') no-repeat !important; background-position-x: center !important;`">
+                        <div :class="`game_poster_${game.type}-image game_tp-image`" v-if="!game.ext" @click="game.ext ? $router.push(`/casino/${game.id}`) : $router.push(`/game/${game.id}`)" :style="`background: url('https://games.cdn4.dk/provablyfair/${game.id}.png?q=95&sharp=5&w=205&h=145&fit=crop&usm=5&fm=png') no-repeat !important; background-position-x: center !important;`">
                            <div class="unavailable" v-if="game.d">
                               <div class="slanting">
                                  <div class="content">
@@ -296,11 +284,11 @@
                 try {
                     if(window.$indexGlide) window.$indexGlide.destroy();
                     const glide = new Glide('#slider', {
-                        type: 'carousel',
+                        type: 'slider',
                         perView: 1,
                         focusAt: 'center',
                         gap: 0,
-                        autoplay: 15000,
+                        autoplay: false,
                         keyboard: false
                     });
                     glide.mount();
@@ -357,12 +345,13 @@
     @import "~@glidejs/glide/dist/css/glide.theme.min.css";
 
     .slider {
-        min-height: 300px;
+        min-height: 190px;
         height: 18vmax;
-        max-height: 500px;
+        max-height: 280px;
         display: flex;
         margin-bottom: 15px;
         margin-top: -15px;
+        box-shadow: #0003 0 4px 6px -1px, #0000001f 0 2px 4px -1px;
         margin-left: -15px;
         width: calc(100% + 30px) !important;
 
@@ -928,7 +917,7 @@
             opacity: 0;
             transition: opacity .3s ease;
             transition-delay: .1s;
-            font-size: 0.8em;
+            font-size: 0.84em;
             display: flex;
             align-items: center;
 
@@ -955,7 +944,7 @@
             opacity: 0;
             transition: opacity .3s ease;
             transition-delay: .1s;
-            font-size: 0.8em;
+            font-size: 0.84em;
             display: flex;
             align-items: center;
 
@@ -981,7 +970,7 @@
             opacity: 0;
             transition: opacity .3s ease;
             transition-delay: .1s;
-            font-size: 0.8em;
+            font-size: 0.84em;
             display: flex;
             align-items: center;
 

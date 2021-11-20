@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\NotificationsController;
 use App\Http\Controllers\Admin\PromocodeController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ChallengesController;
 use App\Http\Controllers\Admin\VipsController;
 use App\Http\Controllers\Admin\WalletController;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +76,7 @@ Route::prefix('extgames')->group(function () {
     Route::post('updateGames', [GamesController::class, 'updateGames']);
     Route::post('restoreGamesList', [GamesController::class, 'restoreGamesList']);
 });
+Route::post('/currencyExtraSettings', [SettingsController::class, 'currencyExtraSettings']);
 
 Route::post('/currencyOption', [CurrenciesController::class, 'currencyOption']);
 Route::post('/currencySettings', [CurrenciesController::class, 'currencySettings']);

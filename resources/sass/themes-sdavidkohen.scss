@@ -1,16 +1,16 @@
 $themes: (
     default: (
         name: 'light',
-        header: white,
-        body: white,
-        logo: url('https://games.cdn4.dk/treasurekey/logo.png'),
+        header: darken(white, 1.5%),
+        body: darken(white, 1.0%),
+        logo: url('https://games.cdn4.dk/sdavidkohen/logo.svg'),
         secondary: #fbbe24,
         secondary-alternative: lighten(#e1e4e6, 0.6%),
         border: #eceff1,
         shadow: rgba(17, 51, 83, 0.02) 0 4px 12px 0,
         wallet: darken(white, 1.5%),
         text: black,
-        sidebar: lighten(#eceff1, 4.5%),
+        sidebar: darken(white, 3.0%),
         gamelabel: darken(#eceff1, 20%),
         link: #5a5a5a,
         link-hover: black,
@@ -23,21 +23,21 @@ $themes: (
     ),
     dark: (
         name: 'dark',
-        header: darken(#1a1d1f, 1.0%),
-        logo: url('https://games.cdn4.dk/treasurekey/logo.png?w=200'),
-        body: lighten(#1a1d1f, 0.4%),
+        header: darken(#202428, 1.0%),
+        logo: url('https://games.cdn4.dk/sdavidkohen/logo.svg'),
+        body: lighten(#202428, 0.4%),
         secondary: #fbbe24,
         secondary-alternative: #292e31,
-        border: lighten(#1a1d1f, 0.2%),
+        border: lighten(#202428, 0.2%),
         shadow: rgba(17, 51, 83, 0.05) 0 4px 12px 0,
-        wallet: darken(#1a1d1f, 1.5%),
+        wallet: darken(#202428, 1.5%),
         text: white,
-        sidebar: darken(#1a1d1f, 2.5%),
-        gamelabel: darken(#1a1d1f, 20%),
+        sidebar: darken(#202428, 2.5%),
+        gamelabel: darken(#202428, 20%),
         link: #a8a8a8,
         link-active: white,
         link-hover: #fbbe24,
-        input: darken(#1a1d1f, 1.5%),
+        input: darken(#202428, 0.5%),
         green: #2ecc71,
         red: #e74c3c,
         violet: #d31d6e,
@@ -52,7 +52,7 @@ $container-max-widths: (
 );
 
 $font-family-sans-serif: 'Poppins', sans-serif;
-$font-size-base: 0.87rem;
+$font-size-base: 0.84rem;
 $line-height-base: 1.4;
 
 $input-btn-focus-box-shadow: none;
@@ -61,7 +61,7 @@ $input-btn-focus-width: 0;
 
 $sidebar-width: 55px;
 $header-height: 73px;
-$chat-width: 270px;
+$chat-width: 265px;
 
 @mixin themed() {
     @each $theme, $map in $themes {

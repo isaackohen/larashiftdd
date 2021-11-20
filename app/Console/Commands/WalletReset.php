@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Currency\Currency;
 use App\User;
 use Illuminate\Console\Command;
+use App\Settings;
 
 class WalletReset extends Command
 {
@@ -45,5 +46,12 @@ class WalletReset extends Command
                 $wallet => null,
             ]);
         }
+        $val = 'withdraw_count_daily';
+        Settings::get($val, 0, true);
+        Settings::where('name', $val)->update(['value' => 0]);
+
+        $clear = \Artisan::call('optimize:clear');
+        $view = \Artisan::call('view:cache');
+        $route = \Artisan::call('route:cache');
     }
 }

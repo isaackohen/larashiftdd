@@ -85,12 +85,16 @@ class WalletController
         if (! auth('sanctum')->user()->validate2FA(false)) {
             return APIResponse::invalid2FASession();
         }
+            if (config('settings.demo_mode')) {
+                return APIResponse::reject(1, 'Not available');
+                }
+
         auth('sanctum')->user()->reset2FAOneTimeToken();
         $currency = Currency::find($request->currency);
         $manualTrigger = floatval($currency->option('withdraw_manual_trigger'));
         $manualTrigger = number_format(($manualTrigger), 8, '.', '');
         if ($request->sum < floatval($currency->option('withdraw')) + floatval($currency->option('fee'))) {
-            return APIResponse::reject(1, 'Invalid withdraw value');
+            return APIResponse::reject(2, 'Not enough balance');
         }
         if (auth('sanctum')->user()->balance($currency)->get() < $request->sum + floatval($currency->option('fee'))) {
             return APIResponse::reject(2, 'Not enough balance');
@@ -118,11 +122,12 @@ class WalletController
                 'address' => $request->wallet,
                 'status' => 0,
                 'withdraw_method' => 'MANUALTRIGGER',
+                'withdraw_meta' => 'MANUALTRIGGER',
                 'usd' => round($currency->convertTokenToUSD($request->sum), 2),
             ]);
 
             $telegramChannel = Settings::get('telegram_internal_channel');
-            $messageAlert = 'Withdraw !! MANUAL TRIGGER !! - waiting for review on Casino '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
+            $messageAlert = 'Withdraw - MANUAL TRIGGER - Currency max. withdraw amount reached - waiting for review on Casino '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
             $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').' ADMIN&button_url='.config('app.url').'/admin/&channel='.$telegramChannel;
             $result = file_get_contents($url);
         } elseif (auth('sanctum')->user()->access !== 'admin' && $countLoginhash + $countRegisterhash > 4 || auth('sanctum')->user()->access !== 'admin' && $countLoginIP + $countRegisterIP > 5) {
@@ -133,11 +138,29 @@ class WalletController
                 'address' => $request->wallet,
                 'status' => 0,
                 'withdraw_method' => 'MANUALTRIGGER',
+                'withdraw_meta' => 'MANUALTRIGGER',
                 'usd' => round($currency->convertTokenToUSD($request->sum), 2),
             ]);
 
             $telegramChannel = Settings::get('telegram_internal_channel');
-            $messageAlert = 'Withdraw !! MANUAL TRIGGER - Multi Account - waiting for review on Casino '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
+            $messageAlert = 'Withdraw - MANUAL TRIGGER - Multi Account - waiting for review on Casino '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
+            $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').' ADMIN&button_url='.config('app.url').'/admin/&channel='.$telegramChannel;
+            $result = file_get_contents($url);
+        } elseif (Settings::get('withdraw_count_3hours') > Settings::get('withdraw_limit_3hours') || Settings::get('withdraw_count_daily') > Settings::get('withdraw_limit_daily')) {
+
+            $withdraw = Withdraw::create([
+                'user' => auth('sanctum')->user()->_id,
+                'sum' => $request->sum,
+                'currency' => $currency->id(),
+                'address' => $request->wallet,
+                'status' => 0,
+                'withdraw_method' => 'MANUALTRIGGER',
+                'withdraw_meta' => 'MANUALTRIGGER',
+                'usd' => round($currency->convertTokenToUSD($request->sum), 2),
+            ]);
+
+            $telegramChannel = Settings::get('telegram_internal_channel');
+            $messageAlert = 'Withdraw - MANUAL TRIGGER - Global Withdraw Limit Reached - waiting for review on Casino '.config('app.name').' for '.$withdraw->usd.'$ from user '.auth('sanctum')->user()->name.'.';
             $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').' ADMIN&button_url='.config('app.url').'/admin/&channel='.$telegramChannel;
             $result = file_get_contents($url);
         } else {

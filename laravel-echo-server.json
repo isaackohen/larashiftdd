@@ -19,8 +19,8 @@
 	"protocol": "https",
 	"socketio": {},
 	"secureOptions": 67108864,
-	"sslCertPath": "/etc/letsencrypt/live/play.treasurekey.io/fullchain.pem",
-	"sslKeyPath": "/etc/letsencrypt/live/play.treasurekey.io/privkey.pem",
+	"sslCertPath": "/etc/letsencrypt/live/s.davidkohen.com/fullchain.pem",
+	"sslKeyPath": "/etc/letsencrypt/live/s.davidkohen.com/privkey.pem",
 	"sslCertChainPath": "",
 	"sslPassphrase": "",
 	"subscribers": {

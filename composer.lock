@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "124ba395b7b850c9a37b7a4da922312f",
+    "content-hash": "b9d276651ee39a4695156b981259c930",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -2514,7 +2514,7 @@
         },
         {
             "name": "jenssegers/mongodb",
-            "version": "3.8.4",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jenssegers/laravel-mongodb.git",
@@ -2543,6 +2543,7 @@
                 "jenssegers/mongodb-sentry": "Add Sentry support to Laravel-MongoDB",
                 "jenssegers/mongodb-session": "Add MongoDB session support to Laravel-MongoDB"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -13450,7 +13451,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "jenssegers/mongodb": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

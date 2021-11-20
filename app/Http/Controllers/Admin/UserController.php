@@ -77,7 +77,7 @@ class UserController extends Controller
             $records = Transaction::where('user', $id)->where('demo', '!=', true)->orderBy($columnName, $columnSortOrder)
                 ->skip(intval($start))
                 ->take(intval($rowperpage))
-                ->get();
+                ->get()->reverse();
             $totalRecordswithFilter = Transaction::where('user', $id)->where('demo', '!=', true)->select('count(*) as allcount')->count();
         } else {
             $records = Transaction::where('user', $id)->where('demo', '!=', true)->orderBy($columnName, $columnSortOrder)
@@ -136,7 +136,7 @@ class UserController extends Controller
             $records = Game::where('demo', '!=', true)->where('user', $id)->orderBy($columnName, $columnSortOrder)
                 ->skip(intval($start))
                 ->take(intval($rowperpage))
-                ->get();
+                ->get()->reverse();
             $totalRecordswithFilter = Game::where('demo', '!=', true)->where('user', $id)->select('count(*) as allcount')->count();
         } else {
             $records = Game::where('demo', '!=', true)->where('user', $id)->orderBy($columnName, $columnSortOrder)

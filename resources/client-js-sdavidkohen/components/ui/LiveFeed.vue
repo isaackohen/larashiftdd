@@ -35,7 +35,7 @@
                                         <icon :icon="game.metadata.icon"></icon>
                                     </router-link>
                                     <div class="name">
-                                        <div><router-link :to="`${game.game.type === 'external' ? (`/casino/` + game.metadata.id) : (`/game/` + game.metadata.id)}`">{{ game.metadata.name }}</router-link></div>
+                                        <div class="max-letters"><router-link :to="`${game.game.type === 'external' ? (`/casino/` + game.metadata.id) : (`/game/` + game.metadata.id)}`">{{ game.metadata.name }}</router-link></div>
                                         <a href="javascript:void(0)" @click="openOverviewModal(game.game._id, game.game.game)">{{ $t('general.overview') }}</a>
                                     </div>
                                 </div>

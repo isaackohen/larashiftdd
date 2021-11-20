@@ -60,6 +60,7 @@
                                                             {{ withdraw.withdraw.sum }}
                                                             {{ currencies[withdraw.withdraw.currency].name }}
                                                             {{ new Date(withdraw.withdraw.created_at).toLocaleString() }}
+                                                            {{ withdraw.withdraw.withdraw_meta }}
                                                         </h6>
                                                         <h6 class="font-weight-normal mt-1" v-if="withdraw.withdraw.type">{{ withdraw.withdraw.type }}</h6>
                                                     </div>
@@ -255,7 +256,7 @@
 				this.loading = false;
 				window.currencies = this.currencies;
 			});
-        },
+        }, 
         methods: {
             ignoreWithdraw(id) {
                 axios.post('/admin/wallet/ignore', { id: id }).then(() => this.$router.go());

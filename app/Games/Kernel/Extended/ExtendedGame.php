@@ -98,9 +98,9 @@ abstract class ExtendedGame extends Game
                     event(new \App\Events\LiveFeedGame($game, 0));
                 }
 
-                if (! $game->demo && $user->vipLevel() > 0 && ($user->weekly_bonus ?? 0) < 100 && ((Settings::get('weekly_bonus_minbet') / Currency::find(Settings::get('bonus_currency'))->tokenPrice()) ?? 1) <= $game->wager) {
+                /*if (! $game->demo && $user->vipLevel() > 0 && ($user->weekly_bonus ?? 0) < 100 && ((Settings::get('weekly_bonus_minbet') / Currency::find(Settings::get('bonus_currency'))->tokenPrice()) ?? 1) <= $game->wager) {
                     $user->update(['weekly_bonus' => ($user->weekly_bonus ?? 0) + 0.1]);
-                }
+                }*/
 
                 Leaderboard::insert($game);
                 Statistics::insert(

@@ -45,9 +45,9 @@ abstract class QuickGame extends Game
                 }
             }
 
-            if (! $data->demo() && $data->user()->vipLevel() > 0 && ($data->user()->weekly_bonus ?? 0) < 100 && ((Settings::get('weekly_bonus_minbet') / Currency::find(Settings::get('bonus_currency'))->tokenPrice()) ?? 1) <= $data->bet()) {
-                $data->user()->update(['weekly_bonus' => ($data->user()->weekly_bonus ?? 0) + 0.1]);
-            }
+            //if (! $data->demo() && $data->user()->vipLevel() > 0 && ($data->user()->weekly_bonus ?? 0) < 100 && ((Settings::get('weekly_bonus_minbet') / Currency::find(Settings::get('bonus_currency'))->tokenPrice()) ?? 1) <= $data->bet()) {
+            //    $data->user()->update(['weekly_bonus' => ($data->user()->weekly_bonus ?? 0) + 0.1]);
+            //}
         } else {
             return $result_data;
         }

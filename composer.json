@@ -21,13 +21,14 @@
         "clue/redis-react": "2.3",
         "codenix-sv/coingecko-api": "^1.0",
         "doctrine/dbal": "^2.6",
+        "fakerphp/faker": "^1.9.1",
         "fruitcake/laravel-cors": "^2.0",
         "gburtini/distributions": "^0.0.2",
         "geoip2/geoip2": "^2.10",
         "guzzlehttp/guzzle": "^6.0",
         "intervention/image": "^2.7",
         "jdenticon/jdenticon": "^1.0",
-        "jenssegers/mongodb": "^3.8",
+        "jenssegers/mongodb": "dev-master",
         "laravel-notification-channels/discord": "^1.1",
         "laravel-notification-channels/webpush": "^5.0",
         "laravel/framework": "^8.54",
@@ -48,8 +49,7 @@
         "stripe/stripe-php": "^7.102",
         "torann/geoip": "^3.0",
         "vkcom/vk-php-sdk": "^5.101",
-        "web3p/ethereum-tx": "^0.4.0",
-        "fakerphp/faker": "^1.9.1"
+        "web3p/ethereum-tx": "^0.4.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",

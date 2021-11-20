@@ -234,8 +234,7 @@ class BonusController
 
     public function vipBonus(Request $request)
     {
-        //Disabled
-
+        /*
         return [];
         if (auth('sanctum')->user()->vipLevel() == 0) {
             return APIResponse::reject(1, 'Invalid VIP level');
@@ -255,6 +254,7 @@ class BonusController
         TransactionStatistics::statsUpdate(auth('sanctum')->user()->_id, 'weeklybonus', $amount);
 
         return APIResponse::success();
+        */
     }
 
     public function rakeback(Request $request)

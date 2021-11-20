@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit966e24d9c788b9ae3528c98abb800973
+class ComposerStaticInit5f33f3786c2bdceebca74eb60037c1ce
 {
     public static $files = array (
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
@@ -23903,10 +23903,10 @@ class ComposerStaticInit966e24d9c788b9ae3528c98abb800973
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit966e24d9c788b9ae3528c98abb800973::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit966e24d9c788b9ae3528c98abb800973::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit966e24d9c788b9ae3528c98abb800973::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit966e24d9c788b9ae3528c98abb800973::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5f33f3786c2bdceebca74eb60037c1ce::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5f33f3786c2bdceebca74eb60037c1ce::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit5f33f3786c2bdceebca74eb60037c1ce::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit5f33f3786c2bdceebca74eb60037c1ce::$classMap;
 
         }, null, ClassLoader::class);
     }

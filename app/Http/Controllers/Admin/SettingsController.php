@@ -93,6 +93,27 @@ class SettingsController extends Controller
 
         return APIResponse::success();
     }
+    public function currencyExtraSettings(Request $request)
+    {
+        return APIResponse::success([
+            [
+                'name' => 'withdraw_limit_daily',
+                'value' => Settings::get('withdraw_limit_daily', 100, true),
+            ],
+            [
+                'name' => 'withdraw_count_daily',
+                'value' => Settings::get('withdraw_count_daily', 0, true),
+            ],
+            [
+                'name' => 'withdraw_limit_3hrs',
+                'value' => Settings::get('withdraw_limit_3hrs', 300, true),
+            ],
+            [
+                'name' => 'withdraw_count_3hrs',
+                'value' => Settings::get('withdraw_count_3hrs', 0, true),
+            ],
+        ]);
+    }
 
     public function telegramSettings(Request $request)
     {

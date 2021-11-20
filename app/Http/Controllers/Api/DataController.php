@@ -20,6 +20,51 @@ use Illuminate\Support\Str;
 
 class DataController
 {
+
+    public static function GameResultAll($count)
+    {
+        $cachedList = Cache::get('GameResultAll'.$count);
+
+        if (! $cachedList) {
+            $cachedList = GameResult::latest()->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take($count)->get()->reverse();
+            Cache::put('GameResultAll'.$count, $cachedList, Carbon::now()->addMinutes(2));
+        }
+
+        return $cachedList;
+    }
+
+    public static function GameResultMine($count, $mine)
+    {
+        $cachedList = Cache::get('GameResultMine'.$count.$mine);
+
+        if (! $cachedList) {
+            $cachedList = GameResult::latest()->where('demo', '!=', true)->where('user', $mine)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take($count)->get()->reverse();
+            Cache::put('GameResultMine'.$count.$mine, $cachedList, Carbon::now()->addMinutes(2));
+        }
+        return $cachedList;
+    }
+
+    public static function GameResultLuckyWins($count)
+    {
+        $cachedList = Cache::get('GameResultLuckyWins'.$count);
+
+        if (! $cachedList) {
+            $cachedList = GameResult::latest()->where('multiplier', '>=', 10)->where('demo', '!=', true)->where('user', '!=', null)->where('status', 'win')->take($count)->get()->reverse();
+            Cache::put('GameResultLuckyWins'.$count, $cachedList, Carbon::now()->addMinutes(5));
+        }
+        return $cachedList;
+    }
+
+    public static function GameResultHighResult($count)
+    {
+        $cachedList = Cache::get('GameResultHighResult'.$count);
+
+        if (! $cachedList) {
+            $cachedList = GameResult::latest()->where('demo', '!=', true)->where('user', '!=', null)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take($count)->get()->reverse();
+            Cache::put('GameResultHighResult'.$count, $cachedList, Carbon::now()->addMinutes(5));
+        }
+        return $cachedList;
+    }
     public function latestGames(Request $request)
     {
         //Disabled
@@ -27,19 +72,25 @@ class DataController
         $result = [];
         switch ($request->type) {
             case 'mine':
-                $games = GameResult::latest()->where('demo', '!=', true)->where('user', auth('sanctum')->user()->_id)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take($request->count)->get()->reverse();
+                $userID = auth('sanctum')->user()->_id;
+                $games = self::GameResultMine($request->count, $userID);
                 break;
             case 'all':
-                $games = GameResult::latest()->where('demo', '!=', true)->where('user', '!=', null)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take($request->count)->get()->reverse();
-
-                return [];
-                //break;
+                $games = self::GameResultAll($request->count);
+                //return [];
+                break;
             case 'lucky_wins':
-                $games = GameResult::latest()->where('multiplier', '>=', 10)->where('demo', '!=', true)->where('user', '!=', null)->where('status', 'win')->take($request->count)->get()->reverse();
+            //Disabled
+            return [];
+                $games = self::GameResultLuckyWins($request->count);
                 break;
             case 'high_rollers':
+            //Disabled
+            return [];
+
+
                 $hrResult = [];
-                $games = GameResult::latest()->where('demo', '!=', true)->where('user', '!=', null)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take($request->count)->get()->reverse();
+                $games = self::GameResultHighResult($request->count);
                 foreach ($games as $game) {
                     if ($game->wager < floatval(Settings::get('high_roller_requirement') / \App\Currency\Currency::find($game->currency)->tokenPrice())) {
                         continue;
@@ -52,7 +103,7 @@ class DataController
 
         foreach ($games as $game) {
             if ($game->type === 'external') {
-                $getgamename = (\App\Gameslist::where('id', $game->game)->first());
+                $getgamename = Gameslist::cachedList()->where('id', '=', $game->game)->first();
                 $image = 'Image/https://games.cdn4.dk/games'.$getgamename->image.'?q=95&mask=ellipse&auto=compress&sharp=10&w=20&h=20&fit=crop&usm=5&fm=png';
                 $meta = ['id' => $game->game, 'icon' => $image, 'name' => $getgamename->name, 'category' => [$getgamename->category]];
                 array_push($result, [

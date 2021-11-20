@@ -3111,8 +3111,8 @@
         },
         {
             "name": "jenssegers/mongodb",
-            "version": "3.8.4",
-            "version_normalized": "3.8.4.0",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jenssegers/laravel-mongodb.git",
@@ -3142,6 +3142,7 @@
                 "jenssegers/mongodb-session": "Add MongoDB session support to Laravel-MongoDB"
             },
             "time": "2021-05-27T06:52:51+00:00",
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {

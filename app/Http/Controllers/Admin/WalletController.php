@@ -10,6 +10,7 @@ use App\Notifications\WithdrawDeclined;
 use App\User;
 use App\Utils\APIResponse;
 use App\Withdraw;
+use App\TransactionStatistics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -204,6 +205,10 @@ class WalletController extends Controller
         $withdraw->update([
             'status' => 1,
         ]);
+
+        $statsGet = TransactionStatistics::statsGet($withdraw->user);
+        TransactionStatistics::statsUpdate($withdraw->user, 'withdraw_total', ($statsGet->withdraw_total + $withdraw->usd));
+        TransactionStatistics::statsUpdate($withdraw->user, 'withdraw_count', ($statsGet->withdraw_count + 1));
 
         return APIResponse::success();
     }

@@ -6,7 +6,7 @@
                     <div class="logo">
                         <div class="logo"></div>
                         <div class="socials">
-                            <div class="social" onclick="window.open('https://t.me/Treasurekeychannel', '_blank')"><icon icon="fab fa-telegram"></icon></div>
+                            <div class="social" onclick="window.open($t('site_identity.telegram'), '_blank')"><icon icon="fab fa-telegram"></icon></div>
                             <div class="social">18+</div>
                         </div>
                     </div>
@@ -32,14 +32,14 @@
                             </div>
                         </div>
                         <div class="title">{{ $t('footer.need_help') }}</div>
-                        <a href="https://t.me/Treasurekeychannel">Live-Chat</a>
+                        <a href="`$t('site_identity.telegram')`">Live-Chat</a>
                     </div>
                 </div>
                 <div class="column">
                     <div class="copy">
                         &copy; 2021
                     </div>
-                    <div class="footer-logo" onclick="window.open('https://t.me/Treasurekeychannel', '_blank')">TreasureKEY Casino</div>
+                    <div class="footer-logo" onclick="window.open($t('site_identity.telegram'), '_blank')">{{ $t('site_identity.website_footer') }} Casino</div>
                 </div>
             </div>
         </div>
@@ -190,15 +190,14 @@
                             .currency {
                                 margin-bottom: 5px;
                                 margin-right: 5px;
-                                width: 25px;
-                                height: 25px;
+                                width: 28px;
+                                height: 28px;
                                 background: rgba(t('sidebar'), .5);
                                 border-radius: 50%;
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
                                 font-size: 0.9em;
-                                padding-bottom: 3px;
                                 transition: background .3s ease;
 
                                 &:hover {
