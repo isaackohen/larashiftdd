@@ -4,9 +4,10 @@ namespace App;
 
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class DisabledGame extends Model {
-
+class DisabledGame extends Model
+{
     protected $connection = 'mongodb';
+
     protected $collection = 'disabled_games';
 
     /**
@@ -15,7 +16,7 @@ class DisabledGame extends Model {
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     /**
@@ -31,5 +32,4 @@ class DisabledGame extends Model {
      * @var array
      */
     protected $casts = [];
-
 }

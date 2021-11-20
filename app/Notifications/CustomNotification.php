@@ -7,11 +7,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CustomNotification extends Notification {
-
+class CustomNotification extends Notification
+{
     use Queueable;
 
     private $title;
+
     private $message;
 
     /**
@@ -19,7 +20,8 @@ class CustomNotification extends Notification {
      *
      * @return void
      */
-    public function __construct($title, $message) {
+    public function __construct($title, $message)
+    {
         $this->title = $title;
         $this->message = $message;
     }
@@ -30,15 +32,16 @@ class CustomNotification extends Notification {
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable) {
+    public function via($notifiable)
+    {
         return ['database', 'broadcast'];
     }
 
-    public function toArray($notifiable) {
+    public function toArray($notifiable)
+    {
         return [
             'title' => $this->title,
-            'message' => $this->message
+            'message' => $this->message,
         ];
     }
-
 }

@@ -2,14 +2,13 @@
 
 namespace App\Http\Middleware;
 
-
 use Closure;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Http\Exceptions\MaintenanceModeException;
 use Symfony\Component\HttpFoundation\IpUtils;
 
-class CheckForMaintenanceMode {
-
+class PreventRequestsDuringMaintenance
+{
     /**
      * The URIs that should be reachable while maintenance mode is enabled.
      *
@@ -18,7 +17,7 @@ class CheckForMaintenanceMode {
     protected $except = [
         '/admin/',
         '/admin/*',
-		'/api/game/info/*'
+        '/api/game/info/*',
     ];
 
     /**
@@ -34,7 +33,8 @@ class CheckForMaintenanceMode {
      * @param  \Illuminate\Contracts\Foundation\Application  $app
      * @return void
      */
-    public function __construct(Application $app) {
+    public function __construct(Application $app)
+    {
         $this->app = $app;
     }
 
@@ -48,7 +48,8 @@ class CheckForMaintenanceMode {
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      * @throws \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException
      */
-    public function handle($request, Closure $next) {
+    public function handle($request, Closure $next)
+    {
         if ($this->app->isDownForMaintenance() && (auth('sanctum')->guest() || auth('sanctum')->user()->access == 'admin')) {
             $data = json_decode(file_get_contents($this->app->storagePath().'/framework/down'), true);
 
@@ -72,7 +73,8 @@ class CheckForMaintenanceMode {
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    protected function inExceptArray($request) {
+    protected function inExceptArray($request)
+    {
         foreach ($this->except as $except) {
             if ($except !== '/') {
                 $except = trim($except, '/');
@@ -85,5 +87,4 @@ class CheckForMaintenanceMode {
 
         return false;
     }
-
 }

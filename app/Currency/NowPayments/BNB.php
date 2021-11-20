@@ -1,40 +1,51 @@
-<?php namespace App\Currency\NowPayments;
+<?php
 
-class BNB extends NowPaymentsSupport {
+namespace App\Currency\NowPayments;
 
-    function id(): string {
-        return "np_bnb";
+class BNB extends NowPaymentsSupport
+{
+    public function id(): string
+    {
+        return 'np_bnb';
     }
 
-    public function walletId(): string {
-        return "bnb";
-    }
-
-    function name(): string {
-        return "BNB";
-    }
-
-    public function alias(): string {
+    public function walletId(): string
+    {
         return 'bnb';
     }
-    public function conversionID(): string {
+
+    public function name(): string
+    {
+        return 'BNB';
+    }
+
+    public function alias(): string
+    {
+        return 'bnb';
+    }
+
+    public function conversionID(): string
+    {
         return 'binancecoin';
     }
 
-    public function displayName(): string {
-        return "BNB";
+    public function displayName(): string
+    {
+        return 'BNB';
     }
 
-    public function style(): string {
-        return "#bfbbbb";
+    public function style(): string
+    {
+        return '#bfbbbb';
     }
-	
-	public function icon(): string {
-        return "bnb";
+
+    public function icon(): string
+    {
+        return 'bnb';
     }
-	
-	public function nowpayments(): string {
+
+    public function nowpayments(): string
+    {
         return 'BNBBSC';
     }
-
 }

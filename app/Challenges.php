@@ -2,23 +2,24 @@
 
 namespace App;
 
-use Jenssegers\Mongodb\Eloquent\Model;
-use \Cache;
-use Carbon\Carbon;
-use App\User;
-use App\Gameslist;
-use App\Settings;
 use App\Currency\Currency;
-use Illuminate\Support\Facades\Log;
-use App\Notifications\CustomNotification;
-use Illuminate\Support\Facades\Notification;
 use App\Events\PublicUserNotification;
-use App\VIPLevels;
+use App\Gameslist;
+use App\Notifications\CustomNotification;
+use App\Settings;
 use App\Statistics;
+use App\User;
+use App\VIPLevels;
+use Cache;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
+use Jenssegers\Mongodb\Eloquent\Model;
 
-class Challenges extends Model {
-
+class Challenges extends Model
+{
     protected $connection = 'mongodb';
+
     protected $collection = 'challenges';
 
     /**
@@ -27,98 +28,100 @@ class Challenges extends Model {
      * @var array
      */
     protected $fillable = [
-        'game', 'game_name', 'minbet', 'game_image', 'game_provider', 'game_category', 'multiplier', 'winners', 'currency', 'sum', 'maxwinners', 'expires', 'expired', 'vip', 'completed'
+        'game', 'game_name', 'minbet', 'game_image', 'game_provider', 'game_category', 'multiplier', 'winners', 'currency', 'sum', 'maxwinners', 'expires', 'expired', 'vip', 'completed',
     ];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
-     */ 
+     */
     protected $hidden = [];
 
     /**
      * The attributes that should be cast to native types.
-     * 
+     *
      * @var array
      */
     protected $casts = [
         'winners' => 'json',
-        'expires' => 'datetime'
+        'expires' => 'datetime',
     ];
 
-    public static function generate() {
-        return strtoupper(substr(str_shuffle(MD5(microtime())), 0, 8));
+    public static function generate()
+    {
+        return strtoupper(substr(str_shuffle(md5(microtime())), 0, 8));
     }
 
-
-    public static function complete($gameid) {
-        $selectChallenge = Challenges::where('game', '=', $gameid)->first();
+    public static function complete($gameid)
+    {
+        $selectChallenge = self::where('game', '=', $gameid)->first();
         $selectChallenge->update([
-            'completed' => 1
+            'completed' => 1,
         ]);
-        return;
-
     }
 
-    public static function check($gameid, $wager, $multi, $user) {
-
-        $selectChallenge = Challenges::where('game', '=', $gameid)->where('completed', '!=', 1)->first();
-
+    public static function check($gameid, $wager, $multi, $user)
+    {
+        $selectChallenge = self::where('game', '=', $gameid)->where('completed', '!=', 1)->first();
 
         //Log::warning('challenges info: '.$gameid.$wager.$multi.$user);
-        if($selectChallenge) {
-        $selectGames = Gameslist::where('id', '=', $gameid)->first();
-        $user = User::where('_id', $user)->first();
+        if ($selectChallenge) {
+            $selectGames = Gameslist::where('id', '=', $gameid)->first();
+            $user = User::where('_id', $user)->first();
 
-            if($wager < $selectChallenge->minbet) return;
-            if($multi < $selectChallenge->multiplier) return;
-            if($selectChallenge->maxwinners != -1 && $selectChallenge->expired >= $selectChallenge->maxwinners) self::complete($gameid);
-            if($selectChallenge->expires->timestamp != Carbon::minValue()->timestamp && $selectChallenge->expires->isPast()) self::complete($gameid);
-            if(in_array($user->_id, $selectChallenge->winners)) return;
+            if ($wager < $selectChallenge->minbet) {
+                return;
+            }
+            if ($multi < $selectChallenge->multiplier) {
+                return;
+            }
+            if ($selectChallenge->maxwinners != -1 && $selectChallenge->expired >= $selectChallenge->maxwinners) {
+                self::complete($gameid);
+            }
+            if ($selectChallenge->expires->timestamp != Carbon::minValue()->timestamp && $selectChallenge->expires->isPast()) {
+                self::complete($gameid);
+            }
+            if (in_array($user->_id, $selectChallenge->winners)) {
+                return;
+            }
 
             $winners = $selectChallenge->winners;
             array_push($winners, $user->_id);
 
-        $selectChallenge->update([
-            'expired' => $selectChallenge->expired + 1,
-            'winners' => $winners
-        ]);
+            $selectChallenge->update([
+                'expired' => $selectChallenge->expired + 1,
+                'winners' => $winners,
+            ]);
 
-        $currency = Currency::find($selectChallenge->currency);
-        $amount = $currency->convertUSDToToken($selectChallenge->sum);
+            $currency = Currency::find($selectChallenge->currency);
+            $amount = $currency->convertUSDToToken($selectChallenge->sum);
 
-        $stats = Statistics::where('user', $user->_id)->first();
-        $notificationMessage = 'You have won challenge! We have added '.$selectChallenge->sum.'$ to your '.$currency->name().' balance.';
-        self::complete($gameid);
-        
-        if($stats){
-            $viplevel = $stats->viplevel;
-            if($viplevel > 0) {
-                $getcurrentViplevels = VIPLevels::where('level', '=', $viplevel)->first();
-                $bonus = round(($selectChallenge->sum / 100) * $getcurrentViplevels->challenges_bonus, 3);
-                $amount = $currency->convertUSDToToken(($selectChallenge->sum + $bonus));
-                $notificationMessage = 'You have won challenge! We have added '.$selectChallenge->sum.'$ + '.$bonus.'$ VIP bonus to your '.$currency->name().' balance.';
+            $stats = Statistics::where('user', $user->_id)->first();
+            $notificationMessage = 'You have won challenge! We have added '.$selectChallenge->sum.'$ to your '.$currency->name().' balance.';
+            self::complete($gameid);
+
+            if ($stats) {
+                $viplevel = $stats->viplevel;
+                if ($viplevel > 0) {
+                    $getcurrentViplevels = VIPLevels::where('level', '=', $viplevel)->first();
+                    $bonus = round(($selectChallenge->sum / 100) * $getcurrentViplevels->challenges_bonus, 3);
+                    $amount = $currency->convertUSDToToken(($selectChallenge->sum + $bonus));
+                    $notificationMessage = 'You have won challenge! We have added '.$selectChallenge->sum.'$ + '.$bonus.'$ VIP bonus to your '.$currency->name().' balance.';
+                }
             }
+
+            Notification::send($user, new CustomNotification('Challenge Credited', $notificationMessage));
+            $alertmessage = 'Challenge won by '.$user->name.' with a '.$multi.'x multiplier on '.$selectGames->name.'.';
+            event(new PublicUserNotification('Challenge Winner', $alertmessage));
+
+            $telegramChannel = Settings::get('telegram_public_channel');
+            $imageGame = 'https://games.cdn4.dk/games'.$selectGames->image.'';
+            $url = 'http://alerts.sh/api/alert/telegramImage?image='.$imageGame.'&message='.$alertmessage.'&button_text=Check available Challenges&button_url='.env('APP_URL').'/challenges/&channel='.$telegramChannel;
+            $result = file_get_contents($url);
+
+            $user->balance(Currency::find($selectChallenge->currency))->add($amount, Transaction::builder()->message('Challenge Winner')->get());
+            TransactionStatistics::statsUpdate($user->_id, 'challenges', $amount);
         }
-
-        Notification::send($user, new CustomNotification('Challenge Credited', $notificationMessage));
-        $alertmessage = 'Challenge won by '.$user->name.' with a '.$multi.'x multiplier on '.$selectGames->name.'.';
-        event(new PublicUserNotification('Challenge Winner', $alertmessage));
-
-        $telegramChannel =  Settings::get('telegram_public_channel');
-        $imageGame = 'https://games.cdn4.dk/games'.$selectGames->image.'';
-        $url = "http://alerts.sh/api/alert/telegramImage?image=".$imageGame."&message=".$alertmessage."&button_text=Check available Challenges&button_url=".env('APP_URL')."/challenges/&channel=".$telegramChannel;
-        $result = file_get_contents($url);
-
-        $user->balance(Currency::find($selectChallenge->currency))->add($amount, Transaction::builder()->message('Challenge Winner')->get());
-        TransactionStatistics::statsUpdate($user->_id, 'challenges', $amount);
-        
-
-        }
-
-
-
     }
-
 }

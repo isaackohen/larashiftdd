@@ -13,11 +13,12 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class MultiplayerUpdateData implements ShouldQueue {
-
+class MultiplayerUpdateData implements ShouldQueue
+{
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private \App\Games\Kernel\Game $game;
+
     private array $data;
 
     /**
@@ -25,7 +26,8 @@ class MultiplayerUpdateData implements ShouldQueue {
      *
      * @return void
      */
-    public function __construct(\App\Games\Kernel\Game $game, array $data) {
+    public function __construct(\App\Games\Kernel\Game $game, array $data)
+    {
         $this->game = $game;
         $this->data = $data;
     }
@@ -35,9 +37,9 @@ class MultiplayerUpdateData implements ShouldQueue {
      *
      * @return void
      */
-    public function handle() {
+    public function handle()
+    {
         $state = new MultiplayerGameStateBuilder($this->game);
         $state->data($this->data);
     }
-
 }

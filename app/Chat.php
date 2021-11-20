@@ -4,9 +4,10 @@ namespace App;
 
 use Jenssegers\Mongodb\Eloquent\Model;
 
-class Chat extends Model {
-
+class Chat extends Model
+{
     protected $connection = 'mongodb';
+
     protected $collection = 'chat_history';
 
     /**
@@ -15,7 +16,7 @@ class Chat extends Model {
      * @var array
      */
     protected $fillable = [
-        'user', 'data', 'type', 'deleted', 'vipLevel', 'channel', 'user_id'
+        'user', 'data', 'type', 'deleted', 'vipLevel', 'channel', 'user_id',
     ];
 
     /**
@@ -31,7 +32,6 @@ class Chat extends Model {
      * @var array
      */
     protected $casts = [
-        'user' => 'json'
+        'user' => 'json',
     ];
-
 }

@@ -1,31 +1,31 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
-use Carbon\Carbon;
 use App\Challenges;
-use App\Utils\APIResponse;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Gameslist;
+use App\Http\Controllers\Controller;
+use App\Utils\APIResponse;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ChallengesController extends Controller
 {
-	
     public function get()
     {
         return APIResponse::success(Challenges::get()->toArray());
-	}
-	
-	public function create(Request $request)
+    }
+
+    public function create(Request $request)
     {
-		request()->validate([
+        request()->validate([
             'game' => 'required',
             'maxwinners' => 'required',
             'expires' => 'required',
             'minbet' => 'required',
             'multiplier' => 'required',
             'sum' => 'required',
-            'currency' => 'required'
+            'currency' => 'required',
         ]);
 
         $selectGame = Gameslist::where('id', request('game'))->first();
@@ -44,24 +44,28 @@ class ChallengesController extends Controller
             'sum' => floatval(request('sum')),
             'maxwinners' => request('maxwinners'),
             'expired' => 0,
-            'expires' => request('expires') === '%unlimited%' ? Carbon::minValue() : Carbon::createFromFormat('d-m-Y H:i', request()->get('expires'))
+            'expires' => request('expires') === '%unlimited%' ? Carbon::minValue() : Carbon::createFromFormat('d-m-Y H:i', request()->get('expires')),
         ]);
+
         return APIResponse::success();
-	}
-	
-	public function remove()
+    }
+
+    public function remove()
     {
-		Challenges::where('_id', request()->get('id'))->delete();
+        Challenges::where('_id', request()->get('id'))->delete();
+
         return APIResponse::success();
-	}
-	
-	public function removeInactive(Request $request)
+    }
+
+    public function removeInactive(Request $request)
     {
-		foreach(Challenges::get() as $challenge) {
-            if(($challenge->expires->timestamp != Carbon::minValue()->timestamp && $challenge->expires->isPast())
-                || ($challenge->maxwinners != -1 && $challenge->expired >= $challenge->maxwinners)) $challenge->delete();
+        foreach (Challenges::get() as $challenge) {
+            if (($challenge->expires->timestamp != Carbon::minValue()->timestamp && $challenge->expires->isPast())
+                || ($challenge->maxwinners != -1 && $challenge->expired >= $challenge->maxwinners)) {
+                $challenge->delete();
+            }
         }
+
         return APIResponse::success();
-	}
-	
+    }
 }

@@ -1,23 +1,27 @@
-<?php namespace App\Events;
+<?php
+
+namespace App\Events;
 
 use App\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
 
-class UserNotification implements ShouldBroadcastNow {
-
+class UserNotification implements ShouldBroadcastNow
+{
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     private User $user;
+
     private string $message;
+
     private string $title;
 
-
-    public function __construct($user, string $title, string $message) {
+    public function __construct($user, string $title, string $message)
+    {
         $this->title = $title;
         $this->user = $user;
         $this->message = $message;
@@ -28,13 +32,13 @@ class UserNotification implements ShouldBroadcastNow {
      *
      * @return Channel
      */
-    public function broadcastOn() {
+    public function broadcastOn()
+    {
         return new PrivateChannel('App.User.'.$this->user->id);
     }
 
-    public function broadcastWith() {
-
-          return ['title'=> $this->title, 'message'=> $this->message];
+    public function broadcastWith()
+    {
+        return ['title'=> $this->title, 'message'=> $this->message];
     }
-
 }
