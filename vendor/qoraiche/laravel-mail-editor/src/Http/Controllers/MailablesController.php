@@ -5,7 +5,7 @@ namespace Qoraiche\MailEclipse\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
-use Qoraiche\MailEclipse\MailEclipse;
+use Qoraiche\MailEclipse\Facades\MailEclipse;
 
 class MailablesController extends Controller
 {
@@ -13,8 +13,7 @@ class MailablesController extends Controller
     {
         abort_unless(
             App::environment(config('maileclipse.allowed_environments', ['local'])),
-            403,
-            'Environment Not Allowed'
+            403
       );
     }
 
@@ -29,12 +28,7 @@ class MailablesController extends Controller
 
         $mailables = (null !== $mailables) ? $mailables->sortBy('name') : collect([]);
 
-        return view(MailEclipse::$view_namespace.'::sections.mailables', compact('mailables'));
-    }
-
-    public function createMailable(Request $request)
-    {
-        return view(MailEclipse::$view_namespace.'::createmailable');
+        return view(MailEclipse::VIEW_NAMESPACE.'::sections.mailables', compact('mailables'));
     }
 
     public function generateMailable(Request $request)
@@ -52,7 +46,7 @@ class MailablesController extends Controller
 
         $resource = $mailable->first();
 
-        return view(MailEclipse::$view_namespace.'::sections.view-mailable')->with(compact('resource'));
+        return view(MailEclipse::VIEW_NAMESPACE.'::sections.view-mailable')->with(compact('resource'));
     }
 
     public function editMailable($name)
@@ -63,12 +57,7 @@ class MailablesController extends Controller
             return redirect()->route('viewMailable', ['name' => $name]);
         }
 
-        return view(MailEclipse::$view_namespace.'::sections.edit-mailable-template', compact('templateData', 'name'));
-    }
-
-    public function templatePreviewError()
-    {
-        return view(MailEclipse::$view_namespace.'::previewerror');
+        return view(MailEclipse::VIEW_NAMESPACE.'::sections.edit-mailable-template', compact('templateData', 'name'));
     }
 
     public function parseTemplate(Request $request)
@@ -98,39 +87,7 @@ class MailablesController extends Controller
 
     public function previewMailable($name)
     {
-        $mailable = MailEclipse::getMailable('name', $name);
-
-        if ($mailable->isEmpty()) {
-            return redirect()->route('mailableList');
-        }
-
-        $resource = $mailable->first();
-
-        if (! is_null(MailEclipse::handleMailableViewDataArgs($resource['namespace']))) {
-            // $instance = new $resource['namespace'];
-            //
-            $instance = MailEclipse::handleMailableViewDataArgs($resource['namespace']);
-        } else {
-            $instance = new $resource['namespace'];
-        }
-
-        if (collect($resource['data'])->isEmpty()) {
-            return 'View not found';
-        }
-
-        $view = ! is_null($resource['markdown']) ? $resource['markdown'] : $resource['data']->view;
-
-        if (view()->exists($view)) {
-            try {
-                $html = $instance;
-
-                return $html->render();
-            } catch (\ErrorException $e) {
-                return view(MailEclipse::$view_namespace.'::previewerror', ['errorMessage' => $e->getMessage()]);
-            }
-        }
-
-        return view(MailEclipse::$view_namespace.'::previewerror', ['errorMessage' => 'No template associated with this mailable.']);
+        return MailEclipse::renderMailable($name);
     }
 
     public function delete(Request $request)
@@ -148,5 +105,17 @@ class MailablesController extends Controller
         return response()->json([
             'status' => 'error',
         ]);
+    }
+
+    public function sendTest(Request $request)
+    {
+        $validatedData = $request->validate([
+            'email' => 'email|nullable',
+            'name' => 'string|required',
+        ]);
+
+        $email = $request->get('email') ?? config('maileclipse.test_mail');
+
+        MailEclipse::sendTest($request->get('name'), $email);
     }
 }

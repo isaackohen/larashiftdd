@@ -21,28 +21,41 @@ class UnifiedSpecTest extends FunctionalTestCase
 {
     /** @var array */
     private static $incompleteTests = [
-        // PHPLIB-573 and DRIVERS-1340
-        'crud/unacknowledged-bulkWrite-delete-hint-clientError: Unacknowledged bulkWrite deleteOne with hints fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-bulkWrite-delete-hint-clientError: Unacknowledged bulkWrite deleteMany with hints fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-bulkWrite-update-hint-clientError: Unacknowledged bulkWrite updateOne with hints fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-bulkWrite-update-hint-clientError: Unacknowledged bulkWrite updateMany with hints fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-bulkWrite-update-hint-clientError: Unacknowledged bulkWrite replaceOne with hints fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-deleteMany-hint-clientError: Unacknowledged deleteMany with hint string fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-deleteMany-hint-clientError: Unacknowledged deleteMany with hint document fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-deleteOne-hint-clientError: Unacknowledged deleteOne with hint string fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-deleteOne-hint-clientError: Unacknowledged deleteOne with hint document fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-findOneAndDelete-hint-clientError: Unacknowledged findOneAndDelete with hint string fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-findOneAndDelete-hint-clientError: Unacknowledged findOneAndDelete with hint document fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-findOneAndReplace-hint-clientError: Unacknowledged findOneAndReplace with hint string fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-findOneAndReplace-hint-clientError: Unacknowledged findOneAndReplace with hint document fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-findOneAndUpdate-hint-clientError: Unacknowledged findOneAndUpdate with hint string fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-findOneAndUpdate-hint-clientError: Unacknowledged findOneAndUpdate with hint document fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-replaceOne-hint-clientError: Unacknowledged ReplaceOne with hint string fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-replaceOne-hint-clientError: Unacknowledged ReplaceOne with hint document fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-updateMany-hint-clientError: Unacknowledged updateMany with hint string fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-updateMany-hint-clientError: Unacknowledged updateMany with hint document fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-updateOne-hint-clientError: Unacknowledged updateOne with hint string fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
-        'crud/unacknowledged-updateOne-hint-clientError: Unacknowledged updateOne with hint document fails with client-side error' => 'PHPLIB-573 and DRIVERS-1340',
+        'command-monitoring/pre-42-server-connection-id: command events do not include server connection id' => 'Not yet implemented (PHPC-1899, PHPLIB-718)',
+        'command-monitoring/server-connection-id: command events include server connection id' => 'Not yet implemented (PHPC-1899, PHPLIB-718)',
+        // Many load balancer tests use CMAP events and/or assertNumberConnectionsCheckedOut
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: no connection is pinned if all documents are returned in the initial batch' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: pinned connections are returned when the cursor is drained' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: pinned connections are returned to the pool when the cursor is closed' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: pinned connections are not returned after an network error during getMore' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: pinned connections are returned after a network error during a killCursors request' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: pinned connections are not returned to the pool after a non-network error on getMore' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: aggregate pins the cursor to a connection' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: listCollections pins the cursor to a connection' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: listIndexes pins the cursor to a connection' => 'PHPC does not implement CMAP',
+        'load-balancers/cursors are correctly pinned to connections for load-balanced clusters: change streams pin to a connection' => 'PHPC does not implement CMAP',
+        'load-balancers/monitoring events include correct fields: poolClearedEvent events include serviceId' => 'PHPC does not implement CMAP',
+        'load-balancers/load-balancers/state change errors are correctly handled: only connections for a specific serviceId are closed when pools are cleared' => 'PHPC does not implement CMAP',
+        'load-balancers/state change errors are correctly handled: only connections for a specific serviceId are closed when pools are cleared' => 'PHPC does not implement CMAP',
+        'load-balancers/state change errors are correctly handled: errors during the initial connection hello are ignored' => 'PHPC does not implement CMAP',
+        'load-balancers/state change errors are correctly handled: stale errors are ignored' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: all operations go to the same mongos' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: transaction can be committed multiple times' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is not released after a non-transient CRUD error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is not released after a non-transient commit error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is released after a non-transient abort error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is released after a transient non-network CRUD error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is released after a transient network CRUD error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is released after a transient non-network commit error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is released after a transient network commit error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is released after a transient non-network abort error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is released after a transient network abort error' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is released on successful abort' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is returned when a new transaction is started' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: pinned connection is returned when a non-transaction operation uses the session' => 'PHPC does not implement CMAP',
+        'load-balancers/transactions are correctly pinned to connections for load-balanced clusters: a connection can be shared by a transaction and a cursor' => 'PHPC does not implement CMAP',
+        'load-balancers/wait queue timeout errors include details about checked out connections: wait queue timeout errors include cursor statistics' => 'PHPC does not implement CMAP',
+        'load-balancers/wait queue timeout errors include details about checked out connections: wait queue timeout errors include transaction statistics' => 'PHPC does not implement CMAP',
         // PHPC does not implement CMAP
         'valid-pass/assertNumberConnectionsCheckedOut: basic assertion succeeds' => 'PHPC does not implement CMAP',
         'valid-pass/entity-client-cmap-events: events are captured during an operation' => 'PHPC does not implement CMAP',
@@ -98,7 +111,21 @@ class UnifiedSpecTest extends FunctionalTestCase
     }
 
     /**
+     * @dataProvider provideCommandMonitoringTests
+     */
+    public function testCommandMonitoring(UnifiedTestCase $test): void
+    {
+        self::$runner->run($test);
+    }
+
+    public function provideCommandMonitoringTests()
+    {
+        return $this->provideTests(__DIR__ . '/command-monitoring/*.json');
+    }
+
+    /**
      * @dataProvider provideCrudTests
+     * @group serverless
      */
     public function testCrud(UnifiedTestCase $test): void
     {
@@ -124,7 +151,34 @@ class UnifiedSpecTest extends FunctionalTestCase
     }
 
     /**
+     * @dataProvider provideLoadBalancers
+     */
+    public function testLoadBalancers(UnifiedTestCase $test): void
+    {
+        self::$runner->run($test);
+    }
+
+    public function provideLoadBalancers()
+    {
+        return $this->provideTests(__DIR__ . '/load-balancers/*.json');
+    }
+
+    /**
+     * @dataProvider provideSessionsTests
+     */
+    public function testSessions(UnifiedTestCase $test): void
+    {
+        self::$runner->run($test);
+    }
+
+    public function provideSessionsTests()
+    {
+        return $this->provideTests(__DIR__ . '/sessions/*.json');
+    }
+
+    /**
      * @dataProvider provideTransactionsTests
+     * @group serverless
      */
     public function testTransactions(UnifiedTestCase $test): void
     {
@@ -139,6 +193,7 @@ class UnifiedSpecTest extends FunctionalTestCase
     /**
      * @dataProvider provideVersionedApiTests
      * @group versioned-api
+     * @group serverless
      */
     public function testVersionedApi(UnifiedTestCase $test): void
     {

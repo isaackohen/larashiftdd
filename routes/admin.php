@@ -10,17 +10,6 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VipsController;
 use App\Http\Controllers\Admin\WalletController;
-use App\Http\Controllers\ChallengesController;
-use App\Http\Controllers\CurrenciesController;
-use App\Http\Controllers\GamesController;
-use App\Http\Controllers\MainController;
-use App\Http\Controllers\ModuleController;
-use App\Http\Controllers\NotificationsController;
-use App\Http\Controllers\PromocodeController;
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\VipsController;
-use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('wallet/withdrawals', [WalletController::class, 'withdrawals']);

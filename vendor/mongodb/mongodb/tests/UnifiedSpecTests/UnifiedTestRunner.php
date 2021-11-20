@@ -19,7 +19,9 @@ use UnexpectedValueException;
 
 use function call_user_func;
 use function count;
+use function filter_var;
 use function gc_collect_cycles;
+use function getenv;
 use function in_array;
 use function is_string;
 use function PHPUnit\Framework\assertContainsOnly;
@@ -32,6 +34,8 @@ use function preg_replace;
 use function sprintf;
 use function strpos;
 use function version_compare;
+
+use const FILTER_VALIDATE_BOOLEAN;
 
 /**
  * Unified test runner.
@@ -46,7 +50,7 @@ final class UnifiedTestRunner
     public const SERVER_ERROR_UNAUTHORIZED = 13;
 
     public const MIN_SCHEMA_VERSION = '1.0';
-    public const MAX_SCHEMA_VERSION = '1.4';
+    public const MAX_SCHEMA_VERSION = '1.5';
 
     /** @var MongoDB\Client */
     private $internalClient;
@@ -74,7 +78,7 @@ final class UnifiedTestRunner
         /* Atlas prohibits killAllSessions. Inspect the connection string to
          * determine if we should avoid calling killAllSessions(). This does
          * mean that lingering transactions could block test execution. */
-        if (strpos($internalClientUri, self::ATLAS_TLD) !== false) {
+        if ($this->isServerless() || strpos($internalClientUri, self::ATLAS_TLD) !== false) {
             $this->allowKillAllSessions = false;
         }
     }
@@ -297,7 +301,6 @@ final class UnifiedTestRunner
      */
     private function getTopology(): string
     {
-        // TODO: detect load-balanced topologies once PHPLIB-671 is implemented
         switch ($this->getPrimaryServer()->getType()) {
             case Server::TYPE_STANDALONE:
                 return RunOnRequirement::TOPOLOGY_SINGLE;
@@ -309,6 +312,9 @@ final class UnifiedTestRunner
                 return $this->isShardedClusterUsingReplicasets()
                     ? RunOnRequirement::TOPOLOGY_SHARDED_REPLICASET
                     : RunOnRequirement::TOPOLOGY_SHARDED;
+
+            case Server::TYPE_LOAD_BALANCER:
+                return RunOnRequirement::TOPOLOGY_LOAD_BALANCED;
 
             default:
                 throw new UnexpectedValueException('Toplogy is neither single nor RS nor sharded');
@@ -339,8 +345,9 @@ final class UnifiedTestRunner
      */
     private function isServerless(): bool
     {
-        // TODO: detect serverless once PHPC-1755 is implemented
-        return false;
+        $isServerless = getenv('MONGODB_IS_SERVERLESS');
+
+        return $isServerless !== false ? filter_var($isServerless, FILTER_VALIDATE_BOOLEAN) : false;
     }
 
     /**

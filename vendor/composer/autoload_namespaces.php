@@ -10,7 +10,6 @@ return array(
     'Snowplow\\RefererParser' => array($vendorDir . '/snowplow/referer-parser/php/src'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'Math_' => array($vendorDir . '/pear/math_biginteger'),
-    'Jenssegers\\Mongodb' => array($vendorDir . '/jenssegers/mongodb/src'),
     'Evenement' => array($vendorDir . '/evenement/evenement/src'),
     'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
     'Clue\\Redis\\Protocol' => array($vendorDir . '/clue/redis-protocol/src'),

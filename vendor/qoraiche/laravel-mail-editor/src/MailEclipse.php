@@ -3,16 +3,17 @@
 namespace Qoraiche\MailEclipse;
 
 use ErrorException;
-use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Factory as EloquentFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Qoraiche\MailEclipse\Utils\Replacer;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReeceM\Mocker\Mocked;
@@ -20,11 +21,14 @@ use ReflectionClass;
 use ReflectionProperty;
 use RegexIterator;
 
+/**
+ * Class MailEclipse.
+ */
 class MailEclipse
 {
-    public static $view_namespace = 'maileclipse';
+    public const VIEW_NAMESPACE = 'maileclipse';
 
-    public const VERSION = '2.3.0';
+    public const VERSION = '3.3.0';
 
     /**
      * Default type examples for being passed to reflected classes.
@@ -32,42 +36,53 @@ class MailEclipse
      * @var array TYPES
      */
     public const TYPES = [
-        'int'    => 31,
-        'string' => null,
-        'bool'   => false,
-        'float'  =>  3.14159,
+        'int' => 31,
+        // 'string' => 'test_string', // not needed as it can be cast __toString()
+        'bool' => false,
+        'float' => 3.14159,
     ];
 
-    public static $traversed = 0;
-
+    /**
+     * @return array
+     * @throws \ReflectionException
+     */
     public static function getMailables()
     {
         return self::mailablesList();
     }
 
-    public static function getMailable($key, $name)
+    /**
+     * @param $key
+     * @param $name
+     * @return Collection
+     * @throws \ReflectionException
+     */
+    public static function getMailable($key, $name): Collection
     {
-        $filtered = collect(self::getMailables())->where($key, $name);
-
-        return $filtered;
+        return collect(self::getMailables())->where($key, $name);
     }
 
-    public static function deleteTemplate($templateSlug)
+    /**
+     * @param $templateSlug
+     * @return bool
+     */
+    public static function deleteTemplate($templateSlug): bool
     {
         $template = self::getTemplates()
             ->where('template_slug', $templateSlug)->first();
 
-        if (! is_null($template)) {
-            self::saveTemplates(self::getTemplates()->reject(function ($value, $key) use ($template) {
-                return $value->template_slug == $template->template_slug;
+        if ($template !== null) {
+            self::saveTemplates(self::getTemplates()->reject(function ($value) use ($template) {
+                return $value->template_slug === $template->template_slug;
             }));
 
-            $template_view = self::$view_namespace.'::templates.'.$templateSlug;
+            $template_view = self::VIEW_NAMESPACE.'::templates.'.$templateSlug;
             $template_plaintext_view = $template_view.'_plain_text';
 
             if (View::exists($template_view)) {
                 unlink(View($template_view)->getPath());
 
+                // remove plain text template version when exists
                 if (View::exists($template_plaintext_view)) {
                     unlink(View($template_plaintext_view)->getPath());
                 }
@@ -79,12 +94,17 @@ class MailEclipse
         return false;
     }
 
+    /**
+     * @return string
+     */
     public static function getTemplatesFile()
     {
         $file = config('maileclipse.mailables_dir').'templates.json';
         if (! file_exists($file)) {
             if (! file_exists(config('maileclipse.mailables_dir'))) {
-                mkdir(config('maileclipse.mailables_dir'));
+                if (! mkdir($concurrentDirectory = config('maileclipse.mailables_dir')) && ! is_dir($concurrentDirectory)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                }
             }
             file_put_contents($file, '[]');
         }
@@ -92,17 +112,26 @@ class MailEclipse
         return $file;
     }
 
-    public static function saveTemplates(Collection $templates)
+    /**
+     * Save templates to templates.json file.
+     *
+     * @param Collection $templates
+     */
+    public static function saveTemplates(Collection $templates): void
     {
         file_put_contents(self::getTemplatesFile(), $templates->toJson());
     }
 
-    public static function updateTemplate($request)
+    /**
+     * @param $request
+     * @return JsonResponse|null
+     */
+    public static function updateTemplate($request): ?JsonResponse
     {
         $template = self::getTemplates()
             ->where('template_slug', $request->templateslug)->first();
 
-        if (! is_null($template)) {
+        if ($template !== null) {
             if (! preg_match("/^[a-zA-Z0-9-_\s]+$/", $request->title)) {
                 return response()->json([
                     'status' => 'failed',
@@ -110,13 +139,9 @@ class MailEclipse
                 ]);
             }
 
-            $templatename = Str::camel(preg_replace('/\s+/', '_', $request->title));
+            $templateName = Str::camel(preg_replace('/\s+/', '_', $request->title));
 
-            // check if not already exists on db
-            //
-            //
-
-            if (self::getTemplates()->contains('template_slug', '=', $templatename)) {
+            if (self::getTemplates()->contains('template_slug', '=', $templateName)) {
                 return response()->json([
 
                     'status' => 'failed',
@@ -126,60 +151,59 @@ class MailEclipse
             }
 
             // Update
-            //
-            $oldForm = self::getTemplates()->reject(function ($value, $key) use ($template) {
-                return $value->template_slug == $template->template_slug;
+            $oldForm = self::getTemplates()->reject(function ($value) use ($template) {
+                return $value->template_slug === $template->template_slug;
             });
             $newForm = array_merge($oldForm->toArray(), [array_merge((array) $template, [
-                'template_slug' => $templatename,
+                'template_slug' => $templateName,
                 'template_name' => $request->title,
                 'template_description' => $request->description,
             ])]);
 
             self::saveTemplates(collect($newForm));
 
-            $template_view = self::$view_namespace.'::templates.'.$request->templateslug;
+            $template_view = self::VIEW_NAMESPACE.'::templates.'.$request->templateslug;
             $template_plaintext_view = $template_view.'_plain_text';
 
             if (View::exists($template_view)) {
                 $viewPath = View($template_view)->getPath();
 
-                rename($viewPath, dirname($viewPath)."/{$templatename}.blade.php");
+                rename($viewPath, dirname($viewPath)."/{$templateName}.blade.php");
 
                 if (View::exists($template_plaintext_view)) {
                     $textViewPath = View($template_plaintext_view)->getPath();
 
-                    rename($textViewPath, dirname($viewPath)."/{$templatename}_plain_text.blade.php");
+                    rename($textViewPath, dirname($viewPath)."/{$templateName}_plain_text.blade.php");
                 }
             }
 
             return response()->json([
-
                 'status' => 'ok',
                 'message' => 'Updated Successfully',
-                'template_url' => route('viewTemplate', ['templatename' => $templatename]),
-
+                'template_url' => route('viewTemplate', ['templatename' => $templateName]),
             ]);
         }
     }
 
-    public static function getTemplate($templateSlug)
+    /**
+     * @param $templateSlug
+     * @return Collection|null
+     */
+    public static function getTemplate($templateSlug): ?Collection
     {
-        $template = self::getTemplates()
-            ->where('template_slug', $templateSlug)->first();
+        $template = self::getTemplates()->where('template_slug', $templateSlug)->first();
 
-        if (! is_null($template)) {
-            $template_view = self::$view_namespace.'::templates.'.$template->template_slug;
+        if ($template !== null) {
+            $template_view = self::VIEW_NAMESPACE.'::templates.'.$template->template_slug;
             $template_plaintext_view = $template_view.'_plain_text';
-
-            // return $template_plaintext_view;
 
             if (View::exists($template_view)) {
                 $viewPath = View($template_view)->getPath();
                 $textViewPath = View($template_plaintext_view)->getPath();
 
+                /** @var Collection $templateData */
                 $templateData = collect([
-                    'template' => self::templateComponentReplace(file_get_contents($viewPath), true),
+                    'template' => Replacer::toEditor(file_get_contents($viewPath)),
                     'plain_text' => View::exists($template_plaintext_view) ? file_get_contents($textViewPath) : '',
                     'slug' => $template->template_slug,
                     'name' => $template->template_name,
@@ -192,156 +216,75 @@ class MailEclipse
                 return $templateData;
             }
         }
-
-        // return;
     }
 
-    public static function getTemplates()
+    /**
+     * Get templates collection.
+     *
+     * @return Collection
+     */
+    public static function getTemplates(): Collection
     {
-        $template = collect(json_decode(file_get_contents(self::getTemplatesFile())));
-
-        return $template;
+        return collect(json_decode(file_get_contents(self::getTemplatesFile())));
     }
 
-    public static function createTemplate($request)
+    /**
+     * @param $request
+     * @return JsonResponse
+     */
+    public static function createTemplate($request): JsonResponse
     {
         if (! preg_match("/^[a-zA-Z0-9-_\s]+$/", $request->template_name)) {
             return response()->json([
-
                 'status' => 'error',
                 'message' => 'Template name not valid',
 
             ]);
         }
 
-        $view = self::$view_namespace.'::templates.'.$request->template_name;
+        $view = self::VIEW_NAMESPACE.'::templates.'.$request->template_name;
+        $templateName = Str::camel(preg_replace('/\s+/', '_', $request->template_name));
 
-        $templatename = Str::camel(preg_replace('/\s+/', '_', $request->template_name));
-
-        if (! view()->exists($view) && ! self::getTemplates()->contains('template_slug', '=', $templatename)) {
+        if (! view()->exists($view) && ! self::getTemplates()->contains('template_slug', '=', $templateName)) {
             self::saveTemplates(self::getTemplates()
                 ->push([
                     'template_name' => $request->template_name,
-                    'template_slug' => $templatename,
+                    'template_slug' => $templateName,
                     'template_description' => $request->template_description,
                     'template_type' => $request->template_type,
                     'template_view_name' => $request->template_view_name,
                     'template_skeleton' => $request->template_skeleton,
                 ]));
 
-            $dir = resource_path('views/vendor/'.self::$view_namespace.'/templates');
+            $dir = resource_path('views/vendor/'.self::VIEW_NAMESPACE.'/templates');
 
-            if (! \File::isDirectory($dir)) {
-                \File::makeDirectory($dir, 0755, true);
+            if (! File::isDirectory($dir)) {
+                File::makeDirectory($dir, 0755, true);
             }
 
-            file_put_contents($dir."/{$templatename}.blade.php", self::templateComponentReplace($request->content));
+            file_put_contents($dir."/{$templateName}.blade.php", Replacer::toBlade($request->content));
 
-            file_put_contents($dir."/{$templatename}_plain_text.blade.php", $request->plain_text);
+            file_put_contents($dir."/{$templateName}_plain_text.blade.php", $request->plain_text);
 
             return response()->json([
-
                 'status' => 'ok',
                 'message' => 'Template created<br> <small>Reloading...<small>',
-                'template_url' => route('viewTemplate', ['templatename' => $templatename]),
-
+                'template_url' => route('viewTemplate', ['templatename' => $templateName]),
             ]);
         }
 
         return response()->json([
-
             'status' => 'error',
             'message' => 'Template not created',
 
         ]);
     }
 
-    public static function getTemplateSkeletons()
-    {
-        return collect(config('maileclipse.skeletons'));
-    }
-
-    public static function getTemplateSkeleton($type, $name, $skeleton)
-    {
-        $skeletonView = self::$view_namespace."::skeletons.{$type}.{$name}.{$skeleton}";
-
-        if (view()->exists($skeletonView)) {
-            $skeletonViewPath = View($skeletonView)->getPath();
-            $templateContent = file_get_contents($skeletonViewPath);
-
-            return [
-                'type' => $type,
-                'name' => $name,
-                'skeleton' => $skeleton,
-                'template' => self::templateComponentReplace($templateContent, true),
-                'view' => $skeletonView,
-                'view_path' => $skeletonViewPath,
-            ];
-        }
-    }
-
-    protected static function templateComponentReplace($content, $reverse = false)
-    {
-        if ($reverse) {
-            $patterns = [
-                '/@component/i',
-                '/@endcomponent/i',
-                '/@yield/',
-                '/@section/',
-                '/@endsection/',
-                '/@extends/',
-                '/@parent/',
-                '/@slot/',
-                '/@endslot/',
-            ];
-
-            $replacements = [
-                '[component]: # ',
-                '[endcomponent]: # ',
-                '[yield]: # ',
-                '[section]: # ',
-                '[endsection]: # ',
-                '[extends]: # ',
-                '[parent]: # ',
-                '[slot]: # ',
-                '[endslot]: # ',
-            ];
-        } else {
-            $patterns = [
-                '/\[component]:\s?#\s?/i',
-                '/\[endcomponent]:\s?#\s?/i',
-                '/\[yield]:\s?#\s?/i',
-                '/\[section]:\s?#\s?/i',
-                '/\[endsection]:\s?#\s?/i',
-                '/\[extends]:\s?#\s?/i',
-                '/\[parent]:\s?#\s?/i',
-                '/\[slot]:\s?#\s?/i',
-                '/\[endslot]:\s?#\s?/i',
-            ];
-
-            $replacements = [
-                '@component',
-                '@endcomponent',
-                '@yield',
-                '@section',
-                '@endsection',
-                '@extends',
-                '@parent',
-                '@slot',
-                '@endslot',
-            ];
-        }
-
-        return preg_replace($patterns, $replacements, $content);
-    }
-
     protected static function markdownedTemplate($viewPath)
     {
         $viewContent = file_get_contents($viewPath);
 
-        return self::templateComponentReplace($viewContent, true);
-
-        // return preg_replace($patterns, $replacements, $viewContent);
+        return Replacer::toEditor($viewContent);
     }
 
     /**
@@ -349,19 +292,28 @@ class MailEclipse
      */
     public static function markdownedTemplateToView($save = true, $content = '', $viewPath = '', $template = false)
     {
-        if ($template && View::exists(self::$view_namespace.'::templates.'.$viewPath)) {
-            $viewPath = View(self::$view_namespace.'::templates.'.$viewPath)->getPath();
+        if ($template && View::exists(self::VIEW_NAMESPACE.'::templates.'.$viewPath)) {
+            $viewPath = View(self::VIEW_NAMESPACE.'::templates.'.$viewPath)->getPath();
         }
 
-        $replaced = self::templateComponentReplace($content);
+        $replaced = Replacer::toBlade($content);
 
         if (! $save) {
             return $replaced;
         }
 
-        return file_put_contents($viewPath, $replaced) === false ? false : true;
+        return file_put_contents($viewPath, $replaced) !== false;
     }
 
+    /**
+     * @param $simpleview
+     * @param $content
+     * @param $viewName
+     * @param bool $template
+     * @param null $namespace
+     * @return bool|string|void
+     * @throws \ReflectionException
+     */
     public static function previewMarkdownViewContent($simpleview, $content, $viewName, $template = false, $namespace = null)
     {
         $previewtoset = self::markdownedTemplateToView(false, $content);
@@ -373,25 +325,32 @@ class MailEclipse
 
             if ($template) {
                 $instance = null;
+            } elseif (self::handleMailableViewDataArgs($namespace) !== null) {
+                $instance = self::handleMailableViewDataArgs($namespace);
             } else {
-                if (! is_null(self::handleMailableViewDataArgs($namespace))) {
-                    $instance = self::handleMailableViewDataArgs($namespace);
-                } else {
-                    $instance = new $namespace;
-                }
+                $instance = new $namespace;
             }
 
-            return self::renderPreview($simpleview, self::$view_namespace.'::draft.'.$viewName, $template, $instance);
+            return self::renderPreview($simpleview, self::VIEW_NAMESPACE.'::draft.'.$viewName, $template, $instance);
         }
 
         return false;
     }
 
+    /**
+     * @param $instance
+     * @param $view
+     * @return string|void
+     */
     public static function previewMarkdownHtml($instance, $view)
     {
         return self::renderPreview($instance, $view);
     }
 
+    /**
+     * @param $mailableName
+     * @return array|bool
+     */
     public static function getMailableTemplateData($mailableName)
     {
         $mailable = self::getMailable('name', $mailableName);
@@ -402,8 +361,8 @@ class MailEclipse
 
         $templateData = collect($mailable->first())->only(['markdown', 'view_path', 'text_view_path', 'text_view', 'view_data', 'data', 'namespace'])->all();
 
-        $templateExists = ! is_null($templateData['view_path']);
-        $textTemplateExists = ! is_null($templateData['text_view_path']);
+        $templateExists = $templateData['view_path'] !== null;
+        $textTemplateExists = $templateData['text_view_path'] !== null;
 
         if ($templateExists) {
             $viewPathParams = collect($templateData)->union([
@@ -411,10 +370,8 @@ class MailEclipse
                 'text_template' => $textTemplateExists ? file_get_contents($templateData['text_view_path']) : null,
                 'template' => file_get_contents($templateData['view_path']),
                 'markdowned_template' => self::markdownedTemplate($templateData['view_path']),
-                'template_name' => ! is_null($templateData['markdown']) ? $templateData['markdown'] : $templateData['data']->view,
-                'is_markdown' => ! is_null($templateData['markdown']) ? true : false,
-                // 'text_template' => file_get_contents($templateData['text_view_path']),
-
+                'template_name' => $templateData['markdown'] ?? $templateData['data']->view,
+                'is_markdown' => $templateData['markdown'] !== null,
             ])->all();
 
             return $viewPathParams;
@@ -423,13 +380,22 @@ class MailEclipse
         return $templateData;
     }
 
-    public static function generateMailable($request = null)
+    /**
+     * @param null $request
+     * @return JsonResponse
+     */
+    public static function generateMailable($request = null): JsonResponse
     {
-        $name = ucwords(Str::camel(preg_replace('/\s+/', '_', $request->input('name'))));
+        $name = self::generateClassName($request->input('name'));
 
-        if (! self::getMailable('name', $name)->isEmpty() && ! $request->has('force')) {
-            // return redirect()->route('createMailable')->with('error', 'mailable already exists! to overide it enable force option.');
-            //
+        if ($name === false) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Wrong name format.',
+            ]);
+        }
+
+        if (! $request->has('force') && ! self::getMailable('name', $name)->isEmpty()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'This mailable name already exists. names should be unique! to override it, enable "force" option.',
@@ -439,7 +405,7 @@ class MailEclipse
         if (strtolower($name) === 'mailable') {
             return response()->json([
                 'status' => 'error',
-                'message' => 'You cannot use this name',
+                'message' => 'You cannot use "mailable" as a mailable name',
             ]);
         }
 
@@ -458,22 +424,25 @@ class MailEclipse
         $exitCode = Artisan::call('make:mail', $params->all());
 
         if ($exitCode > -1) {
-
-            // return redirect()->route('mailableList');
-            //
             return response()->json([
-
                 'status' => 'ok',
                 'message' => 'Mailable Created<br> <small>Reloading...<small>',
-
             ]);
         }
+
+        return response()->json([
+
+            'status' => 'error',
+            'message' => 'mailable not created successfully',
+
+        ]);
     }
 
     /**
-     * Get mailables list.
+     * Get Mailables list.
      *
-     * @return void|Collection
+     * @return array
+     * @throws \ReflectionException
      */
     protected static function mailablesList()
     {
@@ -569,14 +538,15 @@ class MailEclipse
                 return ! method_exists($object['namespace'], 'build');
             });
 
-            // return $collection->all();
-            //
             return $collection;
         }
     }
 
     /**
      * Handle Mailable Constructor arguments and pass the fake ones.
+     * @param $mailable
+     * @return object|void
+     * @throws \ReflectionException
      */
     public static function handleMailableViewDataArgs($mailable)
     {
@@ -596,7 +566,7 @@ class MailEclipse
                             'is_instance' => true,
                             'instance' => $param->getType()->getName(),
                         ];
-                    } elseif ($param->getType()->getName() == 'array') {
+                    } elseif ($param->getType()->getName() === 'array') {
                         $parameters = [
                             'is_array' => true,
                             'arg' => $param->getName(),
@@ -611,37 +581,28 @@ class MailEclipse
                 return $param->name;
             });
 
-            $filteredparams = [];
+            $resolvedTypeHints = [];
 
             foreach ($args->all() as $arg) {
                 if (is_array($arg)) {
                     if (isset($arg['is_instance'])) {
                         $model = $arg['instance'];
 
-                        self::$traversed = 0;
-
-                        $factoryModel = self::resolveFactory($eloquentFactory, $model);
-
-                        $filteredparams[] = $factoryModel
-                            ? self::hydrateRelations($eloquentFactory, $factoryModel)
-                            : $factoryModel;
+                        $resolvedTypeHints = self::resolveFactory($eloquentFactory, $model, $resolvedTypeHints);
                     } elseif (isset($arg['is_array'])) {
-                        $filteredparams[] = [];
+                        $resolvedTypeHints[] = [];
                     } else {
                         return;
                     }
                 } else {
-                    $filteredparams[] = self::getMissingParams($arg, $params);
+                    $resolvedTypeHints[] = self::getMissingParams($arg, $params);
                 }
             }
 
             $reflector = new ReflectionClass($mailable);
 
-            if (! $args->isEmpty()) {
-                $filteredparams = array_filter($filteredparams);
-                $foo = $reflector->newInstanceArgs($filteredparams);
-
-                return $foo;
+            if ($args->isNotEmpty()) {
+                return $reflector->newInstanceArgs($resolvedTypeHints);
             }
 
             DB::rollBack();
@@ -651,7 +612,7 @@ class MailEclipse
     /**
      * Gets any missing params that may not be collectable in the reflection.
      *
-     * @param string $arg the argument string|
+     * @param string $arg the argument string|array
      * @param array $params the reflection param list
      *
      * @return array|string|\ReeceM\Mocker\Mocked
@@ -675,146 +636,25 @@ class MailEclipse
                 : null;
         } else {
             $type = ! is_null($reflection)
-                ? self::TYPES[
-                /** @scrutinizer ignore-deprecated */
-                $reflection->__toString()]
+                ? self::TYPES[/** @scrutinizer ignore-deprecated */ $reflection->__toString()]
                 : null;
         }
 
         try {
             return ! is_null($type)
-                ? $type
-                : new Mocked($arg, \ReeceM\Mocker\Utils\VarStore::singleton());
+                    ? $type
+                    : new Mocked($arg, \ReeceM\Mocker\Utils\VarStore::singleton());
         } catch (\Exception $e) {
             return $arg;
         }
     }
 
     /**
-     * Resolves the factory result for a model and returns the hydrated instance.
-     *
-     * @todo Allow the values for the Make command to be passed down by the pkg.
-     *
-     * @param $eloquentFactory
-     * @param $model
-     *
-     * @return null|object
+     * @param $mailable
+     * @param $mailable_data
+     * @return array|Collection
+     * @throws \ReflectionException
      */
-    private static function resolveFactory($eloquentFactory, $model): ?object
-    {
-        if (! config('maileclipse.factory')) {
-            return app($model);
-        }
-
-        // factory builder backwards compatibility
-        if (isset($eloquentFactory[$model]) && function_exists('factory')) {
-            return call_user_func_array('factory', [$model])->make();
-        }
-
-        return null;
-    }
-
-    /**
-     * single level relation resolving for a model.
-     * It will load the relations or set to mocked class.
-     *
-     * @param mixed $eloquentFactory
-     * @param mixed $factoryModel
-     *
-     * @return null|object
-     */
-    private static function hydrateRelations($eloquentFactory, $factoryModel): ?object
-    {
-        if (config('maileclipse.relation_depth') === 0) {
-            return $factoryModel;
-        }
-
-        if (self::$traversed >= 5) {
-            Log::warning('[MailEclipse]: more than 5 calls to relation loader', ['last_model' => get_class($factoryModel) ?? null]);
-            self::$traversed = 6;
-
-            return $factoryModel;
-        }
-
-        $model = new ReflectionClass(Model::class);
-
-        self::$traversed += 1;
-
-        collect((new ReflectionClass($factoryModel))->getMethods())
-            ->pluck('name')
-            ->diff(collect($model->getMethods())->pluck('name'))
-            ->filter(function ($method) use ($factoryModel) {
-                return rescue(
-                    function () use ($factoryModel, $method) {
-                        $parents = class_parents($factoryModel->$method());
-
-                        return isset($parents["Illuminate\Database\Eloquent\Relations\Relation"]);
-                    },
-                    false,
-                    false
-                );
-            })
-            ->each(function ($relationName) use (&$factoryModel, $eloquentFactory) {
-                $factoryModel = self::loadRelations($relationName, $factoryModel, $eloquentFactory);
-            });
-
-        return $factoryModel;
-    }
-
-    /**
-     * Load the relations for the model and the relation.
-     *
-     * @todo Account for the many type relations, link back to parent model for belongsTo
-     *
-     * @param mixed $relationName
-     * @param mixed $factoryModel
-     * @param mixed|null $eloquentFactory
-     *
-     * @return null|object
-     */
-    public static function loadRelations($relationName, $factoryModel, $eloquentFactory = null): ?object
-    {
-        try {
-            $factoryModel->load($relationName);
-
-            $loadIfIterable = is_iterable($factoryModel->$relationName) && count($factoryModel->$relationName) <= 0;
-
-            if (is_null($factoryModel->$relationName) || $loadIfIterable) {
-                $related = $factoryModel->$relationName()->getRelated();
-                $relatedFactory = self::resolveFactory($eloquentFactory, get_class($related));
-
-                if (self::$traversed <= config('maileclipse.relation_depth')) {
-                    if (! $loadIfIterable) {
-                        $relatedFactory = self::hydrateRelations($eloquentFactory, $relatedFactory);
-                    } else {
-                        $models = collect();
-
-                        for ($loads = 0; $loads < 3; $loads++) {
-                            $models->push(self::hydrateRelations($eloquentFactory, $relatedFactory));
-                        }
-
-                        $relatedFactory = $models;
-                    }
-                }
-
-                $factoryModel->setRelation(
-                    $relationName,
-                    $relatedFactory
-                );
-            }
-        } catch (\Throwable $th) {
-            $factoryModel->setRelation(
-                $relationName,
-                new Mocked(
-                    'relation_is_null',
-                    \ReeceM\Mocker\Utils\VarStore::singleton()
-                )
-            );
-        } finally {
-            return $factoryModel;
-        }
-    }
-
     private static function getMailableViewData($mailable, $mailable_data)
     {
         $traitProperties = [];
@@ -839,7 +679,7 @@ class MailEclipse
 
         $obj = self::buildMailable($mailable);
 
-        if (is_null($obj)) {
+        if ($obj === null) {
             $obj = [];
 
             return collect($obj);
@@ -862,27 +702,41 @@ class MailEclipse
         return $data->all();
     }
 
-    protected static function viewDataInspect($param)
+    /**
+     * @param $param
+     * @return array
+     */
+    protected static function viewDataInspect($param): ?array
     {
         if ($param instanceof \Illuminate\Database\Eloquent\Model) {
             return [
                 'type' => 'model',
                 'attributes' => collect($param->getAttributes()),
             ];
-        } elseif ($param instanceof \Illuminate\Database\Eloquent\Collection) {
+        }
+
+        if ($param instanceof \Illuminate\Database\Eloquent\Collection) {
             return [
                 'type' => 'elequent-collection',
                 'attributes' => $param->all(),
             ];
-        } elseif ($param instanceof \Illuminate\Support\Collection) {
+        }
+
+        if ($param instanceof \Illuminate\Support\Collection) {
             return [
                 'type' => 'collection',
                 'attributes' => $param->all(),
             ];
         }
+
+        return null;
     }
 
-    protected static function mailable_exists($mailable)
+    /**
+     * @param $mailable
+     * @return bool
+     */
+    protected static function mailable_exists($mailable): bool
     {
         if (! class_exists($mailable)) {
             return false;
@@ -891,6 +745,11 @@ class MailEclipse
         return true;
     }
 
+    /**
+     * @param $mailable
+     * @return mixed|void
+     * @throws \ReflectionException
+     */
     protected static function getMarkdownViewName($mailable)
     {
         if ($mailable === null) {
@@ -906,19 +765,35 @@ class MailEclipse
         return $property->getValue($mailable);
     }
 
+    /**
+     * @param $instance
+     * @param string $type
+     * @return mixed
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \ReflectionException
+     */
     public static function buildMailable($instance, $type = 'call')
     {
-        if ($type == 'call') {
-            if (! is_null(self::handleMailableViewDataArgs($instance))) {
-                return Container::getInstance()->call([self::handleMailableViewDataArgs($instance), 'build']);
+        if ($type === 'call') {
+            if (self::handleMailableViewDataArgs($instance) !== null) {
+                return app()->call([self::handleMailableViewDataArgs($instance), 'build']);
             }
 
-            return Container::getInstance()->call([new $instance, 'build']);
+            return app()->call([new $instance, 'build']);
         }
 
-        return Container::getInstance()->make($instance);
+        return app()->make($instance);
     }
 
+    /**
+     * @param $simpleview
+     * @param $view
+     * @param bool $template
+     * @param null $instance
+     * @return string|void
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \ReflectionException
+     */
     public static function renderPreview($simpleview, $view, $template = false, $instance = null)
     {
         if (! View::exists($view)) {
@@ -964,5 +839,143 @@ class MailEclipse
 
             return $error;
         }
+    }
+
+    /**
+     * Class name has to satisfy those rules.
+     *
+     * https://www.php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class
+     * https://www.php.net/manual/en/reserved.keywords.php
+     *
+     * @param $input
+     * @return string|false class name or false on failure
+     */
+    public static function generateClassName($input)
+    {
+        $suffix = 'Mail';
+
+        if (strtolower($input) === strtolower($suffix)) {
+            return false;
+        }
+
+        // Avoid MailMail as a class name suffix
+        $suffix = substr_compare($input, 'mail', -4, 4, true) === 0
+            ? ''
+            : $suffix;
+
+        /**
+         * - Suffix is needed to avoid usage of reserved word.
+         * - Str::slug will remove all forbidden characters.
+         */
+        $name = Str::studly(Str::slug($input, '_')).$suffix;
+
+        /**
+         * Removal of reserved keywords.
+         */
+        if (! preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$/', $name) ||
+            substr_compare($name, $suffix, -strlen($suffix), strlen($suffix), true) !== 0
+        ) {
+            return false;
+        }
+
+        return $name;
+    }
+
+    /**
+     * @todo Add dynamic search and population of related classes.
+     *
+     * @param $eloquentFactory
+     * @param $model
+     * @param array $resolvedTypeHints
+     * @return array
+     */
+    private static function resolveFactory($eloquentFactory, $model, array $resolvedTypeHints): array
+    {
+        if (config('maileclipse.factory')) {
+            // factory builder backwards compatibility
+            if (isset($eloquentFactory[$model])) {
+                $resolvedTypeHints[] = factory($model)->make();
+            }
+
+            /** @var array|false $modelHasFactory */
+            $modelHasFactory = class_uses($model);
+
+            if (isset($modelHasFactory['Illuminate\Database\Eloquent\Factories\HasFactory'])) {
+                $resolvedTypeHints[] = $model::factory()->make();
+            }
+        } else {
+            $resolvedTypeHints[] = app($model);
+        }
+
+        return $resolvedTypeHints;
+    }
+
+    /**
+     * @param string $name
+     * @return bool|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \ReflectionException
+     */
+    public static function renderMailable(string $name)
+    {
+        $mailable = self::getMailable('name', $name)->first();
+
+        if (collect($mailable['data'])->isEmpty()) {
+            return false;
+        }
+
+        $mailableInstance = self::resolveMailableInstance($mailable);
+
+        $view = $mailable['markdown'] ?? $mailable['data']->view;
+
+        if (view()->exists($view)) {
+            return ($mailableInstance)->render();
+        }
+
+        return view(self::VIEW_NAMESPACE.'::previewerror', ['errorMessage' => 'No template associated with this mailable.']);
+    }
+
+    /**
+     * @param string $name
+     * @param string $recipient
+     */
+    public static function sendTest(string $name, string $recipient): void
+    {
+        $mailable = self::getMailable('name', $name)->first();
+
+        $mailableInstance = self::resolveMailableInstance($mailable);
+
+        $mailableInstance = self::setMailableSendTestRecipient($mailableInstance, $recipient);
+
+        Mail::send($mailableInstance);
+    }
+
+    /**
+     * @param $mailable
+     * @param string $email
+     * @return mixed
+     */
+    public static function setMailableSendTestRecipient($mailable, string $email)
+    {
+        $mailable->to($email);
+        $mailable->cc([]);
+        $mailable->bcc([]);
+
+        return $mailable;
+    }
+
+    /**
+     * @param $mailable
+     * @return object|void
+     * @throws \ReflectionException
+     */
+    private static function resolveMailableInstance($mailable)
+    {
+        if (self::handleMailableViewDataArgs($mailable['namespace']) !== null) {
+            $mailableInstance = self::handleMailableViewDataArgs($mailable['namespace']);
+        } else {
+            $mailableInstance = new $mailable['namespace'];
+        }
+
+        return $mailableInstance;
     }
 }

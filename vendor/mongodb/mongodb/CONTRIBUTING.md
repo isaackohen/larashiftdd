@@ -34,7 +34,14 @@ The `phpunit.xml.dist` file is used as the default configuration file for the
 test suite. In addition to various PHPUnit options, it defines required
 `MONGODB_URI` and `MONGODB_DATABASE` environment variables. You may customize
 this configuration by creating your own `phpunit.xml` file based on the
-`phpunit.xml.dist` file we provide.
+`phpunit.xml.dist` file we provide. To run the tests in serverless mode, set the
+`MONGODB_IS_SERVERLESS` environment variable to `on`.
+
+To run tests against a cluster that requires authentication, either include the
+credentials in the connection string given in the `MONGODB_URI` environment
+variable, or set the `MONGODB_USERNAME` and `MONGODB_PASSWORD` environment
+variables accordingly. Note that values defined through the environment override
+credentials present in the URI.
 
 By default, the `simple-phpunit` binary chooses the correct PHPUnit version for
 the PHP version you are running. To run tests against a specific PHPUnit version,
@@ -82,6 +89,37 @@ repository:
  * Build the documentation with `giza make publish`. You can suppress
    informational log messages with the `--level warning` option.
  * Generated documentation may be found in the `build/master/html` directory.
+
+## Creating a maintenance branch and updating master branch alias
+
+After releasing a new major or minor version (e.g. 1.9.0), a maintenance branch
+(e.g. v1.9) should be created. Any development towards a patch release (e.g.
+1.9.1) would then be done within that branch and any development for the next
+major or minor release can continue in master.
+
+After creating a maintenance branch, the `extra.branch-alias.dev-master` field
+in the master branch's `composer.json` file should be updated. For example,
+after branching v1.9, `composer.json` in the master branch may still read:
+
+```
+"branch-alias": {
+    "dev-master": "1.9.x-dev"
+}
+```
+
+The above would be changed to:
+
+```
+"branch-alias": {
+    "dev-master": "1.10.x-dev"
+}
+```
+
+Commit this change:
+
+```
+$ git commit -m "Master is now 1.10-dev" composer.json
+```
 
 ## Releasing
 

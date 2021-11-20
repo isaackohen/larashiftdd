@@ -12,7 +12,6 @@ use MultipleIterator;
 use PHPUnit\Framework\Assert;
 use stdClass;
 
-use function array_fill_keys;
 use function array_reverse;
 use function count;
 use function current;
@@ -24,6 +23,7 @@ use function MongoDB\Driver\Monitoring\removeSubscriber;
 use function PHPUnit\Framework\assertArrayHasKey;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertInstanceOf;
+use function PHPUnit\Framework\assertIsBool;
 use function PHPUnit\Framework\assertIsObject;
 use function PHPUnit\Framework\assertIsString;
 use function PHPUnit\Framework\assertNotEmpty;
@@ -38,22 +38,36 @@ use function sprintf;
  */
 final class EventObserver implements CommandSubscriber
 {
-    /** @var array */
-    private static $defaultIgnoreCommands = [
-        // failPoint and targetedFailPoint operations
-        'configureFailPoint',
-        // See: https://github.com/mongodb/specifications/blob/master/source/command-monitoring/command-monitoring.rst#security
-        'authenticate',
-        'saslStart',
-        'saslContinue',
-        'getnonce',
-        'createUser',
-        'updateUser',
-        'copydbgetnonce',
-        'copydbsaslstart',
-        'copydb',
-        'isMaster',
-        'hello',
+    /**
+     * These commands are always considered sensitive (i.e. command and reply
+     * documents should be redacted).
+     *
+     * @see https://github.com/mongodb/specifications/blob/master/source/command-monitoring/command-monitoring.rst#security
+     * @var array
+     */
+    private static $sensitiveCommands = [
+        'authenticate' => 1,
+        'saslStart' => 1,
+        'saslContinue' => 1,
+        'getnonce' => 1,
+        'createUser' => 1,
+        'updateUser' => 1,
+        'copydbgetnonce' => 1,
+        'copydbsaslstart' => 1,
+        'copydb' => 1,
+    ];
+
+    /**
+     * These commands are only considered sensitive when the command or reply
+     * document includes a speculativeAuthenticate field.
+     *
+     * @see https://github.com/mongodb/specifications/blob/master/source/command-monitoring/command-monitoring.rst#security
+     * @var array
+     */
+    private static $sensitiveCommandsWithSpeculativeAuthenticate = [
+        'ismaster' => 1,
+        'isMaster' => 1,
+        'hello' => 1,
     ];
 
     /** @var array */
@@ -61,6 +75,26 @@ final class EventObserver implements CommandSubscriber
         'commandStartedEvent' => CommandStartedEvent::class,
         'commandSucceededEvent' => CommandSucceededEvent::class,
         'commandFailedEvent' => CommandFailedEvent::class,
+    ];
+
+    /**
+     * These events are defined in the specification but unsupported by PHPLIB
+     * (e.g. CMAP events).
+     *
+     * @var array
+     */
+    private static $unsupportedEvents = [
+        'poolCreatedEvent' => 1,
+        'poolReadyEvent' => 1,
+        'poolClearedEvent' => 1,
+        'poolClosedEvent' => 1,
+        'connectionCreatedEvent' => 1,
+        'connectionReadyEvent' => 1,
+        'connectionClosedEvent' => 1,
+        'connectionCheckOutStartedEvent' => 1,
+        'connectionCheckOutFailedEvent' => 1,
+        'connectionCheckedOutEvent' => 1,
+        'connectionCheckedInEvent' => 1,
     ];
 
     /** @var array */
@@ -72,29 +106,45 @@ final class EventObserver implements CommandSubscriber
     /** @var Context */
     private $context;
 
-    /** @var array */
-    private $ignoreCommands = [];
+    /**
+     * The configureFailPoint command (used by failPoint and targetedFailPoint
+     * operations) is always ignored.
+     *
+     * @var array
+     */
+    private $ignoreCommands = ['configureFailPoint' => 1];
 
     /** @var array */
     private $observeEvents = [];
 
-    public function __construct(array $observeEvents, array $ignoreCommands, string $clientId, Context $context)
+    /** @var bool */
+    private $observeSensitiveCommands;
+
+    public function __construct(array $observeEvents, array $ignoreCommands, bool $observeSensitiveCommands, string $clientId, Context $context)
     {
         assertNotEmpty($observeEvents);
 
         foreach ($observeEvents as $event) {
             assertIsString($event);
+
+            /* Unlike Context::assertExpectedEventsForClients, which runs within
+             * a test, EventObserver is constructed via createEntities (before
+             * all tests). Ignoring events here allows tests within the file
+             * that don't assert these events to still execute. */
+            if (isset(self::$unsupportedEvents[$event])) {
+                continue;
+            }
+
             assertArrayHasKey($event, self::$supportedEvents);
             $this->observeEvents[self::$supportedEvents[$event]] = 1;
         }
-
-        $this->ignoreCommands = array_fill_keys(self::$defaultIgnoreCommands, 1);
 
         foreach ($ignoreCommands as $command) {
             assertIsString($command);
             $this->ignoreCommands[$command] = 1;
         }
 
+        $this->observeSensitiveCommands = $observeSensitiveCommands;
         $this->clientId = $clientId;
         $this->context = $context;
     }
@@ -203,8 +253,7 @@ final class EventObserver implements CommandSubscriber
 
     private function assertCommandStartedEvent(CommandStartedEvent $actual, stdClass $expected, string $message): void
     {
-        // TODO: Assert hasServiceId (blocked on PHPC-1752)
-        Util::assertHasOnlyKeys($expected, ['command', 'commandName', 'databaseName']);
+        Util::assertHasOnlyKeys($expected, ['command', 'commandName', 'databaseName', 'hasServiceId']);
 
         if (isset($expected->command)) {
             assertIsObject($expected->command);
@@ -221,12 +270,16 @@ final class EventObserver implements CommandSubscriber
             assertIsString($expected->databaseName);
             assertSame($actual->getDatabaseName(), $expected->databaseName, $message . ': databaseName matches');
         }
+
+        if (isset($expected->hasServiceId)) {
+            assertIsBool($expected->hasServiceId);
+            assertSame($actual->getServiceId() !== null, $expected->hasServiceId, $message . ': hasServiceId matches');
+        }
     }
 
     private function assertCommandSucceededEvent(CommandSucceededEvent $actual, stdClass $expected, string $message): void
     {
-        // TODO: Assert hasServiceId (blocked on PHPC-1752)
-        Util::assertHasOnlyKeys($expected, ['reply', 'commandName']);
+        Util::assertHasOnlyKeys($expected, ['reply', 'commandName', 'hasServiceId']);
 
         if (isset($expected->reply)) {
             assertIsObject($expected->reply);
@@ -238,16 +291,25 @@ final class EventObserver implements CommandSubscriber
             assertIsString($expected->commandName);
             assertSame($actual->getCommandName(), $expected->commandName, $message . ': commandName matches');
         }
+
+        if (isset($expected->hasServiceId)) {
+            assertIsBool($expected->hasServiceId);
+            assertSame($actual->getServiceId() !== null, $expected->hasServiceId, $message . ': hasServiceId matches');
+        }
     }
 
     private function assertCommandFailedEvent(CommandFailedEvent $actual, stdClass $expected, string $message): void
     {
-        // TODO: Assert hasServiceId (blocked on PHPC-1752)
-        Util::assertHasOnlyKeys($expected, ['commandName']);
+        Util::assertHasOnlyKeys($expected, ['commandName', 'hasServiceId']);
 
         if (isset($expected->commandName)) {
             assertIsString($expected->commandName);
             assertSame($actual->getCommandName(), $expected->commandName, $message . ': commandName matches');
+        }
+
+        if (isset($expected->hasServiceId)) {
+            assertIsBool($expected->hasServiceId);
+            assertSame($actual->getServiceId() !== null, $expected->hasServiceId, $message . ': hasServiceId matches');
         }
     }
 
@@ -270,6 +332,30 @@ final class EventObserver implements CommandSubscriber
             return;
         }
 
+        if (! $this->observeSensitiveCommands && $this->isSensitiveCommand($event)) {
+            return;
+        }
+
         $this->actualEvents[] = $event;
+    }
+
+    /** @param CommandStartedEvent|CommandSucceededEvent|CommandFailedEvent $event */
+    private function isSensitiveCommand($event): bool
+    {
+        if (isset(self::$sensitiveCommands[$event->getCommandName()])) {
+            return true;
+        }
+
+        /* If the command or reply included a speculativeAuthenticate field,
+         * libmongoc will already have redacted it (CDRIVER-4000). Therefore, we
+         * can infer that the command was sensitive if its command or reply is
+         * empty. */
+        if (isset(self::$sensitiveCommandsWithSpeculativeAuthenticate[$event->getCommandName()])) {
+            $commandOrReply = $event instanceof CommandStartedEvent ? $event->getCommand() : $event->getReply();
+
+            return (array) $commandOrReply === [];
+        }
+
+        return false;
     }
 }

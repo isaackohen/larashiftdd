@@ -20,7 +20,9 @@ This package adds functionalities to the Eloquent model and Query builder for Mo
   - [Configuration](#configuration)
   - [Eloquent](#eloquent)
     - [Extending the base model](#extending-the-base-model)
+    - [Extending the Authenticable base model](#extending-the-authenticable-base-model)
     - [Soft Deletes](#soft-deletes)
+    - [Guarding attributes](#guarding-attributes)
     - [Dates](#dates)
     - [Basic Usage](#basic-usage)
     - [MongoDB-specific operators](#mongodb-specific-operators)
@@ -30,6 +32,8 @@ This package adds functionalities to the Eloquent model and Query builder for Mo
   - [Relationships](#relationships)
     - [Basic Usage](#basic-usage-1)
     - [belongsToMany and pivots](#belongstomany-and-pivots)
+    - [EmbedsMany Relationship](#embedsmany-relationship)
+    - [EmbedsOne Relationship](#embedsone-relationship)
   - [Query Builder](#query-builder)
     - [Basic Usage](#basic-usage-2)
     - [Available operations](#available-operations)
@@ -41,10 +45,10 @@ This package adds functionalities to the Eloquent model and Query builder for Mo
     - [Authentication](#authentication)
     - [Queues](#queues)
       - [Laravel specific](#laravel-specific)
-      - [Lumen specific](#Lumen-specific)
+      - [Lumen specific](#lumen-specific)
   - [Upgrading](#upgrading)
-      - [Upgrading from version 3 to 4](#upgrading-from-version-3-to-4)
-  - [Security](#security-contact-information)
+      - [Upgrading from version 2 to 3](#upgrading-from-version-2-to-3)
+  - [Security contact information](#security-contact-information)
 
 Installation
 ------------
@@ -52,20 +56,21 @@ Make sure you have the MongoDB PHP driver installed. You can find installation i
 
 ### Laravel version Compatibility
 
- Laravel  | Package
-:---------|:----------
- 4.2.x    | 2.0.x
- 5.0.x    | 2.1.x
- 5.1.x    | 2.2.x or 3.0.x
- 5.2.x    | 2.3.x or 3.0.x
- 5.3.x    | 3.1.x or 3.2.x
- 5.4.x    | 3.2.x
- 5.5.x    | 3.3.x
- 5.6.x    | 3.4.x
- 5.7.x    | 3.4.x
- 5.8.x    | 3.5.x
- 6.x      | 3.6.x
- 7.x      | 4.x
+ Laravel  | Package        | Maintained
+:---------|:---------------|:----------
+ 8.x      | 3.8.x          | :white_check_mark:
+ 7.x      | 3.7.x          | :x:
+ 6.x      | 3.6.x          | :white_check_mark:
+ 5.8.x    | 3.5.x          | :x:
+ 5.7.x    | 3.4.x          | :x:
+ 5.6.x    | 3.4.x          | :x:
+ 5.5.x    | 3.3.x          | :x:
+ 5.4.x    | 3.2.x          | :x:
+ 5.3.x    | 3.1.x or 3.2.x | :x:
+ 5.2.x    | 2.3.x or 3.0.x | :x:
+ 5.1.x    | 2.2.x or 3.0.x | :x:
+ 5.0.x    | 2.1.x          | :x:
+ 4.2.x    | 2.0.x          | :x:
 
 Install the package via Composer:
 
@@ -263,6 +268,13 @@ class User extends Model
 
 For more information check [Laravel Docs about Soft Deleting](http://laravel.com/docs/eloquent#soft-deleting).
 
+### Guarding attributes
+
+When choosing between guarding attributes or marking some as fillable, Taylor Otwell prefers the fillable route.
+This is in light of [recent security issues described here](https://blog.laravel.com/security-release-laravel-61835-7240).
+
+Keep in mind guarding still works, but you may experience unexpected behavior.
+
 ### Dates
 
 Eloquent allows you to work with Carbon or DateTime objects instead of MongoDate objects. Internally, these dates will be converted to MongoDate objects when saved to the database.
@@ -345,6 +357,14 @@ $posts = Post::whereBetween('votes', [1, 100])->get();
 ```php
 $users = User::whereNull('age')->get();
 ```
+
+**whereDate**
+
+```php
+$users = User::whereDate('birthday', '2021-5-12')->get();
+```
+The usage is the same as `whereMonth` / `whereDay` / `whereYear` / `whereTime`
+
 
 **Advanced wheres**
 
@@ -433,7 +453,7 @@ Aggregations can be also used on sub-documents:
 $total = Order::max('suborder.price');
 ```
 
-**NOTE**: This aggregation only works with single sub-documents not arrays.
+**NOTE**: This aggregation only works with single sub-documents (like `EmbedsOne`) not subdocument arrays (like `EmbedsMany`).
 
 **Incrementing/Decrementing the value of a column**
 
@@ -589,6 +609,14 @@ These expressions will be injected directly into the query.
 User::whereRaw([
     'age' => ['$gt' => 30, '$lt' => 40],
 ])->get();
+
+User::whereRaw([
+    '$where' => '/.*123.*/.test(this.field)',
+])->get();
+
+User::whereRaw([
+    '$where' => '/.*123.*/.test(this["hyphenated-field"])',
+])->get();
 ```
 
 You can also perform raw expressions on the internal MongoCollection object. If this is executed on the model class, it will return a collection of models.
@@ -726,6 +754,10 @@ The only available relationships are:
  - belongsTo
  - belongsToMany
 
+The MongoDB-specific relationships are:
+ - embedsOne
+ - embedsMany
+
 Here is a small example:
 
 ```php
@@ -772,6 +804,152 @@ class User extends Model
         );
     }
 }
+```
+
+### EmbedsMany Relationship
+
+If you want to embed models, rather than referencing them, you can use the `embedsMany` relation. This relation is similar to the `hasMany` relation but embeds the models inside the parent object.
+
+**REMEMBER**: These relations return Eloquent collections, they don't return query builder objects!
+
+```php
+use Jenssegers\Mongodb\Eloquent\Model;
+
+class User extends Model
+{
+    public function books()
+    {
+        return $this->embedsMany(Book::class);
+    }
+}
+```
+
+You can access the embedded models through the dynamic property:
+
+```php
+$user = User::first();
+
+foreach ($user->books as $book) {
+    //
+}
+```
+
+The inverse relation is auto*magically* available. You don't need to define this reverse relation.
+
+```php
+$book = Book::first();
+
+$user = $book->user;
+```
+
+Inserting and updating embedded models works similar to the `hasMany` relation:
+
+```php
+$book = $user->books()->save(
+    new Book(['title' => 'A Game of Thrones'])
+);
+
+// or
+$book =
+    $user->books()
+         ->create(['title' => 'A Game of Thrones']);
+```
+
+You can update embedded models using their `save` method (available since release 2.0.0):
+
+```php
+$book = $user->books()->first();
+
+$book->title = 'A Game of Thrones';
+$book->save();
+```
+
+You can remove an embedded model by using the `destroy` method on the relation, or the `delete` method on the model (available since release 2.0.0):
+
+```php
+$book->delete();
+
+// Similar operation
+$user->books()->destroy($book);
+```
+
+If you want to add or remove an embedded model, without touching the database, you can use the `associate` and `dissociate` methods.
+
+To eventually write the changes to the database, save the parent object:
+
+```php
+$user->books()->associate($book);
+$user->save();
+```
+
+Like other relations, embedsMany assumes the local key of the relationship based on the model name. You can override the default local key by passing a second argument to the embedsMany method:
+
+```php
+use Jenssegers\Mongodb\Eloquent\Model;
+
+class User extends Model
+{
+    public function books()
+    {
+        return $this->embedsMany(Book::class, 'local_key');
+    }
+}
+```
+
+Embedded relations will return a Collection of embedded items instead of a query builder. Check out the available operations here: https://laravel.com/docs/master/collections
+
+
+### EmbedsOne Relationship
+
+The embedsOne relation is similar to the embedsMany relation, but only embeds a single model.
+
+```php
+use Jenssegers\Mongodb\Eloquent\Model;
+
+class Book extends Model
+{
+    public function author()
+    {
+        return $this->embedsOne(Author::class);
+    }
+}
+```
+
+You can access the embedded models through the dynamic property:
+
+```php
+$book = Book::first();
+$author = $book->author;
+```
+
+Inserting and updating embedded models works similar to the `hasOne` relation:
+
+```php
+$author = $book->author()->save(
+    new Author(['name' => 'John Doe'])
+);
+
+// Similar
+$author =
+    $book->author()
+         ->create(['name' => 'John Doe']);
+```
+
+You can update the embedded model using the `save` method (available since release 2.0.0):
+
+```php
+$author = $book->author;
+
+$author->name = 'Jane Doe';
+$author->save();
+```
+
+You can replace the embedded model with a new model like this:
+
+```php
+$newAuthor = new Author(['name' => 'Jane Doe']);
+
+$book->author()->save($newAuthor);
 ```
 
 Query Builder
@@ -972,13 +1150,42 @@ $app->register(Jenssegers\Mongodb\MongodbQueueServiceProvider::class);
 Upgrading
 ---------
 
-#### Upgrading from version 3 to 4
+#### Upgrading from version 2 to 3
 
-This new major release contains breaking changes which is listed below:
+In this new major release which supports the new MongoDB PHP extension, we also moved the location of the Model class and replaced the MySQL model class with a trait.
 
-- EmbedsOne and EmbedsMany relations has been removed completely. See explanation [here](https://github.com/jenssegers/laravel-mongodb/issues/1974#issuecomment-592859508)
+Please change all `Jenssegers\Mongodb\Model` references to `Jenssegers\Mongodb\Eloquent\Model` either at the top of your model files or your registered alias.
 
-For any other minor changes, please take a look at our [changelog](CHANGELOG.md)
+```php
+use Jenssegers\Mongodb\Eloquent\Model;
+
+class User extends Model
+{
+    //
+}
+```
+
+If you are using hybrid relations, your MySQL classes should now extend the original Eloquent model class `Illuminate\Database\Eloquent\Model` instead of the removed `Jenssegers\Eloquent\Model`.
+
+Instead use the new `Jenssegers\Mongodb\Eloquent\HybridRelations` trait. This should make things more clear as there is only one single model class in this package.
+
+```php
+use Jenssegers\Mongodb\Eloquent\HybridRelations;
+
+class User extends Model
+{
+
+    use HybridRelations;
+
+    protected $connection = 'mysql';
+}
+```
+
+Embedded relations now return an `Illuminate\Database\Eloquent\Collection` rather than a custom Collection class. If you were using one of the special methods that were available, convert them to Collection operations.
+
+```php
+$books = $user->books()->sortBy('title')->get();
+```
 
 ## Security contact information
 
