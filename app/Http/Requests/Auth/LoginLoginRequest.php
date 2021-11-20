@@ -14,16 +14,16 @@ class LoginLoginRequest extends FormRequest
     public function rules()
     {
         return [
-'login'    => [
-'required',
-'string',
-],
-'password' => [
-'required',
-'string',
-'min:5',
-],
-'captcha'  => ['required'],
-];
+            'login'    => [
+                'required',
+                'string',
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:5',
+            ],
+            'captcha'  => ['required'],
+        ];
     }
 }

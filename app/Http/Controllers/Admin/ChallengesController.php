@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\CreateChallengeRequest;
 use App\Challenges;
 use App\Gameslist;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CreateChallengeRequest;
 use App\Utils\APIResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,7 +19,6 @@ class ChallengesController extends Controller
 
     public function create(CreateChallengeRequest $request)
     {
-
         $selectGame = Gameslist::where('id', request('game'))->first();
 
         Challenges::create([

@@ -14,15 +14,15 @@ class CreateVipRequest extends FormRequest
     public function rules()
     {
         return [
-'start'      => [
+            'start'      => [
                 'required',
             ],
-'level_name' => [
+            'level_name' => [
                 'required',
             ],
-'level'      => [
+            'level'      => [
                 'required',
             ],
-];
+        ];
     }
 }

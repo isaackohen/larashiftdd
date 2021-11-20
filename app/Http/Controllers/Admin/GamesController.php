@@ -9,9 +9,9 @@ use App\Gameslist;
 use App\Http\Controllers\Controller;
 use App\Providers;
 use App\Utils\APIResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class GamesController extends Controller

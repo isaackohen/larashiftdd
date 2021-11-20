@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\App;
 use App\Currency\Currency;
 use App\Http\Controllers\Controller;
 use App\Invoice;
@@ -12,6 +11,7 @@ use App\User;
 use App\Utils\APIResponse;
 use App\Withdraw;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use MongoDB\BSON\Decimal128;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\Api\FinishGameRequest;
 use App\Currency\Currency;
 use App\DisabledGamesReff;
 use App\Game as GameResult;
@@ -12,6 +11,7 @@ use App\Games\Kernel\Game;
 use App\Games\Kernel\Module\ModuleSeeder;
 use App\Games\Kernel\ProvablyFairResult;
 use App\Gameslist;
+use App\Http\Requests\Api\FinishGameRequest;
 use App\Settings;
 use App\User;
 use App\Utils\APIResponse;
@@ -143,7 +143,6 @@ class GameController
      */
     public function finish(FinishGameRequest $request)
     {
-
         $game = GameResult::where('_id', $request->id)->first();
         if ($game == null) {
             return APIResponse::reject(1, 'Invalid game id');

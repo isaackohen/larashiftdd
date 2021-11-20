@@ -14,11 +14,11 @@ class ClientSeedChangeUserRequest extends FormRequest
     public function rules()
     {
         return [
-'client_seed' => [
-'required',
-'string',
-'min:1',
-],
-];
+            'client_seed' => [
+                'required',
+                'string',
+                'min:1',
+            ],
+        ];
     }
 }

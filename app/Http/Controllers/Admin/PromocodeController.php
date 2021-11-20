@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\CreatePromocodeRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CreatePromocodeRequest;
 use App\Promocode;
 use App\Utils\APIResponse;
 use Carbon\Carbon;
@@ -18,7 +18,6 @@ class PromocodeController extends Controller
 
     public function create(CreatePromocodeRequest $request)
     {
-
         Promocode::create([
             'code' => request('code') === '%random%' ? Promocode::generate() : request('code'),
             'currency' => request('currency'),

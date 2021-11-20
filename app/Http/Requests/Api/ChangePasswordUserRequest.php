@@ -14,11 +14,11 @@ class ChangePasswordUserRequest extends FormRequest
     public function rules()
     {
         return [
-'new' => [
-'required',
-'string',
-'min:8',
-],
-];
+            'new' => [
+                'required',
+                'string',
+                'min:8',
+            ],
+        ];
     }
 }

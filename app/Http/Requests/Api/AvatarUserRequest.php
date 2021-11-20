@@ -14,10 +14,10 @@ class AvatarUserRequest extends FormRequest
     public function rules()
     {
         return ['image' => [
-                'required',
-                'image',
-                'mimes:jpeg,png,jpg,svg',
-                'max:2048',
-            ],];
+            'required',
+            'image',
+            'mimes:jpeg,png,jpg,svg',
+            'max:2048',
+        ]];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Str;
 use App\Currency\Currency;
 use App\Game as GameResult;
 use App\Games\Kernel\Game;
@@ -13,10 +12,11 @@ use App\Providers;
 use App\Settings;
 use App\User;
 use App\Utils\APIResponse;
-use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DataController
 {

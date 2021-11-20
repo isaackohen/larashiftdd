@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\CreateVipRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CreateVipRequest;
 use App\Utils\APIResponse;
 use App\VIPLevels;
 use Carbon\Carbon;
@@ -34,7 +34,6 @@ class VipsController extends Controller
 
     public function create(CreateVipRequest $request)
     {
-
         $vip = VIPLevels::where('level', $request->level)->first();
         if ($vip) {
             return APIResponse::reject(1, 'Level number is not unique');

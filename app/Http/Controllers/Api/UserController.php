@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\Api\AvatarUserRequest;
-use App\Http\Requests\Api\NameChangeUserRequest;
-use App\Http\Requests\Api\ClientSeedChangeUserRequest;
-use App\Http\Requests\Api\ChangePasswordUserRequest;
-use App\Http\Requests\Api\SubscriptionUpdateUserRequest;
 use App\Currency\Currency;
 use App\Game as GameResult;
 use App\Games\Kernel\Game;
 use App\Gameslist;
+use App\Http\Requests\Api\AvatarUserRequest;
+use App\Http\Requests\Api\ChangePasswordUserRequest;
+use App\Http\Requests\Api\ClientSeedChangeUserRequest;
+use App\Http\Requests\Api\NameChangeUserRequest;
+use App\Http\Requests\Api\SubscriptionUpdateUserRequest;
 use App\Investment;
 use App\Settings;
 use App\Statistics;
@@ -18,9 +18,9 @@ use App\Transaction;
 use App\User;
 use App\Utils\APIResponse;
 use App\VIPLevels;
-use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
 
@@ -317,7 +317,6 @@ class UserController
 
     public function changePassword(ChangePasswordUserRequest $request)
     {
-
         if (! auth('sanctum')->user()->validate2FA(false)) {
             return APIResponse::invalid2FASession();
         }
@@ -350,7 +349,6 @@ class UserController
 
     public function clientSeedChange(ClientSeedChangeUserRequest $request)
     {
-
         auth('sanctum')->user()->update([
             'client_seed' => $request->client_seed,
         ]);
@@ -360,7 +358,6 @@ class UserController
 
     public function nameChange(NameChangeUserRequest $request)
     {
-
         if (! auth('sanctum')->user()->validate2FA(false)) {
             return APIResponse::invalid2FASession();
         }
@@ -451,7 +448,6 @@ class UserController
 
     public function avatar(AvatarUserRequest $request)
     {
-
         $path = auth('sanctum')->user()->_id.time();
         $request->image->move(public_path('img/avatars'), $path.'.'.$request->image->getClientOriginalExtension());
 

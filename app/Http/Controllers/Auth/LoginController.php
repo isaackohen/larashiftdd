@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Requests\Auth\LoginLoginRequest;
 use App\Games\Kernel\ProvablyFair;
 use App\Http\Controllers\Auth\Helper;
+use App\Http\Requests\Auth\LoginLoginRequest;
 use App\Mail\ResetPassword;
 use App\PasswordReset;
 use App\User;
@@ -17,7 +17,6 @@ class LoginController
 {
     public function login(LoginLoginRequest $request)
     {
-
         if (! Helper::validateCaptcha($request->captcha)) {
             return APIResponse::reject(2, 'Invalid captcha');
         }

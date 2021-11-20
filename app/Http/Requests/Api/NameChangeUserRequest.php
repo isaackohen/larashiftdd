@@ -14,13 +14,13 @@ class NameChangeUserRequest extends FormRequest
     public function rules()
     {
         return [
-'name' => [
-'required',
-'unique:users',
-'string',
-'max:12',
-'regex:/^\\S*$/u',
-],
-];
+            'name' => [
+                'required',
+                'unique:users',
+                'string',
+                'max:12',
+                'regex:/^\\S*$/u',
+            ],
+        ];
     }
 }

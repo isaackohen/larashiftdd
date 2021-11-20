@@ -1,7 +1,5 @@
 <?php
 
-
-
 return [
     'openssl_config' => env('OPENSSL_CONFIG'),
     'nowpayments_id' => env('NOWPAYMENTS_ID'),

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\App;
 use App\ActivityLog\ActivityLogEntry;
 use App\AdminActivity;
 use App\Http\Controllers\Controller;
@@ -10,6 +9,7 @@ use App\User;
 use App\Utils\APIResponse;
 use App\Withdraw;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
