@@ -59,7 +59,6 @@ class Challenges extends Model
         $selectChallenge->update([
             'completed' => 1,
         ]);
-
     }
 
     public static function check($gameid, $wager, $multi, $user)
