@@ -403,11 +403,11 @@ DATA;
         if ($amount == 0) {
             return APIResponse::reject(1, 'Invalid amount');
         }
-        if (auth()->user()->balance($currencyFrom)->get() < $amount) {
+        if ($request->user()->balance($currencyFrom)->get() < $amount) {
             return APIResponse::reject(1, 'Invalid amount');
         }
-        auth()->user()->balance($currencyFrom)->subtract($amount, Transaction::builder()->message('Exchange')->get());
-        auth()->user()->balance($currencyTo)->add($currencyTo->convertUSDToToken($currencyFrom->convertTokenToUSD($amount)), Transaction::builder()->message('Exchange')->get());
+        $request->user()->balance($currencyFrom)->subtract($amount, Transaction::builder()->message('Exchange')->get());
+        $request->user()->balance($currencyTo)->add($currencyTo->convertUSDToToken($currencyFrom->convertTokenToUSD($amount)), Transaction::builder()->message('Exchange')->get());
 
         return APIResponse::success();
     }

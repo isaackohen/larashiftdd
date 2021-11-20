@@ -26,15 +26,15 @@ class PromocodeController extends Controller
             'sum' => floatval(request('sum')),
             'usages' => request('usages') === '%infinite%' ? -1 : intval(request('usages')),
             'times_used' => 0,
-            'expires' => request('expires') === '%unlimited%' ? Carbon::minValue() : Carbon::createFromFormat('d-m-Y H:i', request()->get('expires')),
+            'expires' => request('expires') === '%unlimited%' ? Carbon::minValue() : Carbon::createFromFormat('d-m-Y H:i', $request->get('expires')),
         ]);
 
         return APIResponse::success();
     }
 
-    public function remove()
+    public function remove(Request $request)
     {
-        Promocode::where('_id', request()->get('id'))->delete();
+        Promocode::where('_id', $request->get('id'))->delete();
 
         return APIResponse::success();
     }

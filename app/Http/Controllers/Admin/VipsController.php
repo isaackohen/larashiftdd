@@ -25,9 +25,9 @@ class VipsController extends Controller
         ]);
     }
 
-    public function remove()
+    public function remove(Request $request)
     {
-        VIPLevels::where('_id', request()->get('id'))->delete();
+        VIPLevels::where('_id', $request->get('id'))->delete();
 
         return APIResponse::success();
     }

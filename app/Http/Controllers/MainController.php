@@ -34,7 +34,7 @@ class MainController extends Controller
     public function broadcasting(Request $request)
     {
         $user = auth('sanctum')->guest() ? new GenericUser(['_id' => microtime()]) : auth('sanctum')->user();
-        request()->setUserResolver(function () use ($user) {
+        $request->setUserResolver(function () use ($user) {
             return $user;
         });
 

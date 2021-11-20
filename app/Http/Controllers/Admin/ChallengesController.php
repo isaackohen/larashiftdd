@@ -36,15 +36,15 @@ class ChallengesController extends Controller
             'sum' => floatval(request('sum')),
             'maxwinners' => request('maxwinners'),
             'expired' => 0,
-            'expires' => request('expires') === '%unlimited%' ? Carbon::minValue() : Carbon::createFromFormat('d-m-Y H:i', request()->get('expires')),
+            'expires' => request('expires') === '%unlimited%' ? Carbon::minValue() : Carbon::createFromFormat('d-m-Y H:i', $request->get('expires')),
         ]);
 
         return APIResponse::success();
     }
 
-    public function remove()
+    public function remove(Request $request)
     {
-        Challenges::where('_id', request()->get('id'))->delete();
+        Challenges::where('_id', $request->get('id'))->delete();
 
         return APIResponse::success();
     }

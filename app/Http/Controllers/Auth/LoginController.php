@@ -32,7 +32,7 @@ class LoginController
 
         $user->update([
             'login_ip' => User::getIp(),
-            'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
+            'login_multiaccount_hash' => $request->hasCookie('s') ? $request->cookie('s') : null,
             'tfa_persistent_key' => null,
             'tfa_onetime_key' => null,
         ]);
@@ -51,7 +51,7 @@ class LoginController
 
         $user->update([
             'login_ip' => User::getIp(),
-            'login_multiaccount_hash' => request()->hasCookie('s') ? request()->cookie('s') : null,
+            'login_multiaccount_hash' => $request->hasCookie('s') ? $request->cookie('s') : null,
             'tfa_persistent_key' => null,
             'tfa_onetime_key' => null,
         ]);
