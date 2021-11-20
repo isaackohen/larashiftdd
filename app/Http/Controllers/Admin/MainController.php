@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App;
+use Illuminate\Support\Facades\App;
 use App\ActivityLog\ActivityLogEntry;
 use App\AdminActivity;
 use App\Http\Controllers\Controller;

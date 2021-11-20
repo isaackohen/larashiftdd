@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Events\PublicUserNotification;
 use App\Settings;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Notification;

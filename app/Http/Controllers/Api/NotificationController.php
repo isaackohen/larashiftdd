@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Utils\APIResponse;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 
 class NotificationController

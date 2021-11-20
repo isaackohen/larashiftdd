@@ -10,7 +10,7 @@ use App\Settings;
 use App\Statistics;
 use App\User;
 use App\VIPLevels;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;

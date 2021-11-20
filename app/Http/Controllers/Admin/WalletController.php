@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App;
+use Illuminate\Support\Facades\App;
 use App\Currency\Currency;
 use App\Http\Controllers\Controller;
 use App\Invoice;

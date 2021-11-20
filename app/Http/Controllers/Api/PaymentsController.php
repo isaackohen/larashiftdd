@@ -12,7 +12,7 @@ use App\TransactionStatistics;
 use App\User;
 use App\Utils\APIResponse;
 use App\Withdraw;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 

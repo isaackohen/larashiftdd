@@ -12,7 +12,7 @@ use App\Providers;
 use App\Settings;
 use App\User;
 use App\Utils\APIResponse;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

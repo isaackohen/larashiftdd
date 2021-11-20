@@ -13,7 +13,7 @@ use App\Statistics;
 use App\Transaction;
 use App\User;
 use App\Utils\APIResponse;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

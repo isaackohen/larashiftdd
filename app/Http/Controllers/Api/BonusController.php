@@ -11,7 +11,7 @@ use App\Transaction;
 use App\TransactionStatistics;
 use App\Utils\APIResponse;
 use App\VIPLevels;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
