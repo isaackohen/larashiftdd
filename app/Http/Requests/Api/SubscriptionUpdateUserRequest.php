@@ -13,6 +13,8 @@ class SubscriptionUpdateUserRequest extends FormRequest
      */
     public function rules()
     {
-        return ['endpoint' => 'required'];
+        return ['endpoint' => [
+                'required',
+            ],];
     }
 }

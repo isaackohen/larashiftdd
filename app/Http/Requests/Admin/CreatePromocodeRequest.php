@@ -14,11 +14,21 @@ class CreatePromocodeRequest extends FormRequest
     public function rules()
     {
         return [
-'code'     => 'required',
-'usages'   => 'required',
-'expires'  => 'required',
-'sum'      => 'required',
-'currency' => 'required',
+'code'     => [
+                'required',
+            ],
+'usages'   => [
+                'required',
+            ],
+'expires'  => [
+                'required',
+            ],
+'sum'      => [
+                'required',
+            ],
+'currency' => [
+                'required',
+            ],
 ];
     }
 }

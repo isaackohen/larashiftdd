@@ -14,13 +14,27 @@ class CreateChallengeRequest extends FormRequest
     public function rules()
     {
         return [
-'game'       => 'required',
-'maxwinners' => 'required',
-'expires'    => 'required',
-'minbet'     => 'required',
-'multiplier' => 'required',
-'sum'        => 'required',
-'currency'   => 'required',
+'game'       => [
+                'required',
+            ],
+'maxwinners' => [
+                'required',
+            ],
+'expires'    => [
+                'required',
+            ],
+'minbet'     => [
+                'required',
+            ],
+'multiplier' => [
+                'required',
+            ],
+'sum'        => [
+                'required',
+            ],
+'currency'   => [
+                'required',
+            ],
 ];
     }
 }
