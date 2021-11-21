@@ -961,12 +961,11 @@
         "benefits_description":"VIP benefits:",
         "benefits":"Benefits",
         "benefit_list":{
-            "1":"Unlock Rakeback {text}%",
-            "2":"Promocode bonus {text}%",
-			"3":"Faucet bonus {text}%",
-			"4":"Free Spins value {text}",
-			"5":"Extra gain challenges {text}",
-			"6":"Super spins bonus value {text}"
+            "1":"Rakeback Increase +{text}%",
+            "2":"Promocode Gain +{text}%",
+			"3":"Daily Spin Bonus +{text}%",
+			"4":"{text} Free Spins",
+			"5":"Challenges Win Bonus +{text}%"
         },
         "bonus":{
             "tooltip":"Weekly VIP Bonus",

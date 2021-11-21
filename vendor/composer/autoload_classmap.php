@@ -28,6 +28,7 @@ return array(
     'App\\Console\\Commands\\ResetWeeklyBonus' => $baseDir . '/app/Console/Commands/ResetWeeklyBonus.php',
     'App\\Console\\Commands\\SendTelegramPromo' => $baseDir . '/app/Console/Commands/SendTelegramPromo.php',
     'App\\Console\\Commands\\WalletReset' => $baseDir . '/app/Console/Commands/WalletReset.php',
+    'App\\Console\\Commands\\WithdrawLimit3Hourly' => $baseDir . '/app/Console/Commands/WithdrawLimit3Hourly.php',
     'App\\Console\\Commands\\onBuildEnd' => $baseDir . '/app/Console/Commands/onBuildEnd.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Currency' => $baseDir . '/app/Currency.php',

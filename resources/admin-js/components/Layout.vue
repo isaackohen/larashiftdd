@@ -32,7 +32,7 @@
 
                 window.Echo = new window.LaravelEcho({
                     broadcaster: 'socket.io',
-                    host: `${window.location.hostname}:2087`,
+                    host: `${window.location.hostname}:2091`,
                     auth: {
                         headers: {
                             Authorization: `Bearer ${this.isGuest ? null : this.user.token}`

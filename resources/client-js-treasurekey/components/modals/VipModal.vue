@@ -91,9 +91,6 @@
 											<div v-if="vip.challenges_bonus > 0">
 											{{ $t('vip.benefit_list.5', { text: vip.challenges_bonus }) }}
 											</div>
-											<div v-if="vip.fs_superspin > 0">
-											{{ $t('vip.benefit_list.6', { text: vip.fs_superspin }) }}
-											</div>
 									   </span>
                                     </div>
                                 </div>
