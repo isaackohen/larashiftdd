@@ -14,6 +14,7 @@ use App\Http\Requests\Api\SubscriptionUpdateUserRequest;
 use App\Investment;
 use App\Settings;
 use App\Statistics;
+use App\TransactionStatistics;
 use App\Transaction;
 use App\User;
 use App\Utils\APIResponse;
@@ -187,7 +188,7 @@ class UserController
 
         return APIResponse::success($response);
     }
-
+    /*
     public function investmentHistory()
     {
         $out = [];
@@ -243,30 +244,7 @@ class UserController
 
         return APIResponse::success();
     }
-
-    public function affiliates()
-    {
-        $result = [];
-        foreach (User::where('referral', auth('sanctum')->user()->id)->get() as $user) {
-            $percent = ($user->games() / floatval(Settings::get('referrer_activity_requirement', 100))) * 100;
-            if ($percent > 100) {
-                $percent = 100;
-            }
-            $percent = number_format($percent, 2, '.', '');
-
-            array_push($result, [
-                'user' => $user->toArray(),
-                'percent' => $percent,
-                'done' => in_array($user->_id, auth('sanctum')->user()->referral_wager_obtained ?? []),
-            ]);
-        }
-
-        return APIResponse::success([
-            'affiliates' => $result,
-            'total' => User::where('referral', auth('sanctum')->user()->_id)->count(),
-            'bonus' => count(auth('sanctum')->user()->referral_wager_obtained ?? []),
-        ]);
-    }
+    */
 
     public function find(Request $request)
     {

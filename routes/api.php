@@ -67,7 +67,6 @@ Route::middleware('auth:sanctum')->prefix('game')->group(function () {
 
 Route::middleware('auth:sanctum')->prefix('user')->group(function () {
     Route::post('vip', [UserController::class, 'vip']);
-    Route::post('affiliates', [UserController::class, 'affiliates']);
     Route::post('find', [UserController::class, 'find']);
     Route::post('ignore', [UserController::class, 'ignore']);
     Route::post('unignore', [UserController::class, 'unignore']);
@@ -125,9 +124,11 @@ Route::middleware('auth:sanctum')->prefix('chat')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->prefix('promocode')->group(function () {
+    Route::post('affiliates', [BonusController::class, 'affiliates']);
     Route::post('activate', [BonusController::class, 'activatePromo']);
     Route::post('demo', [BonusController::class, 'demo']);
     Route::post('partner_bonus', [BonusController::class, 'partnerBonus']);
+    Route::post('affiliatescollect', [BonusController::class, 'affiliatescollect']);
     Route::post('bonus', [BonusController::class, 'bonus']);
     Route::post('vipBonus', [BonusController::class, 'vipBonus']);
     Route::post('rakeback', [BonusController::class, 'rakeback']);

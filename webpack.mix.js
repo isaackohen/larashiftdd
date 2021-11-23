@@ -7,13 +7,13 @@ mix.extend('addWebpackLoaders', (webpackConfig, loaderRules) => {
     loaderRules.forEach((loaderRule) => webpackConfig.module.rules.push(loaderRule));
 });
 
-mix.js('resources/client-js-sdavidkohen/app.js', 'public/js')
+mix.js('resources/client-js-treasurekey/app.js', 'public/js')
 mix.js('resources/admin-js/app.js', 'public/js/admin')
     .sass('resources/sass/app.scss', 'public/css')
 	.sass('resources/sass/admin/app.scss', 'public/css/admin')
     .sass('resources/sass/error.scss', 'public/css')
-    .copy('resources/img-sdavidkohen', 'public/img')
-    .copy('resources/sounds-sdavidkohen', 'public/sounds')
+    .copy('resources/img-treasurekey', 'public/img')
+    .copy('resources/sounds-treasurekey', 'public/sounds')
     .options({
         processCssUrls: false
     })

@@ -93,7 +93,7 @@
                <template v-for="(cat, key) in categoryGames">
                   <div class="games">
                      <div v-for="game in cat" :key="game.id" :class="`game_poster_${game.type} game-${game.id} game_type-${game.type} hvr-float-shadow`">
-                        <div :class="`game_poster_${game.type}-image game_tp-image`" v-if="game.ext" :style="`background: url('https://games.cdn4.dk/games${game.icon}?auto=format&fit=crop&sharp=10&w=205&h=137&q=85') no-repeat !important; background-position-x: center !important;`"  @click="game.ext ? $router.push(`/casino/${game.id}`) : $router.push(`/game/${game.id}`)">
+                        <div :class="`game_poster_${game.type}-image game_tp-image`" v-if="game.ext" :style="`background: url('https://games.cdn4.dk/games${game.icon}?auto=format&fit=crop&w=205&h=137&q=85') no-repeat !important; background-position-x: center !important;`"  @click="game.ext ? $router.push(`/casino/${game.id}`) : $router.push(`/game/${game.id}`)">
                            <div :class="`game_poster_${game.type}-provider`" v-if="game.ext" @click="game.ext ? $router.push(`/casino/${game.id}`) : $router.push(`/game/${game.id}`)">
                               {{ game.p }}
                            </div>

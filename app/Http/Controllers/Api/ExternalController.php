@@ -23,6 +23,7 @@ class ExternalController
 {
     public function methodBalance(Request $request)
     {
+            Log::alert($request->fullUrl());
         $user = User::where('_id', $_GET['playerid'])->first();
         $currency = Currency::find($_GET['currency']);
         $getBalance = $user->balance($currency)->get();
@@ -35,7 +36,8 @@ class ExternalController
 
     public function methodBet(Request $request)
     {
-        //Log::alert($request->fullUrl());
+        
+        Log::alert($request->fullUrl());
         $user = User::where('_id', $_GET['playerid'])->first();
         $currency = Currency::find($_GET['currency']);
         $win = $_GET['win'];
@@ -43,6 +45,16 @@ class ExternalController
         $final = $_GET['final'];
         $gameid = $_GET['gameid'];
         $roundid = $request['roundid'];
+
+        $roundIdExists = Game::where('server_seed', $roundid)->where('user', $_GET['playerid'])->first();
+        if ($final === '1' && $roundIdExists) {
+            $getBalance = $user->balance($currency)->get();
+            $getBalanceUSD = intval($currency->convertTokenToUSD($getBalance) * 100);
+            $responsePayload = ['status' => 'ok', 'result' => ['balance' => $getBalanceUSD, 'freegames' => 0]];
+
+        return json_encode($responsePayload);
+
+        }
 
         if ($bet > 0) {
             $betFloat = $_GET['bet'] / 100;
@@ -52,9 +64,8 @@ class ExternalController
             if (config('settings.demo_mode')) {
                 $stat = Statistics::where('user', $user->_id)->first();
                 if ($stat->data['usd_wager'] > config('settings.demo_mode_max_bet')) {
-                    $user->balance($currency)->subtract(floatval($getBalance), Transaction::builder()->message('Demo balance expired')->get());
-                    event(new \App\Events\TemporaryNotice($user, 'Demo expired', 'Max. bet reached on platform in demo mode - request to refresh your token'));
-
+                        $user->balance($currency)->subtract(floatval($getBalance), Transaction::builder()->message('Demo balance expired')->get());
+                        event(new \App\Events\UserNotification($user, 'Demo expired', 'You have reached max. amount of demo play - request to refresh your demo access & balance.'));
                     return;
                 }
             }
@@ -95,7 +106,7 @@ class ExternalController
                 'multiplier' => $multi,
                 'status' => $status,
                 'profit' => $win,
-                'server_seed' => '-1',
+                'server_seed' => $roundid,
                 'client_seed' => '-1',
                 'nonce' => '-1',
                 'data' => [],
@@ -109,11 +120,12 @@ class ExternalController
                 $game->currency,
                 $game->wager,
                 $game->multiplier,
-                $game->profit
+                $game->profit,
+                'external'
             );
 
             $multiAllow = 0;
-            if ($multi > floatval(1.20) || $multi < floatval(0.95)) {
+            if ($multi > floatval(1.30) || $multi < floatval(0.9)) {
                 $multiAllow = '1';
             }
 
@@ -160,6 +172,8 @@ class ExternalController
 
     public function methodGetUrl(Request $request)
     {
+            Log::alert($request->fullUrl());
+
         $freespins = false;
         if (auth('sanctum')->guest()) {
             $mode = 'demo';

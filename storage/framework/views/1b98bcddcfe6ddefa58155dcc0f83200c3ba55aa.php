@@ -1,1 +1,0 @@
-<div id="<?php echo $id; ?>"></div><?php /**PATH /home/ploi/s.davidkohen.com/vendor/arielmejiadev/larapex-charts/resources/views/chart/container.blade.php ENDPATH**/ ?>

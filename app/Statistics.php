@@ -9,6 +9,7 @@ use App\Notifications\CustomNotification;
 use App\User;
 use Illuminate\Support\Facades\Notification;
 use Jenssegers\Mongodb\Eloquent\Model;
+use App\VIPLevels;
 
 class Statistics extends Model
 {
@@ -22,6 +23,8 @@ class Statistics extends Model
         'vip_progress',
         'viplevel',
         'current_rakeback',
+        'affiliate_rakeback',
+        'affiliate_total',
         'last_rakeback',
     ];
 
@@ -29,7 +32,7 @@ class Statistics extends Model
         'data' => 'json',
     ];
 
-    public static function insert($user, $currency, $wager, $multiplier, $profit)
+    public static function insert($user, $currency, $wager, $multiplier, $profit, $type = null)
     {
         $stats = self::where('user', $user)->first();
         if (! $stats) {
@@ -39,46 +42,86 @@ class Statistics extends Model
                 'viplevel' => 0,
                 'vip_progress' => 0,
                 'current_rakeback' => 0,
-                'last_rakeback',
+                'last_rakeback' => 0,
+                'affiliate_total' => 0,
+                'affiliate_rakeback' => 0,
             ]);
         }
 
-        $vipModifier = 1;
-        $currentViplevel = ($stats->viplevel ?? 0);
-        $wagerAmount = $wager * Currency::find($currency)->tokenPrice();
 
-        //Add VIP progression
-        $stats->update([
-            'vip_progress' => round(($stats->vip_progress ?? 0), 2) + round(($wagerAmount * $vipModifier), 2),
-        ]);
-        $user = User::where('_id', $user)->first();
-        $getcurrentViplevels = \App\VIPLevels::where('level', '=', ''.$currentViplevel.'')->first();
+        $multiAllow = 0;
+        if ($multiplier > floatval(1.25) || $multiplier < floatval(0.85)) {
+            $multiAllow = '1';
+        }
+        $wagerAmount = round($wager * Currency::find($currency)->tokenPrice(), 5);
 
-        $rakeBonus = floatval(($wagerAmount / 100) * $getcurrentViplevels->rake_percent);
-        $stats->update([
-            'current_rakeback' => ($stats->current_rakeback ?? 0) + $rakeBonus,
-        ]);
+        if ($wagerAmount > 0.08 && $multiAllow === '1') {
 
-        $getViplevels = \App\VIPLevels::where('level', '=', ''.($currentViplevel + 1).'')->first();
-        $getFs = $getViplevels->fs_bonus;
+            $vipModifier = 1;
+            $currentViplevel = ($stats->viplevel ?? 0);
 
-        //Check if next VIP wager requirement is reached, then change VIP level
-        if (($stats->vip_progress ?? 0) > $getViplevels->start) {
-            if ($stats->viplevel === 0) {
-                event(new PublicUserNotification('New VIP player', ' '.$user->name.' has just joined the Player VIP Club. Welcome him in the chat!'));
+            $amountMod = $wagerAmount;
+            if($type === 'external') {
+                $amountMod = $wagerAmount * 0.9;
             }
-            $stats->update([
-                'vip_progress' => 0,
-                'viplevel' => ($stats->viplevel ?? 0) + 1,
-            ]);
-            $eventUpdated = event(new \App\Events\UserNotification($user, 'VIP Club!', 'You have reached new VIP level.'));
-            $notificationMessage = 'You have reached VIP Level'.$stats->viplevel.'. We have added '.$getFs.' free spins to your account. Make sure to check VIP page for more info.';
-            Notification::send($user, new CustomNotification('New VIP Level Reached', $notificationMessage));
+            if($currency === 'local_bonus') {
+                $amountMod = floatval($wagerAmount * 0.85);
+                if($type === 'external') {
+                $amountMod = floatval($wagerAmount * 0.5);
+            }
+            $user = User::where('_id', $user)->first();
+            if ($user->first_deposit_bonus === 'used') {
+                $currentWagered = $user->bonus_wagered ?? 0;
+                    User::where('_id', $user->_id)->update([
+                        'bonus_wagered' => number_format(($currentWagered ?? 0) + $amountMod, 6, '.', ''),
+                    ]);
+            }
 
-            //Add free spins if level up
-            $user->update([
-                'freespins' => ($user->freespins ?? 0) + ($getFs),
+            }
+
+            //Add VIP progression
+            $stats->update([
+                'vip_progress' => round(($stats->vip_progress ?? 0), 4) + round(($amountMod * $vipModifier), 4),
             ]);
+            $getcurrentViplevels = VIPLevels::where('level', '=', ''.$currentViplevel.'')->first();
+
+            if($currentViplevel > 0) {
+                $user = User::where('_id', $user)->first();
+                $rakeBonus = floatval(($amountMod / 100) * $getcurrentViplevels->rake_percent);
+                $stats->update([
+                    'current_rakeback' => ($stats->current_rakeback ?? 0) + $rakeBonus,
+                ]);
+
+                $referral = $user->referral ?? null;
+
+                if($referral != null) {
+                    $stats->update([
+                        'affiliate_rakeback' => number_format(($stats->affiliate_rakeback ?? 0) + ($rakeBonus / 2), 6, '.', ''),
+                    ]);
+                }
+            }
+
+            $getViplevels = VIPLevels::where('level', '=', ''.($currentViplevel + 1).'')->first();
+
+            //Check if next VIP wager requirement is reached, then change VIP level
+            if (($stats->vip_progress ?? 0) > $getViplevels->start) {
+                $getFs = $getViplevels->fs_bonus;
+                if ($stats->viplevel === 0) {
+                    event(new PublicUserNotification('New VIP player', ' '.$user->name.' has just joined the Player VIP Club. Welcome him in the chat!'));
+                }
+                $stats->update([
+                    'vip_progress' => 0,
+                    'viplevel' => ($stats->viplevel ?? 0) + 1,
+                ]);
+                $eventUpdated = event(new \App\Events\UserNotification($user, 'VIP Club!', 'You have reached new VIP level.'));
+                $notificationMessage = 'You have reached VIP Level'.$stats->viplevel.'. We have added '.$getFs.' free spins to your account. Make sure to check VIP page for more info.';
+                Notification::send($user, new CustomNotification('New VIP Level Reached', $notificationMessage));
+
+                //Add free spins if level up
+                $user->update([
+                    'freespins' => ($user->freespins ?? 0) + ($getFs),
+                ]);
+            }
         }
 
         $var_bets = 'bets_'.$currency;
@@ -92,6 +135,7 @@ class Statistics extends Model
             $keys = ['usd_wager'];
             $data = array_fill_keys($keys, '0');
         }
+
         if (! array_key_exists($var_bets, $data)) {
             $keys = ['games_played', 'usd_wins', $var_bets, $var_wins, $var_loss, $var_wagered, $var_profit];
             $newData = array_fill_keys($keys, '0');

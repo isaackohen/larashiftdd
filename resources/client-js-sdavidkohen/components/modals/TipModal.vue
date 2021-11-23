@@ -49,6 +49,12 @@
                                         case 2:
                                             this.$toast.error(this.$i18n.t('general.chat_commands.modal.tip.invalid_amount'));
                                             break;
+                                        case 3:
+                                            this.$toast.error(this.$i18n.t('general.chat_commands.modal.tip.viplevel_requirement'));
+                                            break;
+                                        case 4:
+                                            this.$toast.error(this.$i18n.t('general.chat_commands.modal.tip.maxtip_today'));
+                                        break;
                                     }
 
                                     this.disabled = false;

@@ -30,9 +30,9 @@
                             ...mapGetters(['channel', 'currencies', 'currency', 'usd'])
                         },
                         methods: {
-							setPrecision() {
-								this.money.precision = this.currency.startsWith('local_') ? 2 : (this.usd ? 2 : 8);
-							},
+                            setPrecision() {
+                                this.money.precision = this.currency.startsWith('local_') ? 2 : (this.usd ? 2 : 8);
+                            },
                             tip() {
                                 this.disabled = true;
 
@@ -49,15 +49,21 @@
                                         case 2:
                                             this.$toast.error(this.$i18n.t('general.chat_commands.modal.tip.invalid_amount'));
                                             break;
+                                        case 3:
+                                            this.$toast.error(this.$i18n.t('general.chat_commands.modal.tip.viplevel_requirement'));
+                                            break;
+                                        case 4:
+                                            this.$toast.error(this.$i18n.t('general.chat_commands.modal.tip.maxtip_today'));
+                                        break;
                                     }
 
                                     this.disabled = false;
                                 });
                             }
                         },
-						created() {
-							this.setPrecision();
-						},
+                        created() {
+                            this.setPrecision();
+                        },
                         template: `
                             <div>
                                 <div class="cc_label">{{ $t('general.chat_commands.modal.tip.user') }}</div>

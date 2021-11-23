@@ -35,7 +35,7 @@ class User extends \Jenssegers\Mongodb\Auth\User
         'telegram_bonus', 'notification_bonus', 'ban', 'mute', 'weekly_bonus', 'weekly_bonus_obtained',
         'tfa', 'tfa_enabled', 'tfa_persistent_key', 'tfa_onetime_key', 'email_notified', 'dismissed_global_notifications',
         'register_ip', 'login_ip', 'register_multiaccount_hash', 'login_multiaccount_hash',
-        'referral', 'referral_wager_obtained', 'referral_bonus_obtained', 'promocode_limit_reset', 'promocode_limit',
+        'referral', 'referral_wager_obtained', 'referral_bonus_obtained', 'referral_claimable', 'promocode_limit_reset', 'promocode_limit',
         'bot', 'favoriteGames', 'freespins',
 
         'vk', 'fb', 'google', 'telegram', 'steam',
@@ -48,7 +48,7 @@ class User extends \Jenssegers\Mongodb\Auth\User
         'wallet_bg_btc', 'wallet_bg_bch', 'wallet_bg_trx', 'wallet_bg_eos', 'wallet_bg_eth', 'wallet_bg_ltc', 'wallet_np_bnb', 'wallet_np_busd', 'wallet_cake',
         'wallet_bg_algo', 'wallet_bg_btg', 'wallet_bg_celo', 'wallet_bg_dash', 'wallet_bg_eos', 'wallet_bg_xrp', 'wallet_bg_xlm',
         'wallet_bg_xtz', 'wallet_bg_wbtc', 'wallet_bg_zec', 'wallet_np_btc', 'wallet_np_eth', 'wallet_np_ltc', 'wallet_np_doge', 'wallet_np_bch', 'wallet_np_trx',
-        'wallet_trx_private_key', 'first_deposit_bonus', 'wallet_bonus', 'bonus_goal',
+        'wallet_trx_private_key', 'first_deposit_bonus', 'wallet_bonus', 'bonus_goal',  'bonus_wagered',
     ];
 
     /**
@@ -59,7 +59,7 @@ class User extends \Jenssegers\Mongodb\Auth\User
         'password', 'remember_token', 'email', 'ignore', 'ban', 'notification_bonus', 'latest_activity',
         'tfa', 'tfa_enabled', 'tfa_persistent_key', 'tfa_onetime_key', 'email_notified', 'dismissed_global_notifications',
         'register_ip', 'login_ip', 'register_multiaccount_hash', 'login_multiaccount_hash', 'vip_discord_notified',
-        'referral', 'referral_wager_obtained', 'referral_bonus_obtained', 'promocode_limit_reset', 'promocode_limit',
+        'referral', 'referral_wager_obtained', 'referral_bonus_obtained', 'referral_claimable', 'promocode_limit_reset', 'promocode_limit',
         'bot', 'freespins',
 
         'vk', 'fb', 'google', 'steam',
@@ -73,7 +73,7 @@ class User extends \Jenssegers\Mongodb\Auth\User
         'wallet_bg_btc', 'wallet_bg_bch', 'wallet_bg_trx', 'wallet_bg_eos', 'wallet_bg_eth', 'wallet_bg_ltc',  'wallet_np_busd', 'wallet_cake',
         'wallet_bg_algo', 'wallet_bg_btg', 'wallet_bg_celo', 'wallet_bg_dash', 'wallet_bg_eos', 'wallet_bg_xrp', 'wallet_bg_xlm',
         'wallet_bg_xtz', 'wallet_bg_wbtc', 'wallet_bg_zec', 'wallet_np_btc', 'wallet_np_eth', 'wallet_np_ltc', 'wallet_np_doge', 'wallet_np_bch', 'wallet_np_trx',
-        'wallet_cg_busd', 'wallet_cg_bnb', 'wallet_cg_pirate', 'wallet_bonus', 'bonus_goal',
+        'wallet_cg_busd', 'wallet_cg_bnb', 'wallet_cg_pirate', 'wallet_bonus', 'bonus_goal', 'bonus_wagered',
         'wallet_trx_private_key',
     ];
 
@@ -140,7 +140,7 @@ class User extends \Jenssegers\Mongodb\Auth\User
 
     public function notifications()
     {
-        return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderByDesc('created_at');
+        return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
     }
 
     public function balance(Currency $currency): UserBalance

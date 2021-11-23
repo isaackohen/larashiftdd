@@ -76,11 +76,7 @@
                         <div class="avatar">
                             <router-link :to="`/profile/${message.user._id}`" tag="img" :src="message.user.avatar" alt></router-link>
                             <div class="vipRank" v-if="message.vipLevel > 0" @click="openVipModal">
-                                <svg v-if="message.vipLevel === 1"><use href="#vip-ruby"></use></svg>
-                                <svg v-else-if="message.vipLevel === 2"><use href="#vip-emerald"></use></svg>
-                                <svg v-else-if="message.vipLevel === 3"><use href="#vip-sapphire"></use></svg>
-                                <svg v-else-if="message.vipLevel === 4"><use href="#vip-diamond"></use></svg>
-                                <svg v-else-if="message.vipLevel === 5"><use href="#vip-gold"></use></svg>
+                                <img class="vipicon-list" :src="'/img/misc/vipicons/' + message.vipLevel + '.svg'">
                             </div>
                         </div>
                         <div class="message-content">
@@ -94,11 +90,7 @@
                         <div class="avatar">
                             <router-link :to="`/profile/${message.user._id}`" tag="img" :src="message.user.avatar" alt></router-link>
                             <div class="vipRank" v-if="message.vipLevel > 0" @click="openVipModal">
-                                <svg v-if="message.vipLevel === 1"><use href="#vip-ruby"></use></svg>
-                                <svg v-else-if="message.vipLevel === 2"><use href="#vip-emerald"></use></svg>
-                                <svg v-else-if="message.vipLevel === 3"><use href="#vip-sapphire"></use></svg>
-                                <svg v-else-if="message.vipLevel === 4"><use href="#vip-diamond"></use></svg>
-                                <svg v-else-if="message.vipLevel === 5"><use href="#vip-gold"></use></svg>
+                                <img class="vipicon-list" :src="'/img/misc/vipicons/' + message.vipLevel + '.svg'">
                             </div>
                         </div>
                         <div class="message-content">
@@ -138,11 +130,7 @@
                         <div class="avatar">
                             <router-link tag="img" :src="message.user.avatar" alt :to="`/profile/${message.user._id}`"></router-link>
                             <div class="vipRank" v-if="message.vipLevel > 0" @click="openVipModal">
-                                <svg v-if="message.vipLevel === 1"><use href="#vip-ruby"></use></svg>
-                                <svg v-else-if="message.vipLevel === 2"><use href="#vip-emerald"></use></svg>
-                                <svg v-else-if="message.vipLevel === 3"><use href="#vip-sapphire"></use></svg>
-                                <svg v-else-if="message.vipLevel === 4"><use href="#vip-diamond"></use></svg>
-                                <svg v-else-if="message.vipLevel === 5"><use href="#vip-gold"></use></svg>
+                                <img class="vipicon-list" :src="'/img/misc/vipicons/' + message.vipLevel + '.svg'">
                             </div>
                         </div>
                         <div class="message-content">
@@ -163,11 +151,7 @@
                         <div class="avatar">
                             <router-link tag="img" :src="message.data.from.avatar" alt :to="`/profile/${message.data.from._id}`"></router-link>
                             <div class="vipRank" v-if="message.vipLevel > 0" @click="openVipModal">
-                                <svg v-if="message.vipLevel === 1"><use href="#vip-ruby"></use></svg>
-                                <svg v-else-if="message.vipLevel === 2"><use href="#vip-emerald"></use></svg>
-                                <svg v-else-if="message.vipLevel === 3"><use href="#vip-sapphire"></use></svg>
-                                <svg v-else-if="message.vipLevel === 4"><use href="#vip-diamond"></use></svg>
-                                <svg v-else-if="message.vipLevel === 5"><use href="#vip-gold"></use></svg>
+                                <img class="vipicon-list" :src="'/img/misc/vipicons/' + message.vipLevel + '.svg'">
                             </div>
                         </div>
                         <div class="message-content">
@@ -189,11 +173,7 @@
                         <div class="avatar" v-if="message.data.from">
                             <router-link tag="img" :src="message.data.from.avatar" alt :to="`/profile/${message.data.from._id}`"></router-link>
                             <div class="vipRank" v-if="message.vipLevel > 0" @click="openVipModal">
-                                <svg v-if="message.vipLevel === 1"><use href="#vip-ruby"></use></svg>
-                                <svg v-else-if="message.vipLevel === 2"><use href="#vip-emerald"></use></svg>
-                                <svg v-else-if="message.vipLevel === 3"><use href="#vip-sapphire"></use></svg>
-                                <svg v-else-if="message.vipLevel === 4"><use href="#vip-diamond"></use></svg>
-                                <svg v-else-if="message.vipLevel === 5"><use href="#vip-gold"></use></svg>
+                                <img class="vipicon-list" :src="'/img/misc/vipicons/' + message.vipLevel + '.svg'">
                             </div>
                         </div>
                         <div class="message-content">
@@ -222,11 +202,7 @@
                     <div class="user" v-if="!isGuest && !(user.user.mute && +new Date(user.user.mute) > +new Date())">
                         <router-link tag="img" :to="'/profile/'+user.user._id" :src="user.user.avatar" alt></router-link>
                         <div class="vipRank" @click="openVipModal">
-                            <svg v-if="user.user.vipLevel === 1"><use href="#vip-ruby"></use></svg>
-                            <svg v-else-if="user.user.vipLevel === 2"><use href="#vip-emerald"></use></svg>
-                            <svg v-else-if="user.user.vipLevel === 3"><use href="#vip-sapphire"></use></svg>
-                            <svg v-else-if="user.user.vipLevel === 4"><use href="#vip-diamond"></use></svg>
-                            <svg v-else-if="user.user.vipLevel === 5"><use href="#vip-gold"></use></svg>
+                                <img class="vipicon-list" :src="'/img/misc/vipicons/' + message.vipLevel + '.svg'">
                         </div>
                     </div>
                     <textarea @keyup.enter="sendChatMessage" v-model="message" class="text-message" :placeholder="$t('general.chat.enter_message')"></textarea>
@@ -543,6 +519,10 @@
 
     $send-height: 140px;
 
+    .vipicon-list {
+        width: 16px !important;
+        height: 16px !important;
+    }
     .chat.hidden {
         width: 0 !important;
     }
@@ -1306,7 +1286,7 @@
                 left: 0;
                 top: $header-height;
                 width: 100vw !important;
-                height: calc(100% - 55px - #{$header-height});
+                height: calc(100% - 50px - #{$header-height});
 
                 .emoji-container {
                     right: unset;

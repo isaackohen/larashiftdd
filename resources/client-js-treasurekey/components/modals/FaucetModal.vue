@@ -289,9 +289,9 @@
                         data() {
                             return {
                                 tab: 'wheel',
-								currency_abs: null,
-								wheel_slice: null,
-								partner_slice: null,
+                                currency_abs: null,
+                                wheel_slice: null,
+                                partner_slice: null,
 
                                 interval: null
                             }
@@ -300,7 +300,7 @@
                             ...mapGetters(['isGuest', 'user', 'currencies', 'currency', 'user'])
                         },
                         watch: {
-							currency_abs() {
+                            currency_abs() {
                                 this.loadTab();
                             },
                             tab() {
@@ -310,13 +310,13 @@
                                 this.loadTab();
                             }
                         },
-						created() {
-							axios.post('/api/promocode/slices').then(({ data }) => {
-								this.currency_abs = data.currency; 
-								this.wheel_slice = data.wheel; 
-								this.partner_slice = data.partner;
-							});
-						},
+                        created() {
+                            axios.post('/api/promocode/slices').then(({ data }) => {
+                                this.currency_abs = data.currency; 
+                                this.wheel_slice = data.wheel; 
+                                this.partner_slice = data.partner;
+                            });
+                        },
                         methods: {
                             loadTab() {
                                 let html = '';
@@ -326,7 +326,7 @@
                                             <div class="bonus-side-menu-container text-center">
                                                 <div class="header text-center">
                                                     <div class="title">${this.$i18n.t('bonus.telegram.title')}</div>
-													<div class="description">${this.$i18n.t('bonus.telegram.description')}</div>
+                                                    <div class="description">${this.$i18n.t('bonus.telegram.description')}</div>
                                                 </div>
                                                 <div class="bonusContent">
                                                     ${this.user.user.telegram_bonus ? `` : `<div>${this.$i18n.t('bonus.telegram.common_desc')}</div>`}
@@ -400,7 +400,7 @@
                                                     <div class="wheel"></div>
                                                     <div class="wheelSpin">${this.$i18n.t('general.spin')}</div>
 
-													<div class="wheelBlock">
+                                                    <div class="wheelBlock">
                                                         <svg><use href="#red-diamond"></use></svg>
                                                     </div>
 
@@ -484,8 +484,8 @@
                         template: `
                                 <div class="bonusContainer">
                                     <div data-bonus-modal-contents>
-											<loader v-if="!currency_abs"></loader>
-									</div>
+                                            <loader v-if="!currency_abs"></loader>
+                                    </div>
 
                                     <div class="bonusSidebar">
                                         <div :class="'sidebarEntry ' + (tab === 'wheel' ? 'active' : '')" @click="tab = 'wheel'">
@@ -494,10 +494,10 @@
                                             </div>
                                         </div>
                                         <div class="sidebarEntry" @click="openVipModal()">
-											<div class="icon">
-												<i class="fas fa-crown"></i>
-											</div>
-										</div>
+                                            <div class="icon">
+                                                <i class="fas fa-crown"></i>
+                                            </div>
+                                        </div>
                                         <div :class="'sidebarEntry ' + (tab === 'partner' ? 'active' : '')" @click="tab = 'partner'">
                                             <div class="icon">
                                                 <i class="fas fa-paper-plane"></i>

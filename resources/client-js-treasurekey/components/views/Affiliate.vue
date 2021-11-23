@@ -23,27 +23,6 @@
                             <div class="mt-4">
                                 <div class="heading">{{ $t('partner.overview.header') }}</div>
                                 <div class="subheader">{{ $t('partner.overview.1') }}</div>
-                                <div class="commission-table">
-                                    <div class="commission-table-block">
-                                        <div>-</div>
-                                        <div><svg><use href="#vip-ruby"></use></svg></div>
-                                        <div><svg><use href="#vip-emerald"></use></svg></div>
-                                        <div><svg><use href="#vip-sapphire"></use></svg></div>
-                                        <div><svg><use href="#vip-diamond"></use></svg></div>
-                                        <div><svg><use href="#vip-gold"></use></svg></div>
-                                    </div>
-                                    <div class="commission-table-block">
-                                        <div>1%</div>
-                                        <div>2%</div>
-                                        <div>3%</div>
-                                        <div>5%</div>
-                                        <div>10%</div>
-                                        <div>20%</div>
-                                    </div>
-                                </div>
-                                <div class="subheader">{{ $t('partner.overview.2') }}</div>
-                                <div class="subheader">{{ $t('partner.overview.3') }}</div>
-                                <div class="subheader">{{ $t('partner.overview.4') }}</div>
                             </div>
                         </div>
                     </div>
@@ -52,21 +31,25 @@
                             <thead>
                                 <tr>
                                     <th>{{ $t('partner.list.name') }}</th>
-                                    <th>{{ $t('partner.list.activity') }}</th>
+                                    <th>{{ $t('partner.list.viplevel') }}</th>
+                                    <th>{{ $t('partner.list.generated') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <router-link tag="tr" :to="`/profile/${affiliate.user._id}`" v-for="affiliate in affiliates.affiliates" :key="affiliate.user._id" :style="{ cursor: 'pointer' }">
                                     <td><img alt :src="affiliate.user.avatar" style="width: 32px; height: 32px; margin-right: 5px;"> {{ affiliate.user.name }}</td>
-                                    <td>{{ affiliate.done ? $t('general.yes') : $t('general.no') + `(${affiliate.percent}%)` }}</td>
+                                    <td class="tdAffilliates">{{ affiliate.viplevel }}</td>
+                                    <td class="tdAffilliates">{{ affiliate.generated }}</td>
                                 </router-link>
                             </tbody>
                         </table>
                         <div v-else style="text-align: center">:(</div>
                     </div>
                     <div v-if="!isGuest && tab === 2" class="tab-content">
-                        <div v-html="$t('partner.analytics.referrals', { count: affiliates.total })"></div>
-                        <div v-html="$t('partner.analytics.referrals_bonus', { count: affiliates.bonus })"></div>
+                        <div v-html="$t('partner.analytics.referrals_partnerbonus', { count: affiliates.partnerbonus })"></div>
+                        <div v-html="$t('partner.analytics.referrals_claimable', { count: affiliates.claimable })"></div>
+                        <hr>
+                        <div class="btn btn-primary mt-2" @click="collectAffiliate()">CLAIM {{ affiliates.claimable }}$</div>
                     </div>
                 </div>
             </div>
@@ -76,6 +59,7 @@
 
 <script>
     import { mapGetters } from 'vuex';
+    import Bus from '../../bus';
 
     export default {
         data() {
@@ -85,10 +69,15 @@
             }
         },
         created() {
-            axios.post('/api/user/affiliates').then(({ data }) => this.affiliates = data);
+            axios.post('/api/promocode/affiliates').then(({ data }) => this.affiliates = data);
         },
         computed: {
             ...mapGetters(['isGuest', 'user'])
+        },
+        methods: {
+            collectAffiliate() {
+                axios.post('/api/promocode/affiliatescollect').then(() => Bus.$emit('modal:close'));
+            }
         }
     }
 </script>
@@ -103,6 +92,10 @@
 
     .subheader {
         margin: 10px 0;
+    }
+
+    .tdAffilliates {
+border-bottom: 1px solid hsl(0deg 0% 100% / 1%) !important;
     }
 
     .commission-table {

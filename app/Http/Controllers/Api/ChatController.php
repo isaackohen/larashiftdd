@@ -9,6 +9,7 @@ use App\Events\NewQuiz;
 use App\Game;
 use App\Settings;
 use App\Transaction;
+use App\TransactionStatistics;
 use App\User;
 use App\Utils\APIResponse;
 use Carbon\Carbon;
@@ -88,9 +89,24 @@ class ChatController
         if ($user == null || $user->name === auth('sanctum')->user()->name) {
             return APIResponse::reject(1);
         }
+        if (auth('sanctum')->user()->vipLevel() < Settings::get('min_tip_viplevel')) {
+            return APIResponse::reject(3);
+        }
+        if (auth('sanctum')->user()->clientCurrency() === 'local_bonus') {
+            return APIResponse::reject(2);
+        }
+
         if (floatval($request->amount) < floatval(Settings::get('min_tip') / auth('sanctum')->user()->clientCurrency()->tokenPrice()) || auth('sanctum')->user()->balance(auth('sanctum')->user()->clientCurrency())->get() < floatval($request->amount)) {
             return APIResponse::reject(2);
         }
+        $statsGet = TransactionStatistics::statsGet(auth('sanctum')->user()->_id);
+        $statsGet = $statsGet[0]['tip_sent_today'] ?? 0;
+
+        if (floatval($statsGet) > floatval(Settings::get('max_tip_daily'))) {
+            return APIResponse::reject(4);
+        }
+
+
         auth('sanctum')->user()->balance(auth('sanctum')->user()->clientCurrency())->subtract(floatval($request->amount), Transaction::builder()->message('Tip to '.$user->_id)->get());
         $user->balance(auth('sanctum')->user()->clientCurrency())->add(floatval($request->amount), Transaction::builder()->message('Tip from '.auth('sanctum')->user()->_id)->get());
         $user->notify(new \App\Notifications\TipNotification(auth('sanctum')->user(), auth('sanctum')->user()->clientCurrency(), number_format(floatval($request->amount), 8, '.', '')));
@@ -109,6 +125,14 @@ class ChatController
 
             event(new ChatMessage($message));
         }
+
+        $tokenPrice = auth('sanctum')->user()->clientCurrency()->tokenPrice();
+        $dollarAmount = number_format(floatval($request->amount * $tokenPrice), 2, '.', '');
+
+
+        TransactionStatistics::statsUpdate($user->_id, 'tip_received', $dollarAmount);
+        TransactionStatistics::statsUpdate(auth('sanctum')->user()->_id, 'tip_sent', $dollarAmount);
+        TransactionStatistics::statsUpdate(auth('sanctum')->user()->_id, 'tip_sent_today', number_format(floatval($statsGet + $dollarAmount), 2, '.', ''));
 
         return APIResponse::success();
     }

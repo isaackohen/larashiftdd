@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules;
 use App\Utils\APIResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ModuleController extends Controller
 {
@@ -41,6 +42,9 @@ class ModuleController extends Controller
 
             $settings = [];
             foreach ($instance->settings() as $setting) {
+                if($setting->id() !== 'house_edge_option' && env('SHOW_GAME_MODULES') === false) {
+
+                } else {
                 array_push($settings, [
                     'id' => $setting->id(),
                     'name' => $setting->name(),
@@ -49,9 +53,14 @@ class ModuleController extends Controller
                     'type' => $setting->type(),
                     'value' => Modules::get($game, $demo)->get($instance, $setting->id()),
                 ]);
+                }
             }
 
             if ($instance->supports()) {
+                Log::notice($instance->id());
+                if($instance->id() !== 'house_edge' && env('SHOW_GAME_MODULES') === false) {
+
+                } else {
                 array_push($supportedModules, [
                     'id' => $instance->id(),
                     'name' => $instance->name(),
@@ -62,6 +71,8 @@ class ModuleController extends Controller
                     'settings' => $settings,
                 ]);
             }
+
+        }
         }
 
         return APIResponse::success($supportedModules);

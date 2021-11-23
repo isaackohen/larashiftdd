@@ -7,6 +7,7 @@ use App\Currency\Currency;
 use App\Promocode;
 use App\Settings;
 use App\Statistics;
+use App\User;
 use App\Transaction;
 use App\TransactionStatistics;
 use App\Utils\APIResponse;
@@ -108,6 +109,8 @@ class BonusController
         return APIResponse::success();
     }
 
+
+    /*
     public function partnerBonus(Request $request)
     {
         return APIResponse::reject(1, 'Not enough referrals');
@@ -144,6 +147,7 @@ class BonusController
             'slice' => $slice,
         ]);
     }
+    */
 
     public function bonus(Request $request)
     {
@@ -284,6 +288,60 @@ class BonusController
         return APIResponse::success();
     }
 
+    public function affiliatescollect(Request $request)
+    {
+        $user = auth('sanctum')->user();
+        $claimable = floatval((auth('sanctum')->user()->referral_claimable / 100) ?? 0);
+        if ($claimable < 0.25) {
+            return APIResponse::reject(1, 'You need to have minimum of 0.25$ before claiming rakeback.');
+        }
+        //if($stats->last_rakeback != null && $stats->last_rakeback > Carbon::now()->format('Y-m-d H:i:s')) return APIResponse::reject(5, 'Timeout rakeback');
+
+        $currency = Currency::find(Settings::get('bonus_currency'));
+        $amount = number_format((float) $currency->convertUSDToToken($claimable, 7, '.', ''));
+
+        TransactionStatistics::statsUpdate(auth('sanctum')->user()->_id, 'partnerbonus', $claimable);
+
+        $user->update([
+            'referral_claimable' => 0,
+        ]);
+
+        auth('sanctum')->user()->balance($currency)->add($amount, Transaction::builder()->message('Affiliate Partner Bonus')->get());
+
+
+        return APIResponse::success();
+    }
+
+    public function affiliates()
+    {
+        $result = [];
+        foreach (User::where('referral', auth('sanctum')->user()->id)->get() as $user) {
+            $statistics = Statistics::where('user',$user->_id)->first() ?? 0;
+            
+            if($statistics !== 0) {
+            $generated = round($statistics->affiliate_total / 100, 6);
+            }
+            array_push($result, [
+                'user' => $user->toArray(),
+                'viplevel' => $user->vipLevel(),
+                'generated' => $generated ?? 0,
+            ]);
+        }
+
+        $partnerId = auth('sanctum')->user()->_id;
+        $partnerStats = Statistics::where($partnerId)->first();
+        $partnerbonus = TransactionStatistics::statsGet($partnerId);
+        $partnerbonus = $partnerbonus[0]['partnerbonus'] ?? 0;
+
+        return APIResponse::success([
+            'affiliates' => $result,
+            'partnerbonus' => $partnerbonus,
+            'claimable' => (auth('sanctum')->user()->referral_claimable / 100) ?? 0,
+        ]);
+    }
+
+
+
     public function telegram(Request $request)
     {
         if (auth('sanctum')->user()->telegram == null) {
@@ -338,7 +396,7 @@ class BonusController
         $var = 'wagered_local_bonus';
 
         return APIResponse::success([
-            'bonus_wagered' => number_format(($statistics->data[$var] ?? 0), 2, '.', ''),
+            'bonus_wagered' => number_format((auth('sanctum')->user()->bonus_wagered ?? 0), 2, '.', ''),
             'bonus_goal' => number_format((auth('sanctum')->user()->bonus_goal ?? 0), 2, '.', ''),
             'bonus_balance' => $request->user()->balance(Currency::find('local_bonus'))->get(),
         ]);
@@ -363,7 +421,7 @@ class BonusController
         if ($currencyFrom->id() !== 'local_bonus') {
             return APIResponse::reject(2, 'Invalid currency non-bonus');
         }
-        if (($statistics->data[$var] ?? 0) <= auth('sanctum')->user()->bonus_goal ?? 0) {
+        if ((auth('sanctum')->user()->bonus_wagered ?? 0) <= auth('sanctum')->user()->bonus_goal) {
             return APIResponse::reject(3, 'Conditions not met');
         }
         $amount = floatval($request->amount);

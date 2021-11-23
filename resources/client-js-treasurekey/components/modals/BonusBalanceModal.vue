@@ -131,7 +131,7 @@
 										<div class="exchangeResult">
 											{{ usd ? '$' : ''}} {{ parseFloat(sum).toFixed(2) }} <icon :icon="exchangeSend.icon" :style="{ color: exchangeSend.style }"></icon><strong>=</strong> {{ usd ? '$' : ''}} {{ predictExchangeResult() }} <icon :icon="exchangeReceive.icon" :style="{ color: exchangeReceive.style }"></icon>
 										</div>
-										<div class="bonus-info">Bonus Wagered:<b><span> {{ bonus_wagered }}</span>$</b></div>
+										<div class="bonus-info">Bonus Unlocked:<b><span> {{ bonus_wagered }}</span>$</b></div>
 										<div class="bonus-info">Bonus Goal:<b><span> {{ bonus_goal }}</span>$</b></div>
 										<div v-if="bonus_wagered <= bonus_goal" class="alert alert-secondary mb-2 mt-2 text-center" role="alert">{{ $t('bonus.info.1') }}</div>
 										<div v-if="bonus_wagered > bonus_goal" class="alert alert-success mb-2 mt-2 text-center" role="alert">{{ $t('bonus.info.2') }}</div>

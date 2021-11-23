@@ -6,6 +6,7 @@ use App\Console\Commands\MindepositUpdate;
 use App\Console\Commands\ProcessTRXPayments;
 use App\Console\Commands\PullingWallet;
 use App\Console\Commands\Quiz;
+use App\Console\Commands\AffiliateCron;
 use App\Console\Commands\Rain;
 use App\Console\Commands\ResetWeeklyBonus;
 use App\Console\Commands\WithdrawLimit3Hourly;
@@ -34,9 +35,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(Quiz::class)->everyThirtyMinutes();
+        //$schedule->command(Quiz::class)->everyThirtyMinutes();
         $schedule->command(ResetWeeklyBonus::class)->sundays();
         $schedule->command(WalletReset::class)->daily();
+        $schedule->command(AffiliateCron::class)->hourly();
         // $schedule->command(ProcessTRXPayments::class)->everyMinute();
         //$schedule->command(PullingWallet::class)->everyTwoMinutes();
         $schedule->command(MindepositUpdate::class)->everyThirtyMinutes();

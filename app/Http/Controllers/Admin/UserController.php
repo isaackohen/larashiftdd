@@ -191,6 +191,8 @@ class UserController extends Controller
             'withdraw_count' => $TransactionStats['withdraw_count'] ?? 0,
             'withdraw_total' => $TransactionStats['withdraw_total'] ?? 0,
             'vip_progress' => $TransactionStats['vip_progress'] ?? 0,
+            'tip_received' => $TransactionStats['tip_received'] ?? 0,
+            'tip_sent' => $TransactionStats['tip_sent'] ?? 0,
         ]);
     }
 

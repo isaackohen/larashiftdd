@@ -63,6 +63,8 @@ class GameController
             'data' => (array) $request->data,
         ]);
 
+        /*
+
         if (auth('sanctum')->user() != null && auth('sanctum')->user()->referral != null && auth('sanctum')->user()->games() >= floatval(Settings::get('referrer_activity_requirement', 100))) {
             $referrer = \App\User::where('_id', $this->user->referral)->first();
             $referrals = $referrer->referral_wager_obtained ?? [];
@@ -76,7 +78,7 @@ class GameController
         if (auth('sanctum')->user() != null && auth('sanctum')->user()->vipLevel() > 0 && auth('sanctum')->user()->vip_discord_notified == null) {
             auth('sanctum')->user()->notify(new \App\Notifications\VipDiscordNotification());
             auth('sanctum')->user()->update(['vip_discord_notified' => true]);
-        }
+        }*/
 
         return $game->process($data);
     }
