@@ -34,7 +34,7 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.12",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.3",
+        "laravel/ui": "^3.4",
         "maennchen/zipstream-php": "^2.0",
         "morrislaptop/laravel-queue-clear": "^1.2",
         "nbobtc/bitcoind-php": "^2.1",
@@ -46,7 +46,7 @@
         "robthree/twofactorauth": "^1.7",
         "spatie/async": "^1.4",
         "spatie/laravel-analytics": "^3.11",
-        "stripe/stripe-php": "^7.102",
+        "stripe/stripe-php": "^7.105",
         "torann/geoip": "^3.0",
         "vkcom/vk-php-sdk": "^5.101",
         "web3p/ethereum-tx": "^0.4.0"
