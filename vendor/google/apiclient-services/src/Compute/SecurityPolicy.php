@@ -30,6 +30,8 @@ class SecurityPolicy extends \Google\Collection
   public $id;
   public $kind;
   public $name;
+  protected $recaptchaOptionsConfigType = SecurityPolicyRecaptchaOptionsConfig::class;
+  protected $recaptchaOptionsConfigDataType = '';
   protected $rulesType = SecurityPolicyRule::class;
   protected $rulesDataType = 'array';
   public $selfLink;
@@ -110,6 +112,20 @@ class SecurityPolicy extends \Google\Collection
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * @param SecurityPolicyRecaptchaOptionsConfig
+   */
+  public function setRecaptchaOptionsConfig(SecurityPolicyRecaptchaOptionsConfig $recaptchaOptionsConfig)
+  {
+    $this->recaptchaOptionsConfig = $recaptchaOptionsConfig;
+  }
+  /**
+   * @return SecurityPolicyRecaptchaOptionsConfig
+   */
+  public function getRecaptchaOptionsConfig()
+  {
+    return $this->recaptchaOptionsConfig;
   }
   /**
    * @param SecurityPolicyRule[]
