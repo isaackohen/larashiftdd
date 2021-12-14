@@ -32,7 +32,13 @@ class Regions extends \Google\Service\Resource
 {
   /**
    * Returns the specified Region resource. Gets a list of available regions by
-   * making a list() request. (regions.get)
+   * making a list() request. To decrease latency for this method, you can
+   * optionally omit any unneeded information from the response by using a field
+   * mask. This practice is especially recommended for unused quota information
+   * (the `quotas` field). To exclude one or more fields, set your request's
+   * `fields` query parameter to only include the fields you need. For example, to
+   * only include the `id` and `selfLink` fields, add the query parameter
+   * `?fields=id,selfLink` to your request. (regions.get)
    *
    * @param string $project Project ID for this request.
    * @param string $region Name of the region resource to return.
@@ -46,8 +52,14 @@ class Regions extends \Google\Service\Resource
     return $this->call('get', [$params], Region::class);
   }
   /**
-   * Retrieves the list of region resources available to the specified project.
-   * (regions.listRegions)
+   * Retrieves the list of region resources available to the specified project. To
+   * decrease latency for this method, you can optionally omit any unneeded
+   * information from the response by using a field mask. This practice is
+   * especially recommended for unused quota information (the `items.quotas`
+   * field). To exclude one or more fields, set your request's `fields` query
+   * parameter to only include the fields you need. For example, to only include
+   * the `id` and `selfLink` fields, add the query parameter `?fields=id,selfLink`
+   * to your request. (regions.listRegions)
    *
    * @param string $project Project ID for this request.
    * @param array $optParams Optional parameters.
