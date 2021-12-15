@@ -485,6 +485,13 @@ class Instances extends \Google\Service\Resource
    * /global/instanceTemplates/instanceTemplate -
    * projects/project/global/instanceTemplates/instanceTemplate -
    * global/instanceTemplates/instanceTemplate
+   * @opt_param string sourceMachineImage Specifies the machine image to use to
+   * create the instance. This field is optional. It can be a full or partial URL.
+   * For example, the following are all valid URLs to a machine image: -
+   * https://www.googleapis.com/compute/v1/projects/project/global/global
+   * /machineImages/machineImage -
+   * projects/project/global/global/machineImages/machineImage -
+   * global/machineImages/machineImage
    * @return Operation
    */
   public function insert($project, $zone, Instance $postBody, $optParams = [])
