@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Currency\Currency;
+use App\Settings;
 use App\User;
 use Illuminate\Console\Command;
-use App\Settings;
 
 class WalletReset extends Command
 {

@@ -106,7 +106,6 @@ class ChatController
             return APIResponse::reject(4);
         }
 
-
         auth('sanctum')->user()->balance(auth('sanctum')->user()->clientCurrency())->subtract(floatval($request->amount), Transaction::builder()->message('Tip to '.$user->_id)->get());
         $user->balance(auth('sanctum')->user()->clientCurrency())->add(floatval($request->amount), Transaction::builder()->message('Tip from '.auth('sanctum')->user()->_id)->get());
         $user->notify(new \App\Notifications\TipNotification(auth('sanctum')->user(), auth('sanctum')->user()->clientCurrency(), number_format(floatval($request->amount), 8, '.', '')));
@@ -128,7 +127,6 @@ class ChatController
 
         $tokenPrice = auth('sanctum')->user()->clientCurrency()->tokenPrice();
         $dollarAmount = number_format(floatval($request->amount * $tokenPrice), 2, '.', '');
-
 
         TransactionStatistics::statsUpdate($user->_id, 'tip_received', $dollarAmount);
         TransactionStatistics::statsUpdate(auth('sanctum')->user()->_id, 'tip_sent', $dollarAmount);

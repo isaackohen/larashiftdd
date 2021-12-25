@@ -8,8 +8,8 @@ use App\Events\Deposit;
 use App\Http\Controllers\Api\WalletController;
 use App\Invoice;
 use App\Settings;
-use App\Transaction;
 use App\Statistics;
+use App\Transaction;
 use App\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -53,12 +53,12 @@ class AffiliateCron extends Command
             $userAffiliate = User::where('_id', $rakeback->user)->first();
             $claimable = User::where('_id', $userAffiliate->referral)->first()->referral_claimable ?? 0;
             User::where('_id', $userAffiliate->referral)->update([
-            'referral_claimable' => $claimable + $rakeback->affiliate_rakeback
+                'referral_claimable' => $claimable + $rakeback->affiliate_rakeback,
             ]);
 
             $rakeback->update([
-            'affiliate_rakeback' => 0,
-            'affiliate_total' => $rakeback->affiliate_total + $rakeback->affiliate_rakeback,
+                'affiliate_rakeback' => 0,
+                'affiliate_total' => $rakeback->affiliate_total + $rakeback->affiliate_rakeback,
             ]);
         }
     }

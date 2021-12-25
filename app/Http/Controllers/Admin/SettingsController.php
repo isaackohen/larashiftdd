@@ -93,6 +93,7 @@ class SettingsController extends Controller
 
         return APIResponse::success();
     }
+
     public function currencyExtraSettings(Request $request)
     {
         return APIResponse::success([

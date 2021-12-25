@@ -14,7 +14,7 @@ class TransactionStatistics extends Model
     protected $connection = 'mongodb';
 
     protected $fillable = [
-        'user', 'promocode', 'weeklybonus', 'partnerbonus', 'challenges', 'freespins_amount', 'faucet', 'depositbonus', 'deposit_total', 'deposit_count', 'withdraw_count', 'withdraw_total', 'challenges', 'rakeback', 'tip_sent', 'tip_sent_today', 'tip_received'
+        'user', 'promocode', 'weeklybonus', 'partnerbonus', 'challenges', 'freespins_amount', 'faucet', 'depositbonus', 'deposit_total', 'deposit_count', 'withdraw_count', 'withdraw_total', 'challenges', 'rakeback', 'tip_sent', 'tip_sent_today', 'tip_received',
     ];
 
     protected $casts = [
@@ -42,7 +42,7 @@ class TransactionStatistics extends Model
                 'vip_progress' => 0,
                 'tip_received' => 0,
                 'tip_sent' => 0,
-                'tip_sent_today' => 0
+                'tip_sent_today' => 0,
             ]);
             $stats = self::where('user', $userid)->get()->toArray();
         }
@@ -72,8 +72,8 @@ class TransactionStatistics extends Model
                 'vip_progress' => 0,
                 'tip_received' => 0,
                 'tip_sent' => 0,
-                'tip_sent_today' => 0
-             ]);
+                'tip_sent_today' => 0,
+            ]);
             $stats = self::where('user', $userid)->first();
         }
 

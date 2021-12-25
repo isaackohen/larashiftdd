@@ -23,7 +23,7 @@ class ExternalController
 {
     public function methodBalance(Request $request)
     {
-            Log::alert($request->fullUrl());
+        Log::alert($request->fullUrl());
         $user = User::where('_id', $_GET['playerid'])->first();
         $currency = Currency::find($_GET['currency']);
         $getBalance = $user->balance($currency)->get();
@@ -36,7 +36,6 @@ class ExternalController
 
     public function methodBet(Request $request)
     {
-        
         Log::alert($request->fullUrl());
         $user = User::where('_id', $_GET['playerid'])->first();
         $currency = Currency::find($_GET['currency']);
@@ -52,8 +51,7 @@ class ExternalController
             $getBalanceUSD = intval($currency->convertTokenToUSD($getBalance) * 100);
             $responsePayload = ['status' => 'ok', 'result' => ['balance' => $getBalanceUSD, 'freegames' => 0]];
 
-        return json_encode($responsePayload);
-
+            return json_encode($responsePayload);
         }
 
         if ($bet > 0) {
@@ -64,8 +62,9 @@ class ExternalController
             if (config('settings.demo_mode')) {
                 $stat = Statistics::where('user', $user->_id)->first();
                 if ($stat->data['usd_wager'] > config('settings.demo_mode_max_bet')) {
-                        $user->balance($currency)->subtract(floatval($getBalance), Transaction::builder()->message('Demo balance expired')->get());
-                        event(new \App\Events\UserNotification($user, 'Demo expired', 'You have reached max. amount of demo play - request to refresh your demo access & balance.'));
+                    $user->balance($currency)->subtract(floatval($getBalance), Transaction::builder()->message('Demo balance expired')->get());
+                    event(new \App\Events\UserNotification($user, 'Demo expired', 'You have reached max. amount of demo play - request to refresh your demo access & balance.'));
+
                     return;
                 }
             }
@@ -172,7 +171,7 @@ class ExternalController
 
     public function methodGetUrl(Request $request)
     {
-            Log::alert($request->fullUrl());
+        Log::alert($request->fullUrl());
 
         $freespins = false;
         if (auth('sanctum')->guest()) {
