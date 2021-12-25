@@ -2,15 +2,15 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AffiliateCron;
 use App\Console\Commands\MindepositUpdate;
 use App\Console\Commands\ProcessTRXPayments;
 use App\Console\Commands\PullingWallet;
 use App\Console\Commands\Quiz;
-use App\Console\Commands\AffiliateCron;
 use App\Console\Commands\Rain;
 use App\Console\Commands\ResetWeeklyBonus;
-use App\Console\Commands\WithdrawLimit3Hourly;
 use App\Console\Commands\WalletReset;
+use App\Console\Commands\WithdrawLimit3Hourly;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

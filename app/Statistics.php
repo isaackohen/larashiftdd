@@ -7,9 +7,9 @@ use App\Events\PublicUserNotification;
 use App\Events\UserNotification;
 use App\Notifications\CustomNotification;
 use App\User;
+use App\VIPLevels;
 use Illuminate\Support\Facades\Notification;
 use Jenssegers\Mongodb\Eloquent\Model;
-use App\VIPLevels;
 
 class Statistics extends Model
 {
@@ -48,7 +48,6 @@ class Statistics extends Model
             ]);
         }
 
-
         $multiAllow = 0;
         if ($multiplier > floatval(1.25) || $multiplier < floatval(0.85)) {
             $multiAllow = '1';
@@ -56,27 +55,25 @@ class Statistics extends Model
         $wagerAmount = round($wager * Currency::find($currency)->tokenPrice(), 5);
 
         if ($wagerAmount > 0.08 && $multiAllow === '1') {
-
             $vipModifier = 1;
             $currentViplevel = ($stats->viplevel ?? 0);
 
             $amountMod = $wagerAmount;
-            if($type === 'external') {
+            if ($type === 'external') {
                 $amountMod = $wagerAmount * 0.9;
             }
-            if($currency === 'local_bonus') {
+            if ($currency === 'local_bonus') {
                 $amountMod = floatval($wagerAmount * 0.85);
-                if($type === 'external') {
-                $amountMod = floatval($wagerAmount * 0.5);
-            }
-            $user = User::where('_id', $user)->first();
-            if ($user->first_deposit_bonus === 'used') {
-                $currentWagered = $user->bonus_wagered ?? 0;
+                if ($type === 'external') {
+                    $amountMod = floatval($wagerAmount * 0.5);
+                }
+                $user = User::where('_id', $user)->first();
+                if ($user->first_deposit_bonus === 'used') {
+                    $currentWagered = $user->bonus_wagered ?? 0;
                     User::where('_id', $user->_id)->update([
                         'bonus_wagered' => number_format(($currentWagered ?? 0) + $amountMod, 6, '.', ''),
                     ]);
-            }
-
+                }
             }
 
             //Add VIP progression
@@ -85,7 +82,7 @@ class Statistics extends Model
             ]);
             $getcurrentViplevels = VIPLevels::where('level', '=', ''.$currentViplevel.'')->first();
 
-            if($currentViplevel > 0) {
+            if ($currentViplevel > 0) {
                 $user = User::where('_id', $user)->first();
                 $rakeBonus = floatval(($amountMod / 100) * $getcurrentViplevels->rake_percent);
                 $stats->update([
@@ -94,7 +91,7 @@ class Statistics extends Model
 
                 $referral = $user->referral ?? null;
 
-                if($referral != null) {
+                if ($referral != null) {
                     $stats->update([
                         'affiliate_rakeback' => number_format(($stats->affiliate_rakeback ?? 0) + ($rakeBonus / 2), 6, '.', ''),
                     ]);

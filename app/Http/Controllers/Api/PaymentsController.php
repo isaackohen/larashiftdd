@@ -183,7 +183,6 @@ class PaymentsController
             TransactionStatistics::statsUpdate($user->_id, 'deposit_total', ($statsGet->deposit_total + $depositAmount));
             TransactionStatistics::statsUpdate($user->_id, 'deposit_count', ($statsGet->deposit_count + 1));
 
-
             header('Content-Type: application/json');
             $response = ['ok' => true];
             $response = json_encode($response);
@@ -234,7 +233,6 @@ class PaymentsController
             $current3hrs = Settings::where('name', $val3hrs)->first()->value;
             Settings::where('name', $val3hrs)->update(['value' => ($withdraw->usd + $current3hrs)]);
 
-
             $withdraw->update(['status' => '1', 'withdraw_meta' => 'FINISHED']);
             $user = \App\User::where('_id', $withdraw->user)->first();
             $test = event(new \App\Events\UserNotification($user, 'Withdraw Completed', 'Your withdraw has been sent to your wallet.'));
@@ -242,7 +240,6 @@ class PaymentsController
             $statsGet = TransactionStatistics::statsGet($user->_id);
             TransactionStatistics::statsUpdate($user->_id, 'withdraw_total', ($statsGet->withdraw_total + $withdraw->usd));
             TransactionStatistics::statsUpdate($user->_id, 'withdraw_count', ($statsGet->withdraw_count + 1));
-
 
             $telegramChannel = Settings::get('telegram_internal_channel');
             $messageAlert = 'Withdraw completed on '.config('app.name').' for '.$withdraw->usd.'$ from user '.$user->name.'.';

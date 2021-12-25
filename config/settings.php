@@ -12,4 +12,5 @@ return [
     'demo_mode' => env('DEMO_MODE'),
     'demo_mode_max_bet' => env('DEMO_MODE_MAX_BET'),
     'server_ip' => env('SERVER_IP'),
+    'show_game_modules' => env('SHOW_GAME_MODULES'),
 ];

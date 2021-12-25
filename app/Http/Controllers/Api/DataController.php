@@ -20,7 +20,6 @@ use Illuminate\Support\Str;
 
 class DataController
 {
-
     public static function GameResultAll($count)
     {
         $cachedList = Cache::get('GameResultAll'.$count);
@@ -41,6 +40,7 @@ class DataController
             $cachedList = GameResult::latest()->where('demo', '!=', true)->where('user', $mine)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take($count)->get()->reverse();
             Cache::put('GameResultMine'.$count.$mine, $cachedList, Carbon::now()->addMinutes(2));
         }
+
         return $cachedList;
     }
 
@@ -52,6 +52,7 @@ class DataController
             $cachedList = GameResult::latest()->where('multiplier', '>=', 10)->where('demo', '!=', true)->where('user', '!=', null)->where('status', 'win')->take($count)->get()->reverse();
             Cache::put('GameResultLuckyWins'.$count, $cachedList, Carbon::now()->addMinutes(5));
         }
+
         return $cachedList;
     }
 
@@ -63,8 +64,10 @@ class DataController
             $cachedList = GameResult::latest()->where('demo', '!=', true)->where('user', '!=', null)->where('status', '!=', 'in-progress')->where('status', '!=', 'cancelled')->take($count)->get()->reverse();
             Cache::put('GameResultHighResult'.$count, $cachedList, Carbon::now()->addMinutes(5));
         }
+
         return $cachedList;
     }
+
     public function latestGames(Request $request)
     {
         //Disabled
@@ -87,7 +90,6 @@ class DataController
             case 'high_rollers':
             //Disabled
             return [];
-
 
                 $hrResult = [];
                 $games = self::GameResultHighResult($request->count);

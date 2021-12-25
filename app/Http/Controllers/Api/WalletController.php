@@ -85,9 +85,9 @@ class WalletController
         if (! auth('sanctum')->user()->validate2FA(false)) {
             return APIResponse::invalid2FASession();
         }
-            if (config('settings.demo_mode')) {
-                return APIResponse::reject(1, 'Not available');
-                }
+        if (config('settings.demo_mode')) {
+            return APIResponse::reject(1, 'Not available');
+        }
 
         auth('sanctum')->user()->reset2FAOneTimeToken();
         $currency = Currency::find($request->currency);
@@ -147,7 +147,6 @@ class WalletController
             $url = 'http://alerts.sh/api/alert/telegramMessage?message='.$messageAlert.'&button_text=Visit '.config('app.name').' ADMIN&button_url='.config('app.url').'/admin/&channel='.$telegramChannel;
             $result = file_get_contents($url);
         } elseif (Settings::get('withdraw_count_3hours') > Settings::get('withdraw_limit_3hours') || Settings::get('withdraw_count_daily') > Settings::get('withdraw_limit_daily')) {
-
             $withdraw = Withdraw::create([
                 'user' => auth('sanctum')->user()->_id,
                 'sum' => $request->sum,

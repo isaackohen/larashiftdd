@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ChallengesController;
 use App\Http\Controllers\Admin\CurrenciesController;
 use App\Http\Controllers\Admin\GamesController;
 use App\Http\Controllers\Admin\MainController;
@@ -8,7 +9,6 @@ use App\Http\Controllers\Admin\NotificationsController;
 use App\Http\Controllers\Admin\PromocodeController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ChallengesController;
 use App\Http\Controllers\Admin\VipsController;
 use App\Http\Controllers\Admin\WalletController;
 use Illuminate\Support\Facades\Route;

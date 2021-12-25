@@ -7,9 +7,9 @@ use App\Currency\Currency;
 use App\Promocode;
 use App\Settings;
 use App\Statistics;
-use App\User;
 use App\Transaction;
 use App\TransactionStatistics;
+use App\User;
 use App\Utils\APIResponse;
 use App\VIPLevels;
 use Carbon\Carbon;
@@ -108,7 +108,6 @@ class BonusController
         //  auth('sanctum')->user()->balance(auth('sanctum')->user()->clientCurrency())->demo()->add(auth('sanctum')->user()->clientCurrency()->option('demo'), Transaction::builder()->message('Demo')->get());
         return APIResponse::success();
     }
-
 
     /*
     public function partnerBonus(Request $request)
@@ -308,7 +307,6 @@ class BonusController
 
         auth('sanctum')->user()->balance($currency)->add($amount, Transaction::builder()->message('Affiliate Partner Bonus')->get());
 
-
         return APIResponse::success();
     }
 
@@ -316,10 +314,10 @@ class BonusController
     {
         $result = [];
         foreach (User::where('referral', auth('sanctum')->user()->id)->get() as $user) {
-            $statistics = Statistics::where('user',$user->_id)->first() ?? 0;
-            
-            if($statistics !== 0) {
-            $generated = round($statistics->affiliate_total / 100, 6);
+            $statistics = Statistics::where('user', $user->_id)->first() ?? 0;
+
+            if ($statistics !== 0) {
+                $generated = round($statistics->affiliate_total / 100, 6);
             }
             array_push($result, [
                 'user' => $user->toArray(),
@@ -339,8 +337,6 @@ class BonusController
             'claimable' => (auth('sanctum')->user()->referral_claimable / 100) ?? 0,
         ]);
     }
-
-
 
     public function telegram(Request $request)
     {
