@@ -42,7 +42,7 @@ class ModuleController extends Controller
 
             $settings = [];
             foreach ($instance->settings() as $setting) {
-                if ($setting->id() !== 'house_edge_option' && env('SHOW_GAME_MODULES') === false) {
+                if ($setting->id() !== 'house_edge_option' && config('settings.show_game_modules') === false) {
                 } else {
                     array_push($settings, [
                         'id' => $setting->id(),
@@ -57,7 +57,7 @@ class ModuleController extends Controller
 
             if ($instance->supports()) {
                 Log::notice($instance->id());
-                if ($instance->id() !== 'house_edge' && env('SHOW_GAME_MODULES') === false) {
+                if ($instance->id() !== 'house_edge' && config('settings.show_game_modules') === false) {
                 } else {
                     array_push($supportedModules, [
                         'id' => $instance->id(),
