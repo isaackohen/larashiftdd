@@ -142,7 +142,13 @@ class Projects extends \Google\Service\Resource
     return $this->call('enableXpnResource', [$params], Operation::class);
   }
   /**
-   * Returns the specified Project resource. (projects.get)
+   * Returns the specified Project resource. To decrease latency for this method,
+   * you can optionally omit any unneeded information from the response by using a
+   * field mask. This practice is especially recommended for unused quota
+   * information (the `quotas` field). To exclude one or more fields, set your
+   * request's `fields` query parameter to only include the fields you need. For
+   * example, to only include the `id` and `selfLink` fields, add the query
+   * parameter `?fields=id,selfLink` to your request. (projects.get)
    *
    * @param string $project Project ID for this request.
    * @param array $optParams Optional parameters.
@@ -304,6 +310,10 @@ class Projects extends \Google\Service\Resource
   }
   /**
    * Moves an instance and its attached persistent disks from one zone to another.
+   * *Note*: Moving VMs or disks by using this method might cause unexpected
+   * behavior. For more information, see the [known
+   * issue](/compute/docs/troubleshooting/known-issues#moving_vms_or_disks_using_t
+   * he_moveinstance_api_or_the_causes_unexpected_behavior).
    * (projects.moveInstance)
    *
    * @param string $project Project ID for this request.
