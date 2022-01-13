@@ -31,7 +31,7 @@
         "jenssegers/mongodb": "dev-master",
         "laravel-notification-channels/discord": "^1.1",
         "laravel-notification-channels/webpush": "^5.0",
-        "laravel/framework": "^8.54",
+        "laravel/framework": "^8.79",
         "laravel/sanctum": "^2.12",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
